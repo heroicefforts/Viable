@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Viable</string>
+    <string name="app_label">Application:&#160;&#160;</string>
+    <string name="issue_label">Issue Type: </string>
+	<string name="report_bug">Submit</string>
+	<string name="search">Search</string>    
+	<string name="summary">Summary</string>
+	<string name="description">Description</string>
+	<string name="pkg_name">Package name:&#160;&#160;</string>
+	<string name="version_name">Version name:&#160;&#160;</string>
+	<string name="version_code">Version id:&#160;&#160;</string>
+	<string name="phone_model">Phone Model:&#160;&#160;</string>
+	<string name="phone_device">Device:&#160;&#160;</string>
+	<string name="phone_sdk">SDK version:&#160;&#160;</string>
+	<string name="error">Error:&#160;&#160;</string>
+	<string name="show_details">Show Details</string>
+	<string name="hide_details">Hide Details</string>
+</resources>

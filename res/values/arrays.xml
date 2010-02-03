@@ -1,0 +1,30 @@
+<resources>
+
+    <string-array name="issue_type_value">
+        <item>Bug</item>
+        <item>New Feature Request</item>
+        <item>Improvement</item>
+    </string-array>
+    <string-array name="issue_priority_value">
+        <item>Blocker</item>
+        <item>Critical</item>
+        <item>Major</item>
+        <item>Minor</item>
+        <item>Trivial</item>
+    </string-array>
+
+	<!--  keys should not be translated -->
+    <string-array name="issue_type_key">
+        <item>bug</item>
+        <item>feature</item>
+        <item>improvement</item>
+    </string-array>
+    <string-array name="issue_priority_key">
+        <item>blocker</item>
+        <item>critical</item>
+        <item>major</item>
+        <item>minor</item>
+        <item>trivial</item>
+    </string-array>
+
+</resources>
