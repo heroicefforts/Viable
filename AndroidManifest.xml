@@ -31,7 +31,7 @@
             </intent-filter>
 		</activity>
 
-		<activity android:name="RemoteIssuesListActivity">
+		<activity android:name="RemoteIssueListActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -43,7 +43,7 @@
             </intent-filter>
 		</activity>
 
-        <activity android:name="IssuesListActivity" android:label="@string/title_issues_list">
+        <activity android:name="LocalIssueListActivity" android:label="@string/title_issues_list">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.EDIT" />
@@ -72,9 +72,9 @@
 			</intent-filter>
 		</receiver>
 
-    <meta-data android:name="JIRA" android:value="net.heroicefforts.viable.android.JIRARepository"></meta-data>
-	<meta-data android:name="viable-provider" android:value="JIRA"></meta-data>
-	<meta-data android:name="viable-provider-location" android:value="http://192.168.1.101:2990/jira/rest/tutorial-rest/1.0/issue"></meta-data>
+    <meta-data android:name="JIRA" android:value="net.heroicefforts.viable.android.rep.JIRARepository" />
+	<meta-data android:name="viable-provider" android:value="JIRA" />
+	<meta-data android:name="viable-provider-location" android:value="http://192.168.1.101:2990/jira/rest/tutorial-rest/1.0/issue" />
     
 </application>
     <uses-sdk android:minSdkVersion="5" />

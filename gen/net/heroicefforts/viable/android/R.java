@@ -36,7 +36,7 @@ public final class R {
         public static final int icon=0x7f02000e;
     }
     public static final class id {
-        public static final int AffectedVersionsTextView=0x7f060038;
+        public static final int AffectedVersionsTextView=0x7f06003b;
         public static final int AppNameSpinner=0x7f060001;
         public static final int AuthorTextView=0x7f060026;
         public static final int BodyTextView=0x7f060028;
@@ -48,37 +48,37 @@ public final class R {
         public static final int BugSummaryEditText=0x7f06001e;
         public static final int BugsResTextView=0x7f06000e;
         public static final int BugsUnresTextView=0x7f06000c;
-        public static final int CommentsListView=0x7f06003a;
+        public static final int CommentsListView=0x7f06003d;
         public static final int CreateDateTextView=0x7f060027;
-        public static final int CreatedDateTextView=0x7f060032;
+        public static final int CreatedDateTextView=0x7f060036;
         public static final int DescriptionTextView=0x7f060003;
-        public static final int DescriptonTextView=0x7f060039;
+        public static final int DescriptonTextView=0x7f06003c;
         public static final int DetailsButton=0x7f060022;
-        public static final int EditIssueLayout=0x7f06002e;
+        public static final int EditIssueLayout=0x7f060034;
         public static final int FeaturesResTextView=0x7f060015;
         public static final int FeaturesUnresTextView=0x7f060014;
         public static final int ImprsResTextView=0x7f060011;
         public static final int ImprsUnresTextView=0x7f060010;
-        public static final int IssueIconDescTextView=0x7f06002d;
-        public static final int IssueIconImageView=0x7f06002a;
-        public static final int IssueIconNameTextView=0x7f06002b;
-        public static final int IssueIdTextView=0x7f06002f;
-        public static final int IssueListView=0x7f06003b;
-        public static final int IssueSelectLayout=0x7f060029;
+        public static final int IssueIconDescTextView=0x7f060033;
+        public static final int IssueIconImageView=0x7f060030;
+        public static final int IssueIconNameTextView=0x7f060031;
+        public static final int IssueIdTextView=0x7f06002d;
+        public static final int IssueListView=0x7f060029;
+        public static final int IssueSelectLayout=0x7f06002f;
         public static final int IssueTypeSpinner=0x7f06001d;
         public static final int LeadTextView=0x7f060004;
         public static final int LinearLayout01=0x7f060000;
         public static final int LinearLayout02=0x7f06001b;
         public static final int LinearLayout03=0x7f06001c;
-        public static final int ModifiedDateTextView=0x7f060033;
-        public static final int PriorityImageView=0x7f06003c;
-        public static final int PriorityTextView=0x7f060036;
-        public static final int RefreshButton=0x7f060031;
+        public static final int ModifiedDateTextView=0x7f060037;
+        public static final int PriorityImageView=0x7f06002b;
+        public static final int PriorityTextView=0x7f060039;
+        public static final int RefreshButton=0x7f060035;
         public static final int RelativeLayout01=0x7f060025;
         public static final int ReportBugButton=0x7f060020;
-        public static final int StateImageView=0x7f06003d;
-        public static final int StateTextView=0x7f060037;
-        public static final int SummaryTextView=0x7f060030;
+        public static final int StateImageView=0x7f06002c;
+        public static final int StateTextView=0x7f06003a;
+        public static final int SummaryTextView=0x7f06002e;
         public static final int TableLayout01=0x7f060006;
         public static final int TableRow01=0x7f060007;
         public static final int TableRow02=0x7f06000a;
@@ -94,21 +94,21 @@ public final class R {
         public static final int TextView07=0x7f060018;
         public static final int TextView08=0x7f060019;
         public static final int TextViewLayout=0x7f06003e;
-        public static final int TypeImageView=0x7f060034;
-        public static final int TypeTextView=0x7f060035;
+        public static final int TypeImageView=0x7f06002a;
+        public static final int TypeTextView=0x7f060038;
         public static final int URLTextView=0x7f060005;
         public static final int VersionTableLayout=0x7f060016;
-        public static final int include01=0x7f06002c;
+        public static final int include01=0x7f060032;
     }
     public static final class layout {
         public static final int app_stats=0x7f030000;
         public static final int bug_report_activity=0x7f030001;
         public static final int comments_list_item=0x7f030002;
-        public static final int issue_type_select=0x7f030003;
-        public static final int issue_type_select_dd=0x7f030004;
-        public static final int issue_view=0x7f030005;
-        public static final int issuelist=0x7f030006;
-        public static final int issueslist_item=0x7f030007;
+        public static final int issue_list=0x7f030003;
+        public static final int issue_list_item=0x7f030004;
+        public static final int issue_type_select=0x7f030005;
+        public static final int issue_type_select_dd=0x7f030006;
+        public static final int issue_view=0x7f030007;
         public static final int plain_text_view=0x7f030008;
     }
     public static final class string {
@@ -136,6 +136,7 @@ public final class R {
         public static final int bug_trivial_open_desc=0x7f050041;
         public static final int bug_trivial_open_name=0x7f050033;
         public static final int bugs=0x7f05001d;
+        public static final int choose_one=0x7f05002e;
         public static final int comments=0x7f050015;
         public static final int created_date_label=0x7f050005;
         public static final int description=0x7f05000a;
@@ -163,7 +164,6 @@ public final class R {
         public static final int issue_type_prompt=0x7f050003;
         public static final int maintainer=0x7f050017;
         public static final int menu_delete=0x7f05002d;
-        public static final int menu_insert=0x7f05002e;
         public static final int modified_date_label=0x7f050006;
         public static final int my_issues=0x7f050023;
         public static final int no=0x7f05002b;

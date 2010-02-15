@@ -26,10 +26,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -70,7 +68,9 @@ protected static final String TAG = "BugReporterActivity";
     {
     	super.onStart();
     	
-    	ctx = BugContext.load(getIntent());
+    	if(getParent() != null)
+    		ctx = BugContext.load(getParent().getIntent());
+    	
     	if(ctx != null)
     	{
     		((TextView) findViewById(R.id.BugDetailsTextView)).setText(formatDetails(ctx));
@@ -105,40 +105,31 @@ protected static final String TAG = "BugReporterActivity";
                         	finish();
                         }
                     });
-                    builder.setMessage(R.string.bug_comment_prompt);
+                    builder.setMessage(getString(R.string.bug_comment_prompt).replaceAll("\\{appName\\}", ctx.getAppName()));
                     builder.create().show();        			
         		}
         	}    		
     	}
     	else
     	{
-			ctx = getSelfContext();
+			ctx = new BugContext();
     		((Button) findViewById(R.id.DetailsButton)).setVisibility(View.INVISIBLE);
     	}
     	    	
     	Spinner typeSpinner = (Spinner) findViewById(R.id.IssueTypeSpinner);        
 		typeSpinner.setAdapter(new IssueSelectionAdapter(this, ctx.getStacktrace() != null));
 
-    	Spinner appNameSpinner = (Spinner) findViewById(R.id.AppNameSpinner);
 		
-//		if(ctx.getStacktrace() != null) 
-//		{
-		List<String> appNames = new ArrayList<String>(factory.getApplicationNames());
-    	appNameSpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, appNames.toArray(new String[appNames.size()])));
-    	
-    	if(ctx != null)
-    	{
-    		typeSpinner.setSelection(appNames.indexOf(ctx.getAppName()));
-    		if(ctx.getStacktrace() != null)
-    	    	appNameSpinner.setEnabled(false);
-    	}
-//		}
-//		else
-//		{
-//	    	Cursor appNameCursor = managedQuery(Issues.APP_CONTENT_URI, new String[] { Issues._ID, Issues.APP_NAME }, null, null, null); 
-//			appNameSpinner.setAdapter(new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, appNameCursor, new String[] { Issues.APP_NAME }, new int[] { android.R.id.text1 }));			
-//		}
+		List<String> appNames = new ArrayList<String>();
+		appNames.add(getString(R.string.choose_one));
+		appNames.addAll(factory.getApplicationNames());
 
+		Spinner appNameSpinner = (Spinner) findViewById(R.id.AppNameSpinner);
+    	appNameSpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, appNames));
+    	if(ctx.getAppName() != null)
+    		appNameSpinner.setSelection(appNames.indexOf(ctx.getAppName()));
+		if(ctx.getStacktrace() != null)
+	    	appNameSpinner.setEnabled(false);
     }
  
     protected String formatDetails(Issue issue)
@@ -149,10 +140,8 @@ protected static final String TAG = "BugReporterActivity";
     	if(issue instanceof BugContext)
     	{
     		BugContext ctx = (BugContext) issue;
-	    	buf.append(getString(R.string.pkg_name)).append(ctx.getPkgName()).append(EOL);
 	    	if(ctx.getAffectedVersions().length > 0)
 	    		buf.append(getString(R.string.version_name)).append(ctx.getAffectedVersions()[0]).append(EOL);
-	    	buf.append(getString(R.string.version_code)).append(ctx.getVersionCode()).append(EOL);
 	    	buf.append(getString(R.string.phone_model)).append(ctx.getPhoneModel()).append(EOL);
 	    	buf.append(getString(R.string.phone_device)).append(ctx.getPhoneDevice()).append(EOL);
 	    	buf.append(getString(R.string.phone_sdk)).append(ctx.getPhoneVersion()).append(EOL);
@@ -169,9 +158,17 @@ protected static final String TAG = "BugReporterActivity";
 			if(v.getId() == R.id.ReportBugButton)
 			{
 				TextView summaryText = (TextView) findViewById(R.id.BugSummaryEditText);
-				String appName = getAppName();
+				Spinner appNameSpinner = (Spinner) findViewById(R.id.AppNameSpinner);
+				TextView descriptionText = (TextView) findViewById(R.id.BugDescriptionEditText);
+				if(appNameSpinner.getLastVisiblePosition() == 0)
+				{
+					appNameSpinner.requestFocus();
+					return;
+				}
+				
+				String appName = (String) appNameSpinner.getAdapter().getItem(appNameSpinner.getLastVisiblePosition());
 				String summary = summaryText.getText().toString();
-		        String desc = ((TextView) findViewById(R.id.BugDescriptionEditText)).getText().toString();
+		        String desc = descriptionText.getText().toString();
 
 		        if(TextUtils.isEmpty(summary))
 		        {
@@ -196,6 +193,15 @@ protected static final String TAG = "BugReporterActivity";
 			        	ContentValues values = new IssueContentAdapter(ctx).toContentValues();
 			        	BugReporterActivity.this.getContentResolver().insert(Issues.CONTENT_URI, values);
 			        }
+			        
+			        Activity parent = BugReporterActivity.this.getParent();
+			        if(parent != null && parent instanceof IssueTabsActivity)
+			        {
+			        	((IssueTabsActivity) parent).getTabHost().setCurrentTabByTag("my_issues");
+			        	appNameSpinner.setEnabled(true);
+			        	summaryText.setText("");
+			        	descriptionText.setText("");
+			        }
 			          
 			    } 
 			    catch (JSONException e)
@@ -215,7 +221,7 @@ protected static final String TAG = "BugReporterActivity";
 			}
 			else if(v.getId() == R.id.BugSearchButton)
 			{
-				Intent intent = new Intent(BugReporterActivity.this, IssuesListActivity.class);
+				Intent intent = new Intent(BugReporterActivity.this, LocalIssueListActivity.class);
 				startActivity(intent);
 
 //				String name = "Joe Test";
@@ -240,26 +246,5 @@ protected static final String TAG = "BugReporterActivity";
 		}
 
 	};
-
-	private String getAppName()
-	{
-		Spinner s = (Spinner) findViewById(R.id.AppNameSpinner);
-		Adapter a = s.getAdapter();
-		int position = s.getLastVisiblePosition();
-		if(a instanceof CursorAdapter)
-		{
-			Cursor c = ((CursorAdapter)a).getCursor();
-			return c.getString(c.getColumnIndex(Issues.APP_NAME));
-		}
-		else
-			return (String) a.getItem(position);
-	}		
-	
-	private BugContext getSelfContext()
-	{
-		BugContext ctx = new BugContext();
-		ctx.setAppData(BugReporterActivity.this);
-		return ctx;
-	}
 	
 }

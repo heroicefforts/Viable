@@ -249,9 +249,9 @@ public class JIRARepository implements Repository
     private Issue loadIssue(JSONObject obj)
 		throws JSONException
 	{
-		if("bug".equals(obj.getString("type")))
-			return new BugContext(obj.toString(4));
-		else
+//		if("bug".equals(obj.getString("type")))
+//			return new BugContext(obj.toString(4));
+//		else
 			return new Issue(obj.toString(4));
 	}
 
@@ -303,14 +303,14 @@ public class JIRARepository implements Repository
 		nameValuePairs.add(new BasicNameValuePair("app_name", issue.getAppName()));
 		nameValuePairs.add(new BasicNameValuePair("summary", issue.getSummary()));				        
 		nameValuePairs.add(new BasicNameValuePair("description", issue.getDescription()));
+		for(String version : issue.getAffectedVersions())
+			nameValuePairs.add(new BasicNameValuePair("app_version_name", version));
+		if(issue.getStacktrace() != null)
+			nameValuePairs.add(new BasicNameValuePair("stacktrace", issue.getStacktrace()));
 
 		if(issue instanceof BugContext)
 		{
 			BugContext ctx = (BugContext) issue;
-			if(ctx.getStacktrace() != null)
-				nameValuePairs.add(new BasicNameValuePair("stacktrace", ctx.getStacktrace()));
-			for(String version : ctx.getAffectedVersions())
-				nameValuePairs.add(new BasicNameValuePair("app_version_name", version));
 			nameValuePairs.add(new BasicNameValuePair("phone_model", ctx.getPhoneModel()));
 			nameValuePairs.add(new BasicNameValuePair("phone_device", ctx.getPhoneDevice()));				        
 			nameValuePairs.add(new BasicNameValuePair("phone_version", String.valueOf(ctx.getPhoneVersion())));

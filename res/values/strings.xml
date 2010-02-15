@@ -44,12 +44,12 @@
 	<string name="report_issue">Report Issue</string>
 	
 	<string name="bug_comment">Crash Comment</string>
-	<string name="bug_comment_prompt">The crash you experienced has already been reported to that product\'s development team.  Would you like to add a comment?</string>
+	<string name="bug_comment_prompt">The crash you experienced has already been reported to the {appName} development team.  Would you like to add a comment?</string>
 	<string name="yes">Yes</string>
 	<string name="no">No</string>	
     <string name="title_issues_list">Issues</string>
 	<string name="menu_delete">Delete</string>
-    <string name="menu_insert">Report issue</string>
+	<string name="choose_one">Choose One</string>
 	
 	<string name="bug_blocker_open_name">Blocking Bug</string>
 	<string name="bug_critical_open_name">Critical Bug</string>

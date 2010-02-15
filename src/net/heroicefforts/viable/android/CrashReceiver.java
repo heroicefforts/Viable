@@ -11,8 +11,9 @@ public class CrashReceiver extends BroadcastReceiver
 	public void onReceive(Context context, Intent intent)
 	{
 		Intent mine = new Intent(intent);
-		mine.setClass(context, BugReporterActivity.class);
+		mine.setClass(context, IssueTabsActivity.class);
 		mine.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		mine.putExtra(IssueTabsActivity.EXTRA_DEFAULT_TAB, IssueTabsActivity.TAB_REPORT_ISSUE);
 		context.startActivity(mine); 
 	}
 
