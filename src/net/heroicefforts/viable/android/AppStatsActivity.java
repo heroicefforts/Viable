@@ -5,6 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.heroicefforts.viable.android.dao.ProjectDetail;
+import net.heroicefforts.viable.android.dao.VersionDetail;
+import net.heroicefforts.viable.android.rep.RepositoryFactory;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;

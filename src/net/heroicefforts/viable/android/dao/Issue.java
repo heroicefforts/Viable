@@ -1,16 +1,13 @@
-package net.heroicefforts.viable.android;
+package net.heroicefforts.viable.android.dao;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.ContentValues;
-import android.database.Cursor;
 import android.util.Log;
 
 public class Issue
@@ -30,7 +27,7 @@ public class Issue
 	private Date createDate;
 	private Date modifiedDate;	
 	
-	protected Issue()
+	public Issue()
 	{
 		//empty
 	}
@@ -72,24 +69,6 @@ public class Issue
 			Log.e(TAG, "Error parsing JSON dates.", e);
 			throw new JSONException("Error parsing JSON dates.");
 		}
-	}
-
-	public Issue(Cursor cursor)
-	{
-		this.issueId = cursor.getString(cursor.getColumnIndex(Issues.ISSUE_ID));
-		this.type = cursor.getString(cursor.getColumnIndex(Issues.ISSUE_TYPE));
-		this.priority = cursor.getString(cursor.getColumnIndex(Issues.ISSUE_PRIORITY));
-		this.state = cursor.getString(cursor.getColumnIndex(Issues.ISSUE_STATE));
-		this.appName = cursor.getString(cursor.getColumnIndex(Issues.APP_NAME));
-		this.summary = cursor.getString(cursor.getColumnIndex(Issues.SUMMARY));
-		this.description = cursor.getString(cursor.getColumnIndex(Issues.DESCRIPTION));
-		String versionString = cursor.getString(cursor.getColumnIndex(Issues.APP_VERSION));
-		versionString = versionString.substring(1, versionString.length() - 1);		
-		this.affectedVersions = versionString.split("[ ]*,[ ]*");
-		this.hash = cursor.getString(cursor.getColumnIndex(Issues.HASH));
-		this.stacktrace = cursor.getString(cursor.getColumnIndex(Issues.STACKTRACE));
-		this.createDate = new Date(cursor.getLong(cursor.getColumnIndex(Issues.CREATED_DATE)));
-		this.modifiedDate = new Date(cursor.getLong(cursor.getColumnIndex(Issues.MODIFIED_DATE)));
 	}
 
 	public String getIssueId()
@@ -227,31 +206,6 @@ public class Issue
 		this.issueId = issueId;
 	}
 	
-	public void setState(IssueState state)
-	{
-		this.type = state.getType();
-		this.priority = state.getPriority();
-	}
-	
-	public ContentValues getContentValues()
-	{
-		ContentValues values = new ContentValues();
-		values.put(Issues.ISSUE_ID, issueId);
-		values.put(Issues.APP_NAME, appName);
-		values.put(Issues.ISSUE_TYPE, type);
-		values.put(Issues.ISSUE_PRIORITY, priority);
-		values.put(Issues.ISSUE_STATE, state);
-		values.put(Issues.STACKTRACE, stacktrace);
-		values.put(Issues.SUMMARY, summary);
-		values.put(Issues.DESCRIPTION, description);
-		values.put(Issues.HASH, hash);
-		values.put(Issues.CREATED_DATE, createDate.getTime());
-		values.put(Issues.MODIFIED_DATE, modifiedDate.getTime());
-		values.put(Issues.APP_VERSION, Arrays.asList(getAffectedVersions()).toString());
-		
-		return values;
-	}
-
 	public void copy(Issue newIssue)
 	{
 		this.issueId = newIssue.issueId;
@@ -272,6 +226,26 @@ public class Issue
 	public void setAffectedVersions(String[] affectedVersions)
 	{
 		this.affectedVersions = affectedVersions;
+	}
+
+	public void setHash(String hash)
+	{
+		this.hash = hash;
+	}
+
+	public void setStacktrace(String stacktrace)
+	{
+		this.stacktrace = stacktrace;
+	}
+
+	public void setCreateDate(Date createDate)
+	{
+		this.createDate = createDate;
+	}
+
+	public void setModifiedDate(Date modifiedDate)
+	{
+		this.modifiedDate = modifiedDate;
 	}
 	
 }

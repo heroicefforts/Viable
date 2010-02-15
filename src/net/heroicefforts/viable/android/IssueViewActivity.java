@@ -3,6 +3,12 @@ package net.heroicefforts.viable.android;
 import java.text.DateFormat;
 import java.util.List;
 
+import net.heroicefforts.viable.android.content.Comments;
+import net.heroicefforts.viable.android.content.IssueContentAdapter;
+import net.heroicefforts.viable.android.content.Issues;
+import net.heroicefforts.viable.android.content.RemoteCommentCursor;
+import net.heroicefforts.viable.android.dao.Issue;
+import net.heroicefforts.viable.android.rep.RepositoryFactory;
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -45,7 +51,7 @@ public class IssueViewActivity extends Activity
         	Cursor cursor = managedQuery(getIntent().getData(), Issues.ISSUE_PROJECTION, null, null, Issues.DEFAULT_SORT_ORDER);
             if(cursor.moveToFirst())
             {
-            	Issue issue = new Issue(cursor);
+            	Issue issue = new IssueContentAdapter(cursor).toIssue();
             	appName = issue.getAppName();
             	presentIssue(issue);
             }
@@ -88,7 +94,7 @@ public class IssueViewActivity extends Activity
 			if(issue != null)
 			{
 				presentIssue(issue);			
-				getContentResolver().update(Issues.CONTENT_URI, issue.getContentValues(), Issues.ISSUE_ID + " = ?", new String[] { issueId });
+				getContentResolver().update(Issues.CONTENT_URI, new IssueContentAdapter(issue).toContentValues(), Issues.ISSUE_ID + " = ?", new String[] { issueId });
 			}
 		}
 

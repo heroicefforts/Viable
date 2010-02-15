@@ -1,4 +1,4 @@
-package net.heroicefforts.viable.android;
+package net.heroicefforts.viable.android.rep;
 
 public class CreateException extends RuntimeException
 {

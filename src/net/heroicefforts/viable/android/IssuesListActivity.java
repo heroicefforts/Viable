@@ -3,6 +3,8 @@ package net.heroicefforts.viable.android;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.heroicefforts.viable.android.content.Issues;
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ContentUris;
@@ -29,7 +31,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
  * provided in the intent if there is one, otherwise defaults to displaying the
  * contents of the {@link NotePadProvider}
  */
-public class IssuesList extends Activity {
+public class IssuesListActivity extends Activity {
     private static final String TAG = "IssuesList";
 
     // Menu item ids
@@ -95,10 +97,10 @@ public class IssuesList extends Activity {
 				cursor = managedQuery(getIntent().getData(), PROJECTION, Issues.APP_NAME + " = ?", new String[] { appName },
 		                Issues.DEFAULT_SORT_ORDER);
 				
-	        SimpleCursorAdapter adapter = new SimpleCursorAdapter(IssuesList.this, R.layout.issueslist_item, cursor,
+	        SimpleCursorAdapter adapter = new SimpleCursorAdapter(IssuesListActivity.this, R.layout.issueslist_item, cursor,
 	                new String[] { Issues.SUMMARY, Issues.ISSUE_ID, Issues.ISSUE_TYPE, Issues.ISSUE_PRIORITY, Issues.ISSUE_STATE }, 
 	                new int[] { R.id.SummaryTextView, R.id.IssueIdTextView, R.id.TypeImageView, R.id.PriorityImageView, R.id.StateImageView });
-	        adapter.setViewBinder(new IssuesListViewBinder(IssuesList.this));	        
+	        adapter.setViewBinder(new IssuesListViewBinder(IssuesListActivity.this));	        
 			listView.setAdapter(adapter);
 		}
 
@@ -127,7 +129,7 @@ public class IssuesList extends Activity {
         Intent intent = new Intent(null, getIntent().getData());
         intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
         menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
-                new ComponentName(this, IssuesList.class), null, intent, 0, null);
+                new ComponentName(this, IssuesListActivity.class), null, intent, 0, null);
 
         return true;
     }

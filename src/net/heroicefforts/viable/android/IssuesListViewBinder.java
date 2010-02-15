@@ -1,5 +1,6 @@
 package net.heroicefforts.viable.android;
 
+import net.heroicefforts.viable.android.content.Issues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;

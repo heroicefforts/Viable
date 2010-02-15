@@ -1,4 +1,4 @@
-package net.heroicefforts.viable.android;
+package net.heroicefforts.viable.android.rep;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,6 +13,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
+
+import net.heroicefforts.viable.android.dao.BugContext;
+import net.heroicefforts.viable.android.dao.Comment;
+import net.heroicefforts.viable.android.dao.CommentSet;
+import net.heroicefforts.viable.android.dao.Issue;
+import net.heroicefforts.viable.android.dao.ProjectDetail;
+import net.heroicefforts.viable.android.dao.SearchParams;
+import net.heroicefforts.viable.android.dao.SearchResults;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;

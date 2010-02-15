@@ -3,6 +3,10 @@ package net.heroicefforts.viable.android;
 import java.util.Arrays;
 import java.util.Set;
 
+import net.heroicefforts.viable.android.content.Issues;
+import net.heroicefforts.viable.android.content.RemoteIssueCursor;
+import net.heroicefforts.viable.android.dao.SearchParams;
+import net.heroicefforts.viable.android.rep.RepositoryFactory;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,7 +24,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class RemoteIssuesListActivity extends Activity
 {
-	private static final String TAG = "RemoteIssuesListActivity";
     public static final int MENU_ITEM_REFRESH = Menu.FIRST;
 	
     private RepositoryFactory factory;
@@ -39,12 +42,6 @@ public class RemoteIssuesListActivity extends Activity
     	appNameSpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, appNames.toArray(new String[appNames.size()])));
 		appNameSpinner.setOnItemSelectedListener(appChosen);    	
     	
-//    	if(appNames.size() > 0)
-//    	{
-//    		String firstApp = appNames.iterator().next();
-//	        loadList(firstApp);
-//    	}
-		
         ((ListView) findViewById(R.id.IssueListView)).setOnItemClickListener(listClicked);
 	}
 

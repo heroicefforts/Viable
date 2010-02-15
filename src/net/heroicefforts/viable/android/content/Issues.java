@@ -1,4 +1,4 @@
-package net.heroicefforts.viable.android;
+package net.heroicefforts.viable.android.content;
 
 import android.net.Uri;
 import android.provider.BaseColumns;

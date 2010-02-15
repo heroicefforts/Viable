@@ -13,7 +13,7 @@ public class IssueTabsActivity extends TabActivity
 		
         TabHost mTabHost = getTabHost();         
         mTabHost.addTab(mTabHost.newTabSpec("tab1").setIndicator(getString(R.string.apps), null).setContent(new Intent(this, AppStatsActivity.class)));
-        mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator(getString(R.string.my_issues), null).setContent(new Intent(this, IssuesList.class)));
+        mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator(getString(R.string.my_issues), null).setContent(new Intent(this, IssuesListActivity.class)));
         mTabHost.addTab(mTabHost.newTabSpec("tab3").setIndicator(getString(R.string.all_issues), null).setContent(new Intent(this, RemoteIssuesListActivity.class)));
         mTabHost.addTab(mTabHost.newTabSpec("tab4").setIndicator(getString(R.string.report_issue), null).setContent(new Intent(this, BugReporterActivity.class)));
         mTabHost.setCurrentTab(0);

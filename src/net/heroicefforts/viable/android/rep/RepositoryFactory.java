@@ -1,4 +1,4 @@
-package net.heroicefforts.viable.android;
+package net.heroicefforts.viable.android.rep;
 
 import java.lang.reflect.Constructor;
 import java.util.Collections;
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;

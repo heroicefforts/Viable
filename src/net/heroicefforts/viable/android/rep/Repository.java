@@ -1,7 +1,13 @@
-package net.heroicefforts.viable.android;
+package net.heroicefforts.viable.android.rep;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+
+import net.heroicefforts.viable.android.dao.CommentSet;
+import net.heroicefforts.viable.android.dao.Issue;
+import net.heroicefforts.viable.android.dao.ProjectDetail;
+import net.heroicefforts.viable.android.dao.SearchParams;
+import net.heroicefforts.viable.android.dao.SearchResults;
 
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;

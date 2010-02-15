@@ -1,6 +1,7 @@
-package net.heroicefforts.viable.android;
+package net.heroicefforts.viable.android.content;
 
 import java.util.HashMap;
+
 
 import android.content.ContentProvider;
 import android.content.ContentUris;

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import android.content.res.ColorStateList;
+import net.heroicefforts.viable.android.dao.Issue;
 import android.graphics.Color;
 
 public class IssueState

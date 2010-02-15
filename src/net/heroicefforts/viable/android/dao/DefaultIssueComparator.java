@@ -1,6 +1,7 @@
-package net.heroicefforts.viable.android;
+package net.heroicefforts.viable.android.dao;
 
 import java.util.Comparator;
+
 
 public class DefaultIssueComparator implements Comparator<Issue>
 {

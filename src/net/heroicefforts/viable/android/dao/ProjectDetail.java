@@ -1,7 +1,8 @@
-package net.heroicefforts.viable.android;
+package net.heroicefforts.viable.android.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;

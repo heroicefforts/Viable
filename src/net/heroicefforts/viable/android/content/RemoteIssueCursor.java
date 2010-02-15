@@ -1,7 +1,12 @@
-package net.heroicefforts.viable.android;
+package net.heroicefforts.viable.android.content;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.heroicefforts.viable.android.dao.Issue;
+import net.heroicefforts.viable.android.dao.SearchParams;
+import net.heroicefforts.viable.android.dao.SearchResults;
+import net.heroicefforts.viable.android.rep.Repository;
 
 import android.database.AbstractCursor;
 import android.database.CursorIndexOutOfBoundsException;

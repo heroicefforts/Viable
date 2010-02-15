@@ -4,6 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.heroicefforts.viable.android.content.IssueContentAdapter;
+import net.heroicefforts.viable.android.content.Issues;
+import net.heroicefforts.viable.android.dao.BugContext;
+import net.heroicefforts.viable.android.dao.Issue;
+import net.heroicefforts.viable.android.rep.Repository;
+import net.heroicefforts.viable.android.rep.RepositoryFactory;
+
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
@@ -142,9 +149,9 @@ protected static final String TAG = "BugReporterActivity";
     	if(issue instanceof BugContext)
     	{
     		BugContext ctx = (BugContext) issue;
-    		//TODO inline
 	    	buf.append(getString(R.string.pkg_name)).append(ctx.getPkgName()).append(EOL);
-	    	buf.append(getString(R.string.version_name)).append(ctx.getVersionName()).append(EOL);
+	    	if(ctx.getAffectedVersions().length > 0)
+	    		buf.append(getString(R.string.version_name)).append(ctx.getAffectedVersions()[0]).append(EOL);
 	    	buf.append(getString(R.string.version_code)).append(ctx.getVersionCode()).append(EOL);
 	    	buf.append(getString(R.string.phone_model)).append(ctx.getPhoneModel()).append(EOL);
 	    	buf.append(getString(R.string.phone_device)).append(ctx.getPhoneDevice()).append(EOL);
@@ -175,7 +182,8 @@ protected static final String TAG = "BugReporterActivity";
 		        try {  
 			        int position = ((Spinner) findViewById(R.id.IssueTypeSpinner)).getLastVisiblePosition();
 			        IssueState state = (IssueState) ((Spinner) findViewById(R.id.IssueTypeSpinner)).getAdapter().getItem(position);
-			        ctx.setState(state);
+			        ctx.setType(state.getType());
+			        ctx.setPriority(state.getPriority());
 			        ctx.setAppName(appName);
 			        ctx.setSummary(summary);
 			        ctx.setDescription(desc);
@@ -185,7 +193,7 @@ protected static final String TAG = "BugReporterActivity";
 			        
 			        if(HttpStatus.SC_CREATED == responseCode || HttpStatus.SC_OK == responseCode)
 			        {			
-			        	ContentValues values = ctx.getContentValues();
+			        	ContentValues values = new IssueContentAdapter(ctx).toContentValues();
 			        	BugReporterActivity.this.getContentResolver().insert(Issues.CONTENT_URI, values);
 			        }
 			          
@@ -207,7 +215,7 @@ protected static final String TAG = "BugReporterActivity";
 			}
 			else if(v.getId() == R.id.BugSearchButton)
 			{
-				Intent intent = new Intent(BugReporterActivity.this, IssuesList.class);
+				Intent intent = new Intent(BugReporterActivity.this, IssuesListActivity.class);
 				startActivity(intent);
 
 //				String name = "Joe Test";

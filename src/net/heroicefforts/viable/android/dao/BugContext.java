@@ -1,8 +1,9 @@
-package net.heroicefforts.viable.android;
+package net.heroicefforts.viable.android.dao;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
+
 
 import org.json.JSONException;
 

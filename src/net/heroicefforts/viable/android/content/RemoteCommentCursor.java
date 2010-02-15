@@ -1,9 +1,13 @@
-package net.heroicefforts.viable.android;
+package net.heroicefforts.viable.android.content;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import net.heroicefforts.viable.android.dao.Comment;
+import net.heroicefforts.viable.android.dao.CommentSet;
+import net.heroicefforts.viable.android.rep.Repository;
 
 import android.database.AbstractCursor;
 import android.database.CursorIndexOutOfBoundsException;

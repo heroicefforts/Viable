@@ -1,4 +1,4 @@
-package net.heroicefforts.viable.android;
+package net.heroicefforts.viable.android.dao;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
