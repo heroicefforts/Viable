@@ -1,33 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/HardwareTableLayout" android:layout_height="fill_parent"
-	android:orientation="vertical" android:layout_width="fill_parent" android:isScrollContainer="true">
+	android:id="@+id/BugReportLayout" android:layout_height="fill_parent"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:isScrollContainer="true">
 
-	<LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/app_label"></TextView><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/AppNameTextView"></TextView>
-</LinearLayout><LinearLayout android:id="@+id/LinearLayout03" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/issue_label"></TextView>
-<Spinner android:layout_height="wrap_content" android:id="@+id/IssueTypeSpinner" android:layout_width="fill_parent"></Spinner>
-</LinearLayout><LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayout04" android:layout_width="fill_parent"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/issue_label" android:id="@+id/TextView05"></TextView>
-<Spinner android:layout_height="wrap_content" android:id="@+id/IssuePrioritySpinner" android:layout_width="fill_parent"></Spinner>
-</LinearLayout><TextView android:id="@+id/TextView01" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:text="@string/summary" android:textStyle="bold"></TextView>
+	<LinearLayout android:id="@+id/LinearLayout02"
+		android:layout_height="wrap_content" android:layout_width="fill_parent">
+		<TextView android:id="@+id/TextView03" android:layout_height="wrap_content" android:text="@string/app_label" android:gravity="center_vertical" android:textStyle="bold" android:layout_width="fill_parent" android:layout_weight="2" android:layout_gravity="center_vertical"></TextView>
+		
+	<Spinner android:layout_height="wrap_content" android:id="@+id/AppNameSpinner" android:layout_width="fill_parent" android:prompt="@string/app_prompt" android:layout_weight="1"></Spinner>
+</LinearLayout>
+	<LinearLayout android:id="@+id/LinearLayout03"
+		android:layout_height="wrap_content" android:layout_width="fill_parent">
+		<TextView android:id="@+id/TextView04" android:layout_height="wrap_content" android:text="@string/issue_label" android:gravity="center_vertical" android:textStyle="bold" android:layout_width="fill_parent" android:layout_weight="2" android:layout_gravity="center_vertical"></TextView>
+		<Spinner android:layout_height="wrap_content" android:id="@+id/IssueTypeSpinner"
+			android:layout_width="fill_parent" android:prompt="@string/issue_type_prompt" android:layout_weight="1"></Spinner>
+	</LinearLayout>
+	
+	<TextView android:id="@+id/TextView01" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:text="@string/summary"
+		android:textStyle="bold"></TextView>
 	<EditText android:layout_height="wrap_content" android:id="@+id/BugSummaryEditText"
 		android:layout_width="fill_parent"></EditText>
 	<TextView android:id="@+id/TextView02" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:text="@string/description"></TextView>
 	<EditText android:layout_height="wrap_content" android:lines="3"
 		android:layout_width="fill_parent" android:id="@+id/BugDescriptionEditText"></EditText>
-	<LinearLayout android:id="@+id/LinearLayout01" android:layout_width="wrap_content" android:layout_height="wrap_content"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/ReportBugButton" android:text="@string/report_bug"></Button><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/BugSearchButton" android:text="@string/search"></Button><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/DetailsButton" android:text="@string/show_details"></Button>
-</LinearLayout>
-	
+	<LinearLayout android:id="@+id/LinearLayout01"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<Button android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:id="@+id/ReportBugButton"
+			android:text="@string/report_bug"></Button>
+		<Button android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:id="@+id/BugSearchButton"
+			android:text="@string/search"></Button>
+		<Button android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:id="@+id/DetailsButton"
+			android:text="@string/show_details"></Button>
+	</LinearLayout>
 
-
-	
-
-	
-
-
-<ScrollView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/BugDetailsScrollView" android:visibility="invisible"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/BugDetailsTextView" android:text="@string/app_name"></TextView></ScrollView>
+	<ScrollView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/BugDetailsScrollView"
+		android:visibility="invisible">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:id="@+id/BugDetailsTextView"
+			android:text="@string/app_name"></TextView>
+	</ScrollView>
 
 
 

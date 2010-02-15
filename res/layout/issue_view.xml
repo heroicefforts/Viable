@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/EditIssueLayout" android:layout_height="fill_parent"
+	android:orientation="vertical" android:layout_width="fill_parent">
+
+<LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_width="fill_parent">
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/IssueIdTextView" android:layout_marginRight="5sp"></TextView>
+<TextView android:layout_height="wrap_content" android:id="@+id/SummaryTextView" android:layout_width="fill_parent" android:layout_weight="10"></TextView><ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/RefreshButton" android:layout_gravity="right|center_vertical" android:layout_weight="1"></ImageButton>
+
+</LinearLayout><LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:text="@+id/TextView01" android:layout_height="wrap_content" android:id="@+id/CreatedDateTextView" android:textSize="10sp" android:layout_width="fill_parent" android:layout_weight="1"></TextView><TextView android:text="@+id/TextView01" android:layout_height="wrap_content" android:id="@+id/ModifiedDateTextView" android:textSize="10sp" android:layout_width="fill_parent" android:layout_weight="1"></TextView>
+</LinearLayout><LinearLayout android:id="@+id/LinearLayout03" android:layout_height="wrap_content" android:layout_width="fill_parent"><ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/TypeImageView"></ImageView>
+<TextView android:text="@+id/TextView01" android:layout_height="wrap_content" android:id="@+id/TypeTextView" android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="center"></TextView><TextView android:text="@+id/TextView01" android:layout_height="wrap_content" android:id="@+id/PriorityTextView" android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="center"></TextView>
+
+<TextView android:text="@+id/TextView01" android:layout_height="wrap_content" android:id="@+id/StateTextView" android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="center"></TextView>
+</LinearLayout><TextView android:text="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/AffectedVersionsTextView" android:textSize="12sp"></TextView><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/DescriptonTextView" android:layout_marginTop="15sp"></TextView>
+
+
+
+<ListView android:id="@+id/CommentsListView" android:layout_width="fill_parent" android:layout_height="fill_parent" android:paddingTop="20sp"></ListView>
+
+
+
+
+
+</LinearLayout>

@@ -2,12 +2,17 @@
 <resources>
     <string name="app_name">Viable</string>
     <string name="app_label">Application:&#160;&#160;</string>
+    <string name="app_prompt">Choose an Application</string>
+    <string name="issue_type_prompt">Choose an Issue Type</string>
     <string name="issue_label">Issue Type: </string>
+    <string name="created_date_label">Created:&#160;&#160;</string>
+    <string name="modified_date_label">Modified:&#160;&#160;</string>
 	<string name="report_bug">Submit</string>
 	<string name="search">Search</string>    
 	<string name="summary">Summary</string>
 	<string name="description">Description</string>
 	<string name="pkg_name">Package name:&#160;&#160;</string>
+	<string name="affected_versions_label">Affected versions:&#160;&#160;</string>
 	<string name="version_name">Version name:&#160;&#160;</string>
 	<string name="version_code">Version id:&#160;&#160;</string>
 	<string name="phone_model">Phone Model:&#160;&#160;</string>
@@ -16,4 +21,63 @@
 	<string name="error">Error:&#160;&#160;</string>
 	<string name="show_details">Show Details</string>
 	<string name="hide_details">Hide Details</string>
+	<string name="comments">Comments:</string>
+	<string name="all">All</string>
+	<string name="maintainer">Maintainer:&#160;&#160;</string>
+	<string name="website">Website</string>
+	
+	<string name="apps">Applications</string>
+	<string name="issue_type">Issue Type</string>
+	<string name="unresolved">Unresolved</string>
+	<string name="resolved">Fixed</string>
+	<string name="bugs">Bugs</string>
+	<string name="improvements">Improvements</string>
+	<string name="features">Features</string>
+	<string name="version">Version</string>
+	<string name="release_date">Release Date</string>
+	<string name="unreleased">Unreleased</string>
+	
+	<string name="my_issues">My Issues</string>
+	<string name="all_issues">All Issues</string>
+	<string name="refresh">Refresh</string>
+	<string name="issue_id">Issue Id:&#160;&#160;</string>
+	<string name="report_issue">Report Issue</string>
+	
+	<string name="bug_comment">Crash Comment</string>
+	<string name="bug_comment_prompt">The crash you experienced has already been reported to that product\'s development team.  Would you like to add a comment?</string>
+	<string name="yes">Yes</string>
+	<string name="no">No</string>	
+    <string name="title_issues_list">Issues</string>
+	<string name="menu_delete">Delete</string>
+    <string name="menu_insert">Report issue</string>
+	
+	<string name="bug_blocker_open_name">Blocking Bug</string>
+	<string name="bug_critical_open_name">Critical Bug</string>
+	<string name="bug_major_open_name">Major Bug</string>
+	<string name="bug_minor_open_name">Minor Bug</string>
+	<string name="bug_trivial_open_name">Trivial Bug</string>
+	<string name="bug_resolved_name">Resolved Bug</string>
+	<string name="bug_closed_name">Closed Bug</string>
+	<string name="feature_blocker_open_name">Blocking Feature</string>
+	<string name="feature_critical_open_name">Critical Feature</string>
+	<string name="feature_major_open_name">Major Feature</string>
+	<string name="feature_minor_open_name">Minor Feature</string>
+	<string name="feature_trivial_open_name">Trivial Feature</string>
+	<string name="feature_resolved_name">Resolved Feature</string>
+	<string name="feature_closed_name">Closed Feature</string>
+	
+	<string name="bug_blocker_open_desc">...crash prevents general use of the application.</string>
+	<string name="bug_critical_open_desc">...crash prevents use of a major feature or otherwise causes data loss.</string>
+	<string name="bug_major_open_desc">...causes a major loss of functionality.</string>
+	<string name="bug_minor_open_desc">...causes a minor loss of functionality, or other problem where an easy workaround exists.</string>
+	<string name="bug_trivial_open_desc">...a cosmetic problem or nuisance usability issue.</string>
+	<string name="bug_resolved_desc">...has been fixed awaiting a code release.</string>
+	<string name="bug_closed_desc">...has been verified fixed in a code release.</string>
+	<string name="feature_blocker_open_desc"></string>
+	<string name="feature_critical_open_desc">...would provide a major benefit for most users.</string>
+	<string name="feature_major_open_desc"></string>
+	<string name="feature_minor_open_desc"></string>
+	<string name="feature_trivial_open_desc">...nice to have, would provide benefit for a subset of users.</string>
+	<string name="feature_resolved_desc"></string>
+	<string name="feature_closed_desc"></string>
 </resources>
