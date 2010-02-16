@@ -29,10 +29,10 @@ public class BugContext extends Issue implements Serializable
 //		super(json);
 //	}
 
-	public void setError(Throwable t)
-	{
-		this.stacktrace = toString(t);
-	}
+//	public void setError(Throwable t)
+//	{
+//		this.stacktrace = toString(t);
+//	}
 	
 	public void store(Context ctx)
 	{
@@ -65,44 +65,44 @@ public class BugContext extends Issue implements Serializable
 		return retVal;
 	}
 	
-	public static BugContext load(Intent intent)
-	{
-		BugContext ctx = null;
-		if(intent.getCategories() != null && intent.getCategories().contains("android.intent.category.BUGREPORT_JIRA"))
-		{
-			ctx = new BugContext();
-			ctx.stacktrace = intent.getStringExtra("stacktrace");
-			ctx.appName = intent.getStringExtra("app_name");
-			ctx.setVersionName(intent.getStringExtra("app_version_name"));
-		}
-		
-		return ctx;
-	}
+//	public static BugContext load(Intent intent)
+//	{
+//		BugContext ctx = null;
+//		if(intent.getCategories() != null && intent.getCategories().contains("android.intent.category.BUGREPORT_JIRA"))
+//		{
+//			ctx = new BugContext();
+//			ctx.stacktrace = intent.getStringExtra("stacktrace");
+//			ctx.appName = intent.getStringExtra("app_name");
+//			ctx.setVersionName(intent.getStringExtra("app_version_name"));
+//		}
+//		
+//		return ctx;
+//	}
 	
-	public Intent getJIRAIntent()
-	{
-		Intent intent = new Intent("android.intent.action.MAIN");
-		intent.addCategory("android.intent.category.BUGREPORT_JIRA");
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-		intent.putExtra("stacktrace", stacktrace);
-		intent.putExtra("app_name", appName);
-		intent.putExtra("app_version_name", getVersionName());
-		intent.putExtra("phone_model", model);
-		intent.putExtra("phone_device", device);
-		intent.putExtra("phone_version", version);
-		
-		return intent;
-	}
+//	public Intent getJIRAIntent()
+//	{
+//		Intent intent = new Intent("android.intent.action.MAIN");
+//		intent.addCategory("android.intent.category.BUGREPORT_JIRA");
+//		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+//		intent.putExtra("stacktrace", stacktrace);
+//		intent.putExtra("app_name", appName);
+//		intent.putExtra("app_version_name", getVersionName());
+//		intent.putExtra("phone_model", model);
+//		intent.putExtra("phone_device", device);
+//		intent.putExtra("phone_version", version);
+//		
+//		return intent;
+//	}
 	
-	private static String toString(Throwable t)
-	{
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		PrintStream ps = new PrintStream(baos);
-		t.printStackTrace(ps);
-		ps.flush();
-		return baos.toString(); 
-	}
+//	private static String toString(Throwable t)
+//	{
+//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//		PrintStream ps = new PrintStream(baos);
+//		t.printStackTrace(ps);
+//		ps.flush();
+//		return baos.toString(); 
+//	}
 
 	public static long getSerialversionuid()
 	{
@@ -162,4 +162,5 @@ public class BugContext extends Issue implements Serializable
 		else
 			return this.affectedVersions[0];
 	}
+	
 }

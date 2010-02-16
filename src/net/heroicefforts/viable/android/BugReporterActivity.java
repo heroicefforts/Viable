@@ -8,6 +8,7 @@ import net.heroicefforts.viable.android.content.IssueContentAdapter;
 import net.heroicefforts.viable.android.content.Issues;
 import net.heroicefforts.viable.android.dao.BugContext;
 import net.heroicefforts.viable.android.dao.Issue;
+import net.heroicefforts.viable.android.dist.BugReportIntent;
 import net.heroicefforts.viable.android.rep.Repository;
 import net.heroicefforts.viable.android.rep.RepositoryFactory;
 
@@ -33,13 +34,7 @@ import android.widget.TextView;
 
 public class BugReporterActivity extends Activity
 {
-protected static final String TAG = "BugReporterActivity";
-//Bug - http://bugs.heroicefforts.net/secure/CreateIssueDetails!init.jspa?pid=10000&issuetype=1&customfield_10001=XXXXX
-//New Feature - http://bugs.heroicefforts.net/secure/CreateIssueDetails!init.jspa?pid=10000&issuetype=2&customfield_10001=XXXXX
-//Task - http://bugs.heroicefforts.net/secure/CreateIssueDetails!init.jspa?pid=10000&issuetype=3&customfield_10001=XXXXX
-//Improvement - http://bugs.heroicefforts.net/secure/CreateIssueDetails!init.jspa?pid=10000&issuetype=4&customfield_10001=XXXXX
-
-//search http://bugs.heroicefforts.net/sr/jira.issueviews:searchrequest-printable/temp/SearchRequest.html?jqlQuery=project%3D%22OUTLAST%22+AND+name~"XXXXXX"&tempMax=1000
+	private static final String TAG = "BugReporterActivity";
 	
 	private Issue ctx;
 	private RepositoryFactory factory;
@@ -60,7 +55,8 @@ protected static final String TAG = "BugReporterActivity";
     
     private Repository getRemoteRepository()
     {
-    	return factory.getRepository(ctx.getAppName());
+    	Repository rep = factory.getRepository(ctx.getAppName());
+    	return rep;
     }
     
     @Override
@@ -69,14 +65,31 @@ protected static final String TAG = "BugReporterActivity";
     	super.onStart();
     	
     	if(getParent() != null)
-    		ctx = BugContext.load(getParent().getIntent());
+    	{
+    		BugReportIntent intent = new BugReportIntent(getParent().getIntent());
+			BugReportIntent bri = (BugReportIntent) intent;
+			if(bri.isValid())
+			{
+				ctx = new BugContext();
+				ctx.setAppName(bri.getAppName());
+				ctx.setStacktrace(bri.getStacktrace());
+			}
+    	}
     	
-    	if(ctx != null)
+    	if(ctx != null && ctx.getAppName() != null)
     	{
     		((TextView) findViewById(R.id.BugDetailsTextView)).setText(formatDetails(ctx));
     		((Button) findViewById(R.id.DetailsButton)).setVisibility(View.VISIBLE);
     		
-    		Issue issue = getRemoteRepository().exists(ctx);
+        	Repository rep = getRemoteRepository();
+        	if(rep == null)
+        	{
+        		Log.e(TAG, "Application '" + ctx.getAppName() + "' is not properly configured...see errors above.  Shutting down Viable.");
+        		getParent().finish();
+        		return;
+        	}
+
+    		Issue issue = rep.exists(ctx);
         	if(issue != null)
         	{
         		Cursor cur = this.getContentResolver().query(Issues.CONTENT_URI, new String[] { Issues.APP_NAME, Issues.ISSUE_ID, Issues.SUMMARY }, Issues.APP_NAME + " = ? and " + Issues.ISSUE_ID + " = ?", new String[] { ctx.getAppName(), issue.getIssueId() }, Issues.DEFAULT_SORT_ORDER);
@@ -87,26 +100,7 @@ protected static final String TAG = "BugReporterActivity";
         		}
         		else
         		{
-        			Log.d(TAG, "Prompting user to comment on existing issue '" + issue.getIssueId() + "'.");
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(R.string.bug_comment);
-                    builder.setCancelable(true);
-                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    });
-                    builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                        	finish();
-                        }
-                    });
-                    builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                        public void onCancel(DialogInterface dialog) {
-                        	finish();
-                        }
-                    });
-                    builder.setMessage(getString(R.string.bug_comment_prompt).replaceAll("\\{appName\\}", ctx.getAppName()));
-                    builder.create().show();        			
+        			showSupplementDialog(issue);        			
         		}
         	}    		
     	}
@@ -126,11 +120,36 @@ protected static final String TAG = "BugReporterActivity";
 
 		Spinner appNameSpinner = (Spinner) findViewById(R.id.AppNameSpinner);
     	appNameSpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, appNames));
+    	Log.d(TAG, "App Name:  " + ctx.getAppName() + ", idx:  " + appNames.indexOf(ctx.getAppName()));
     	if(ctx.getAppName() != null)
     		appNameSpinner.setSelection(appNames.indexOf(ctx.getAppName()));
 		if(ctx.getStacktrace() != null)
 	    	appNameSpinner.setEnabled(false);
     }
+
+	private void showSupplementDialog(Issue issue)
+	{
+		Log.d(TAG, "Prompting user to comment on existing issue '" + issue.getIssueId() + "'.");
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.bug_comment);
+		builder.setCancelable(true);
+		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int which) {
+		    }
+		});
+		builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int which) {
+		    	finish();
+		    }
+		});
+		builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+		    public void onCancel(DialogInterface dialog) {
+		    	finish();
+		    }
+		});
+		builder.setMessage(getString(R.string.bug_comment_prompt).replaceAll("\\{appName\\}", ctx.getAppName()));
+		builder.create().show();
+	}
  
     protected String formatDetails(Issue issue)
     {

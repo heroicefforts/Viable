@@ -1,3 +1,4 @@
 #ignore binaries
 *.class
 bin/*
+target/*
