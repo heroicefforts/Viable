@@ -17,6 +17,11 @@ public class VersionDetail
 	private String description;
 	private Date releaseDate;
 
+	public VersionDetail(String name)
+	{
+		this.name = name;
+	}
+	
 	public VersionDetail(JSONObject obj)
 		throws JSONException
 	{

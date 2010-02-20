@@ -7,7 +7,10 @@ import java.util.List;
 import net.heroicefforts.viable.android.content.Issues;
 import net.heroicefforts.viable.android.content.RemoteIssueCursor;
 import net.heroicefforts.viable.android.dao.SearchParams;
+import net.heroicefforts.viable.android.dao.VersionDetail;
+import net.heroicefforts.viable.android.rep.CreateException;
 import net.heroicefforts.viable.android.rep.RepositoryFactory;
+import net.heroicefforts.viable.android.rep.ServiceException;
 import android.content.Intent;
 import android.database.Cursor;
 import android.view.Menu;
@@ -30,11 +33,15 @@ public class RemoteIssueListActivity extends AbstractIssueListActivity
 		return appNames;
 	}
     
-	protected SimpleCursorAdapter getIssueCursorAdapter(int appPosition, String firstApp)
+	protected SimpleCursorAdapter getIssueCursorAdapter(String firstApp, String version) 
+		throws ServiceException
 	{
 		RemoteIssueCursor cursor = new RemoteIssueCursor(getFactory().getRepository(firstApp));
 		SearchParams params = new SearchParams();
-		params.setProjectAffectedVersions(firstApp, Arrays.asList(new String[] { "1.0.0" }));
+		if(version != null)
+			params.setProjectAffectedVersions(firstApp, Arrays.asList(new String[] { version }));
+		else
+			params.setProjectAffectedVersions(firstApp, Arrays.asList(new String[] { "all" }));
 		cursor.setSearchParams(params);
 
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.issue_list_item, cursor,
@@ -44,6 +51,17 @@ public class RemoteIssueListActivity extends AbstractIssueListActivity
 		return adapter;
 	}
 		 
+	protected ArrayList<String> getVersionList(int position, String appName) 
+		throws CreateException, ServiceException
+	{
+		List<VersionDetail> vDetails = factory.getRepository(appName).getApplicationVersions();
+		ArrayList<String> versions = new ArrayList<String>();
+		versions.add(getString(R.string.all));
+		for(VersionDetail detail : vDetails)
+			versions.add(detail.getName());
+		return versions;
+	}
+	
     protected OnItemClickListener getIssueListClickListener()
     {
     	return new OnItemClickListener()

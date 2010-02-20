@@ -13,6 +13,8 @@ public class Issues implements BaseColumns
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/issues");
 
     public static final Uri APP_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/apps");
+
+    public static final Uri VERSION_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/versions");
     
     /**
      * The MIME type of {@link #CONTENT_URI} providing a directory of notes.

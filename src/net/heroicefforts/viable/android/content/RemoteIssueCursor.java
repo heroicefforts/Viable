@@ -7,6 +7,7 @@ import net.heroicefforts.viable.android.dao.Issue;
 import net.heroicefforts.viable.android.dao.SearchParams;
 import net.heroicefforts.viable.android.dao.SearchResults;
 import net.heroicefforts.viable.android.rep.Repository;
+import net.heroicefforts.viable.android.rep.ServiceException;
 
 import android.database.AbstractCursor;
 import android.database.CursorIndexOutOfBoundsException;
@@ -38,7 +39,8 @@ public class RemoteIssueCursor extends AbstractCursor
 		this.repository = remoteRepository;
 	}
 
-	public void setSearchParams(SearchParams params)
+	public void setSearchParams(SearchParams params) 
+		throws ServiceException
 	{
 		this.params = params;
 		issueList.clear();
@@ -48,36 +50,45 @@ public class RemoteIssueCursor extends AbstractCursor
 	
 	public boolean requery()
 	{
-		if(!selfChange)
+		try
 		{
-			//refresh to index in one big gulp.
-			int size = params.getPageSize();
-			
-			if(issueList.size() > 0)
-				params.setPageSize(issueList.size());
-			params.setPage(1);
-			
-			issueList.clear();
-			SearchResults results = repository.search(params);
-			issueList.addAll(results.getIssues());
-			more = results.isMore();
-			
-			if(idx > issueList.size())
-				idx = issueList.size() - 1;
-			
-			params.setPageSize(size);
-			params.setPage(issueList.size() / size + 1);
-			
-			return super.requery();
+			if(!selfChange)
+			{
+				//refresh to index in one big gulp.
+				int size = params.getPageSize();
+				
+				if(issueList.size() > 0)
+					params.setPageSize(issueList.size());
+				params.setPage(1);
+				
+				issueList.clear();
+				SearchResults results = repository.search(params);
+				issueList.addAll(results.getIssues());
+				more = results.isMore();
+				
+				if(idx > issueList.size())
+					idx = issueList.size() - 1;
+				
+				params.setPageSize(size);
+				params.setPage(issueList.size() / size + 1);
+				
+				return super.requery();
+			}
+			else
+			{
+				selfChange = false;
+				return super.requery();
+			}
 		}
-		else
+		catch (ServiceException e)
 		{
-			selfChange = false;
-			return super.requery();
+			Log.e(TAG, "Error requerying from remote resource.", e);
+			return false;
 		}
 	}
 	
-	private void loadPage()
+	private void loadPage() 
+		throws ServiceException
 	{
 		SearchResults results = repository.search(params);
 		issueList.addAll(results.getIssues());
@@ -180,7 +191,17 @@ public class RemoteIssueCursor extends AbstractCursor
 		if(newPosition >= issueList.size() - 1 && more)
 		{
 			while(newPosition >= issueList.size() - 1 && more)
-				loadPage();
+			{
+				try
+				{
+					loadPage();
+				}
+				catch (ServiceException e)
+				{
+					Log.e(TAG, "Error advancing remote cursor.", e);
+					return false;
+				}
+			}
 			selfChange = true;
 			onChange(false);
 		}

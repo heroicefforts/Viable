@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accountType="net.heroicefforts.google.auth"
+    android:icon="@drawable/imp_trivial"
+    android:smallIcon="@drawable/imp_trivial"
+    android:label="@string/auth_label"
+    android:accountPreferences="@xml/account_preferences"
+ /> 

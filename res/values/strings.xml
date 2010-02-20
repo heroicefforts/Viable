@@ -23,6 +23,7 @@
 	<string name="hide_details">Hide Details</string>
 	<string name="comments">Comments:</string>
 	<string name="all">All</string>
+	<string name="filter_by_version">Filter By Version</string>
 	<string name="maintainer">Maintainer:&#160;&#160;</string>
 	<string name="website">Website</string>
 	
@@ -65,6 +66,15 @@
 	<string name="feature_trivial_open_name">Trivial Feature</string>
 	<string name="feature_resolved_name">Resolved Feature</string>
 	<string name="feature_closed_name">Closed Feature</string>
+
+	<string name="improvement_blocker_open_name">Blocking Improvement</string>
+	<string name="improvement_critical_open_name">Critical Improvement</string>
+	<string name="improvement_major_open_name">Major Improvement</string>
+	<string name="improvement_minor_open_name">Minor Improvement</string>
+	<string name="improvement_trivial_open_name">Trivial Improvement</string>
+	<string name="improvement_resolved_name">Resolved Improvement</string>
+	<string name="improvement_closed_name">Closed Improvement</string>
+
 	
 	<string name="bug_blocker_open_desc">...crash prevents general use of the application.</string>
 	<string name="bug_critical_open_desc">...crash prevents use of a major feature or otherwise causes data loss.</string>
@@ -80,4 +90,19 @@
 	<string name="feature_trivial_open_desc">...nice to have, would provide benefit for a subset of users.</string>
 	<string name="feature_resolved_desc"></string>
 	<string name="feature_closed_desc"></string>
+
+	<string name="improvement_blocker_open_desc"></string>
+	<string name="improvement_critical_open_desc">...super nifty enhancement that would provide a major benefit for most users.</string>
+	<string name="improvement_major_open_desc"></string>
+	<string name="improvement_minor_open_desc"></string>
+	<string name="improvement_trivial_open_desc">...nice to have enhancement, would provide benefit for a subset of users.</string>
+	<string name="improvement_resolved_desc"></string>
+	<string name="improvement_closed_desc"></string>
+	
+	<string name="create_error_msg">Viable was unable to load the issue information for this application.  Issue tracking may be misconfigured or temporarily unavailable.</string>
+	<string name="service_error_msg">Viable experienced an error contacting the issue tracker for this application.  Issue tracking or network access may be temporarily unavailable.</string>
+	
+	<string name="auth_label">GCL Account</string>
+	<string name="auth_failed">Authentication Failed</string>
+	<string name="fatal_error">Fatal Error</string>
 </resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="Google Credentials" android:key="gclcreds" android:summary="Google Credentials">
+	 <EditTextPreference android:key="email" android:title="Email" android:summary="Email login name." android:defaultValue="viable-it-test@heroicefforts.net"></EditTextPreference>
+	 <EditTextPreference android:key="password" android:title="Password" android:password="true" android:summary="Password" android:defaultValue="viableTest123"></EditTextPreference>
+</PreferenceScreen>

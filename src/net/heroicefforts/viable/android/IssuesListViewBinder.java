@@ -1,6 +1,8 @@
 package net.heroicefforts.viable.android;
 
 import net.heroicefforts.viable.android.content.Issues;
+import net.heroicefforts.viable.android.rep.IssueResource;
+import net.heroicefforts.viable.android.rep.RepositoryFactory;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -11,10 +13,12 @@ import android.widget.SimpleCursorAdapter.ViewBinder;
 public class IssuesListViewBinder implements ViewBinder
 {
 	private Context ctx;
+	private RepositoryFactory factory;
 	
-	public IssuesListViewBinder(Context ctx)
+	public IssuesListViewBinder(Context ctx, RepositoryFactory factory)
 	{
 		this.ctx = ctx;
+		this.factory = factory;
 	}
 	
 	public boolean setViewValue(View view, Cursor cursor, int columnIndex)
@@ -25,19 +29,22 @@ public class IssuesListViewBinder implements ViewBinder
 		else if(Issues.ISSUE_STATE.equals(colName) && (view instanceof ImageView))
 			return true;
 		else if(Issues.ISSUE_TYPE.equals(colName) && (view instanceof ImageView))
-			((ImageView) view).setImageDrawable(getTypeIcon(cursor.getString(columnIndex), 
-				cursor.getString(cursor.getColumnIndex("priority")), cursor.getString(cursor.getColumnIndex("state"))));
+			((ImageView) view).setImageDrawable(getTypeIcon(
+				cursor.getString(cursor.getColumnIndex(Issues.APP_NAME)), 
+				cursor.getString(cursor.getColumnIndex(Issues.ISSUE_TYPE)), 
+				cursor.getString(cursor.getColumnIndex(Issues.ISSUE_PRIORITY)), 
+				cursor.getString(cursor.getColumnIndex(Issues.ISSUE_STATE))));
 		else
 			return false;
 		
 		return true;
 	}
 
-	protected Drawable getTypeIcon(String type, String priority, String state)
+	protected Drawable getTypeIcon(String appName, String type, String priority, String state)
 	{
-		IssueState iState = IssueState.getState(type, priority, state);
-		if(iState != null)
-			return ctx.getResources().getDrawable(iState.getIconRes());
+		IssueResource resource = factory.getRepository(appName).getState(type, priority, state);
+		if(resource != null)
+			return resource.getIcon(ctx);
 		else
 			return null;
 	}

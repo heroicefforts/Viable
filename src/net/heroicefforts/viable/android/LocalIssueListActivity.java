@@ -2,6 +2,7 @@ package net.heroicefforts.viable.android;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 import net.heroicefforts.viable.android.content.Issues;
 import android.content.ContentUris;
@@ -29,7 +30,7 @@ public class LocalIssueListActivity extends AbstractIssueListActivity
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) 
+    protected void onCreate(Bundle savedInstanceState)  
     {
         Intent intent = getIntent();
         if (intent.getData() == null) {
@@ -48,10 +49,33 @@ public class LocalIssueListActivity extends AbstractIssueListActivity
     	Cursor appNameCursor = managedQuery(Issues.APP_CONTENT_URI, new String[] { Issues._ID, Issues.APP_NAME }, null, null, null);
     	while(appNameCursor.moveToNext())
     		apps.add(appNameCursor.getString(1));
+
 		return apps;
 	}
     
-	protected SimpleCursorAdapter getIssueCursorAdapter(int position, String appName)
+	protected ArrayList<String> getVersionList(int position, String appName)
+	{
+		TreeSet<String> versions = new TreeSet<String>();
+		Cursor cursor;
+		if(position > 0)
+			cursor = managedQuery(Issues.VERSION_CONTENT_URI, new String[] { Issues.APP_VERSION }, Issues.APP_NAME + " = ?", new String[] { appName }, Issues.DEFAULT_SORT_ORDER);
+		else
+			cursor = managedQuery(Issues.VERSION_CONTENT_URI, new String[] { Issues.APP_VERSION }, null, null, Issues.DEFAULT_SORT_ORDER);
+		while(cursor.moveToNext())
+		{
+			String v = cursor.getString(cursor.getColumnIndex(Issues.APP_VERSION));
+			v = v.substring(1, v.length() - 1);
+			String[] vArr = v.split("[ ]*,[ ]*");
+			for(int i = 0; i < vArr.length; i++)
+				versions.add(vArr[i]);
+		}
+		ArrayList<String> retVal = new ArrayList<String>(versions);
+		retVal.add(0, getString(R.string.all));
+		return retVal;
+
+	}
+	
+	protected SimpleCursorAdapter getIssueCursorAdapter(String appName, String version)
 	{
 	    final String[] PROJECTION = new String[] {
             Issues._ID,
@@ -64,10 +88,16 @@ public class LocalIssueListActivity extends AbstractIssueListActivity
 	    };
 				
 		Cursor cursor;
-		if(position == 0)
+		if(appName == null && version == null)
 			cursor = managedQuery(getIntent().getData(), PROJECTION, null, null, Issues.DEFAULT_SORT_ORDER);
-		else
+		else if(version == null)
 			cursor = managedQuery(getIntent().getData(), PROJECTION, Issues.APP_NAME + " = ?", new String[] { appName },
+	                Issues.DEFAULT_SORT_ORDER);
+		else if(appName == null)
+			cursor = managedQuery(getIntent().getData(), PROJECTION, Issues.APP_VERSION + " like ?", new String[] { "%" + version + "%" },
+	                Issues.DEFAULT_SORT_ORDER);			
+		else
+			cursor = managedQuery(getIntent().getData(), PROJECTION, Issues.APP_NAME + " = ? and " + Issues.APP_VERSION + " like ?", new String[] { appName, "%" + version + "%" },
 	                Issues.DEFAULT_SORT_ORDER);
 			
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(LocalIssueListActivity.this, R.layout.issue_list_item, cursor,

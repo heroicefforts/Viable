@@ -32,10 +32,12 @@ public class IssueContentProvider extends ContentProvider {
 
     private static HashMap<String, String> issuesProjectionMap;
 	private static HashMap<String, String> appsProjectionMap;
+	private static HashMap<String, String> versionsProjectionMap;
 
     private static final int ISSUES = 1;
     private static final int ISSUES_ID = 2;
 	private static final int APPS = 3;
+	private static final int VERSIONS = 4;
 
     private static final UriMatcher sUriMatcher;
 
@@ -113,7 +115,13 @@ public class IssueContentProvider extends ContentProvider {
 	        	qb.setTables(REG_APPS_TABLE_NAME);
 	        	qb.setProjectionMap(appsProjectionMap);
 	        	break;
-	            
+	        
+	        case VERSIONS:
+	        	qb.setTables(ISSUES_TABLE_NAME);
+	        	qb.setProjectionMap(versionsProjectionMap);
+	        	qb.setDistinct(true);
+	        	break;
+	        	
 	        default:
 	            throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -201,7 +209,8 @@ public class IssueContentProvider extends ContentProvider {
         	}
         	finally
         	{
-        		apps.close();
+        		if(apps != null)
+        			apps.close();
         	}
         	
         	rowId = db.insert(ISSUES_TABLE_NAME, Issues.ISSUE_ID, values);
@@ -280,6 +289,7 @@ public class IssueContentProvider extends ContentProvider {
         sUriMatcher.addURI(Issues.AUTHORITY, "issues", ISSUES);
         sUriMatcher.addURI(Issues.AUTHORITY, "issues/#", ISSUES_ID);
         sUriMatcher.addURI(Issues.AUTHORITY, "apps", APPS );
+        sUriMatcher.addURI(Issues.AUTHORITY, "versions", VERSIONS );
 
         issuesProjectionMap = new HashMap<String, String>();
         issuesProjectionMap.put(Issues._ID, Issues._ID);
@@ -302,5 +312,8 @@ public class IssueContentProvider extends ContentProvider {
         appsProjectionMap.put("ACTIVE", "ACTIVE");
         appsProjectionMap.put(Issues.CREATED_DATE, Issues.CREATED_DATE);
         appsProjectionMap.put(Issues.MODIFIED_DATE, Issues.MODIFIED_DATE);
+        
+        versionsProjectionMap = new HashMap<String, String>();
+        versionsProjectionMap.put(Issues.APP_VERSION, Issues.APP_VERSION);
     }
 }

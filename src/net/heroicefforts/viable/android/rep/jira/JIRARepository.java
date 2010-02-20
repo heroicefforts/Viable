@@ -1,4 +1,4 @@
-package net.heroicefforts.viable.android.rep;
+package net.heroicefforts.viable.android.rep.jira;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
 import net.heroicefforts.viable.android.dao.BugContext;
@@ -21,12 +22,16 @@ import net.heroicefforts.viable.android.dao.Issue;
 import net.heroicefforts.viable.android.dao.ProjectDetail;
 import net.heroicefforts.viable.android.dao.SearchParams;
 import net.heroicefforts.viable.android.dao.SearchResults;
+import net.heroicefforts.viable.android.dao.VersionDetail;
+import net.heroicefforts.viable.android.rep.CreateException;
+import net.heroicefforts.viable.android.rep.IssueResource;
+import net.heroicefforts.viable.android.rep.Repository;
+import net.heroicefforts.viable.android.rep.ServiceException;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -39,6 +44,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -49,23 +56,25 @@ public class JIRARepository implements Repository
 	private static final int CONN_TIMEOUT = 5000;
 	
 	private String rootURL;
-	private HttpClient httpclient;  
+	private HttpClient httpclient;
+	private String appName;  
 	
 
 
-	public JIRARepository(Bundle metaData)
+	public JIRARepository(String appName, Activity act, Bundle metaData)
 		throws CreateException
 	{
-		this(metaData.getString("viable-provider-location"));
+		this(appName, metaData.getString("viable-provider-location"));
 	}
 
-    public JIRARepository(String location)
+    public JIRARepository(String appName, String location)
     	throws CreateException
 	{
 		if(location == null)
 			throw new CreateException("No '" + "viable-provider-location" + "' meta-data field defined for application.  JIRA Repository cannot be constructed.");
 
 		this.rootURL = location;
+		this.appName = appName;
 		httpclient = new DefaultHttpClient();
 		HttpConnectionParams.setConnectionTimeout(httpclient.getParams(), CONN_TIMEOUT);
 	}
@@ -73,7 +82,8 @@ public class JIRARepository implements Repository
 	/* (non-Javadoc)
 	 * @see net.heroicefforts.viable.android.Repository#exists(net.heroicefforts.viable.android.Issue)
 	 */
-	public Issue exists(Issue issue)
+	public Issue exists(Issue issue) 
+		throws ServiceException
     {
     	String hash = createHash(issue);
     	
@@ -93,12 +103,26 @@ public class JIRARepository implements Repository
     		return null;
     	}
     }
+
 	
+	public IssueResource getState(String type, String priority, String state)
+	{
+		return JIRAResourceFlyweight.getState(type, priority, state);
+	}
 	
-    /* (non-Javadoc)
-	 * @see net.heroicefforts.viable.android.Repository#findById(java.lang.String)
-	 */
-    public Issue findById(String issueId)
+	public Set<? extends IssueResource> getDefaultDefectStates()
+	{
+		return JIRAResourceFlyweight.getDefaultDefectStates();
+	}
+	
+	public Set<? extends IssueResource> getDefaultStates()
+	{
+		return JIRAResourceFlyweight.getDefaultStates();
+	}
+
+	
+    public Issue findById(String issueId) 
+    	throws ServiceException
     {
 		Issue issue = null; 
 		SearchParams params = new SearchParams();
@@ -111,6 +135,7 @@ public class JIRARepository implements Repository
     }
     
     public CommentSet findCommentsForIssue(String issueId, int page, int pageSize)
+    	throws ServiceException
     {
 		try
 		{
@@ -138,16 +163,15 @@ public class JIRARepository implements Repository
 				return new CommentSet(issues, more);
 			}
 			else
-				throw new RuntimeException("Remote error occurred.  Code was :  " + code);
+				throw new ServiceException("Remote error occurred.  Response code was :  " + code);
 		}
 		catch (JSONException e)
 		{
-			throw new RuntimeException(e);
+			throw new ServiceException("Error parsing JIRA response.", e);
 		}
 		catch (IOException e)
 		{
-			//TODO handle this
-			throw new RuntimeException(e);
+			throw new ServiceException("Error connecting to JIRA repository.", e);
 		}
 
     }
@@ -155,7 +179,8 @@ public class JIRARepository implements Repository
     /* (non-Javadoc)
 	 * @see net.heroicefforts.viable.android.Repository#search(net.heroicefforts.viable.android.SearchParams)
 	 */
-    public SearchResults search(SearchParams params)
+    public SearchResults search(SearchParams params) 
+    	throws ServiceException
     {
 		try
 		{
@@ -203,18 +228,16 @@ public class JIRARepository implements Repository
 				return new SearchResults(issues, more);
 			}
 			else
-				throw new RuntimeException("Remote error occurred.  Code was :  " + code);
+				throw new ServiceException("Remote error occurred.  Response code was :  " + code);
 		}
 		catch (JSONException e)
 		{
-			throw new RuntimeException(e);
+			throw new ServiceException("Error parsing JIRA response.", e);
 		}
 		catch (IOException e)
 		{
-			//TODO handle this
-			throw new RuntimeException(e);
+			throw new ServiceException("Error connecting to JIRA repository.", e);
 		}
-    	
     }
     
     private List<Issue> loadIssues(JSONObject obj)
@@ -225,7 +248,7 @@ public class JIRARepository implements Repository
     	{
     		JSONArray arr = obj.getJSONArray("issues");
     		for(int i = 0; i < arr.length(); i++)
-    			issues.add(loadIssue(arr.getJSONObject(i)));
+    			issues.add(new Issue(arr.getJSONObject(i).toString(4)));
     	}
     	
     	return issues;
@@ -245,17 +268,51 @@ public class JIRARepository implements Repository
 		return comments;
 	}
 
-    
-    private Issue loadIssue(JSONObject obj)
-		throws JSONException
-	{
-//		if("bug".equals(obj.getString("type")))
-//			return new BugContext(obj.toString(4));
-//		else
-			return new Issue(obj.toString(4));
-	}
+    public List<VersionDetail> getApplicationVersions() 
+    	throws ServiceException
+    {
+		try
+		{
+			StringBuilder url = new StringBuilder();
+			url.append(rootURL).append("/app/").append(appName).append("/versions");
 
-    public ProjectDetail getApplicationStats(String appName)
+			HttpGet get = new HttpGet(url.toString());			
+			HttpResponse response = execute(get);
+			int code = response.getStatusLine().getStatusCode();
+			if(HttpStatus.SC_NOT_FOUND == code)
+			{
+				Log.d(TAG, "No project versions found for '" + appName + "'.");
+				return Collections.emptyList();
+			}
+			else if(HttpStatus.SC_OK == code)
+			{
+	        	JSONObject obj = readJSON(response);
+				Log.d(TAG, "Project stats JSON:  " + obj.toString(4));
+				ArrayList<VersionDetail> details = new ArrayList<VersionDetail>();
+				if(obj.has("versions"))
+				{
+					JSONArray vers = obj.getJSONArray("versions");
+					for(int i = 0; i < vers.length(); i++)
+						details.add(new VersionDetail(vers.getJSONObject(i)));
+				}
+				
+				return details;
+			}
+			else
+				throw new ServiceException("Remote error occurred.  Response code was :  " + code);
+		}
+		catch (JSONException e)
+		{
+			throw new ServiceException("Error parsing JIRA response.", e);
+		}
+		catch (IOException e)
+		{
+			throw new ServiceException("Error connecting to JIRA repository.", e);
+		}
+    }
+    
+    public ProjectDetail getApplicationStats(String appName) 
+    	throws ServiceException
     {
 		try
 		{
@@ -277,63 +334,79 @@ public class JIRARepository implements Repository
 				return new ProjectDetail(obj);
 			}
 			else
-				throw new RuntimeException("Remote error occurred.  Code was :  " + code);
+				throw new ServiceException("Remote error occurred.  Response code was :  " + code);
 		}
 		catch (JSONException e)
 		{
-			throw new RuntimeException(e);
+			throw new ServiceException("Error parsing JIRA response.", e);
 		}
 		catch (IOException e)
 		{
-			//TODO handle this
-			throw new RuntimeException(e);
-		}    	
+			throw new ServiceException("Error connecting to JIRA repository.", e);
+		}
+		//TODO unwrap
     }
     
 	/* (non-Javadoc)
 	 * @see net.heroicefforts.viable.android.Repository#postIssue(net.heroicefforts.viable.android.Issue)
 	 */
 	public int postIssue(Issue issue) 
-		throws UnsupportedEncodingException, IOException, ClientProtocolException, JSONException
+		throws ServiceException
 	{
-		HttpPost post = new HttpPost(rootURL + "/issue.json");
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(12);
-		nameValuePairs.add(new BasicNameValuePair("issue_type", issue.getType()));
-		nameValuePairs.add(new BasicNameValuePair("priority", issue.getPriority()));				        
-		nameValuePairs.add(new BasicNameValuePair("app_name", issue.getAppName()));
-		nameValuePairs.add(new BasicNameValuePair("summary", issue.getSummary()));				        
-		nameValuePairs.add(new BasicNameValuePair("description", issue.getDescription()));
-		for(String version : issue.getAffectedVersions())
-			nameValuePairs.add(new BasicNameValuePair("app_version_name", version));
-		if(issue.getStacktrace() != null)
-			nameValuePairs.add(new BasicNameValuePair("stacktrace", issue.getStacktrace()));
-
-		if(issue instanceof BugContext)
+		try
 		{
-			BugContext ctx = (BugContext) issue;
-			nameValuePairs.add(new BasicNameValuePair("phone_model", ctx.getPhoneModel()));
-			nameValuePairs.add(new BasicNameValuePair("phone_device", ctx.getPhoneDevice()));				        
-			nameValuePairs.add(new BasicNameValuePair("phone_version", String.valueOf(ctx.getPhoneVersion())));
+			HttpPost post = new HttpPost(rootURL + "/issue.json");
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(12);
+			nameValuePairs.add(new BasicNameValuePair("issue_type", issue.getType()));
+			nameValuePairs.add(new BasicNameValuePair("priority", issue.getPriority()));				        
+			nameValuePairs.add(new BasicNameValuePair("app_name", issue.getAppName()));
+			nameValuePairs.add(new BasicNameValuePair("summary", issue.getSummary()));				        
+			nameValuePairs.add(new BasicNameValuePair("description", issue.getDescription()));
+			for(String version : issue.getAffectedVersions())
+				nameValuePairs.add(new BasicNameValuePair("app_version_name", version));
+			if(issue.getStacktrace() != null)
+				nameValuePairs.add(new BasicNameValuePair("stacktrace", issue.getStacktrace()));
+
+			if(issue instanceof BugContext)
+			{
+				nameValuePairs.add(new BasicNameValuePair("phone_model", Build.MODEL));
+				nameValuePairs.add(new BasicNameValuePair("phone_device", Build.DEVICE));				        
+				nameValuePairs.add(new BasicNameValuePair("phone_version", String.valueOf(Build.VERSION.SDK_INT)));
+			}
+
+			Log.d(TAG, "post params:  " + nameValuePairs.toString());
+			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));  
+
+			// Execute HTTP Post Request  
+			HttpResponse response = execute(post);
+			int responseCode = response.getStatusLine().getStatusCode();
+			if(HttpStatus.SC_OK == responseCode || HttpStatus.SC_CREATED == responseCode)
+			{			
+				JSONObject obj = readJSON(response);
+				Log.d(TAG, "postIssue response:  \n" + obj.toString(4));		
+				//TODO pull dates from response
+				Issue newIssue = new Issue(obj.getJSONObject("issue").toString(4));
+				issue.copy(newIssue);
+			}
+			else
+				throw new ServiceException("Remote error occurred.  Response code was :  " + responseCode);
+			
+			Log.d(TAG, "postIssue code " + responseCode);
+			
+			return responseCode;
 		}
-
-		Log.d(TAG, "post params:  " + nameValuePairs.toString());
-		post.setEntity(new UrlEncodedFormEntity(nameValuePairs));  
-
-		// Execute HTTP Post Request  
-		HttpResponse response = execute(post);
-		int responseCode = response.getStatusLine().getStatusCode();
-        if(HttpStatus.SC_OK == responseCode || HttpStatus.SC_CREATED == responseCode)
-        {			
-        	JSONObject obj = readJSON(response);
-        	Log.d(TAG, "postIssue response:  \n" + obj.toString(4));		
-        	//TODO pull dates from response
-        	Issue newIssue = loadIssue(obj.getJSONObject("issue"));
-        	issue.copy(newIssue);
-        }
-		
-        Log.d(TAG, "postIssue code " + responseCode);
-        
-		return responseCode;
+		catch (UnsupportedEncodingException e)
+		{
+			throw new ServiceException("Encoding error occurred parsing JIRA response", e);
+		}
+		catch (IOException e)
+		{
+			throw new ServiceException("Error connecting to JIRA repository.", e);
+		}
+		catch (JSONException e)
+		{
+			throw new ServiceException("Error parsing JIRA response.", e);
+		}
 	}
 
 	
@@ -373,7 +446,8 @@ public class JIRARepository implements Repository
 		return httpclient.execute(request);
 	}
 	
-	private JSONObject readJSON(HttpResponse response) throws IOException, JSONException
+	private JSONObject readJSON(HttpResponse response) 
+		throws IOException, JSONException
 	{
 		InputStream instream = response.getEntity().getContent();
 		Header contentEncoding = response.getFirstHeader("Content-Encoding");
@@ -394,4 +468,57 @@ public class JIRARepository implements Repository
 		JSONObject obj = new JSONObject(baos.toString());
 		return obj;
 	}
+
+	public int postIssueComment(Issue issue, Comment comment)
+		throws ServiceException
+	{
+		try
+		{
+			HttpPost post = new HttpPost(rootURL + "/issue/" + issue.getIssueId() + "/comments.json");
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(12);
+			nameValuePairs.add(new BasicNameValuePair("app_name", issue.getAppName()));
+			nameValuePairs.add(new BasicNameValuePair("body", comment.getBody()));				        
+
+			if(issue.getStacktrace() != null)
+			{
+				nameValuePairs.add(new BasicNameValuePair("phone_model", Build.MODEL));
+				nameValuePairs.add(new BasicNameValuePair("phone_device", Build.DEVICE));				        
+				nameValuePairs.add(new BasicNameValuePair("phone_version", String.valueOf(Build.VERSION.SDK_INT)));
+			}
+
+			Log.d(TAG, "post params:  " + nameValuePairs.toString());
+			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));  
+
+			// Execute HTTP Post Request  
+			HttpResponse response = execute(post);
+			int responseCode = response.getStatusLine().getStatusCode();
+			if(HttpStatus.SC_OK == responseCode || HttpStatus.SC_CREATED == responseCode)
+			{			
+				JSONObject obj = readJSON(response);
+				Log.d(TAG, "postIssueComment response:  \n" + obj.toString(4));		
+				//TODO pull dates from response
+				Comment newComment = new Comment(obj);
+				comment.copy(newComment);
+			}
+			else
+				throw new ServiceException("Remote error occurred.  Response code was :  " + responseCode);
+			
+			Log.d(TAG, "postIssueComment code " + responseCode);
+			
+			return responseCode;
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new ServiceException("Encoding error occurred parsing JIRA response", e);
+		}
+		catch (IOException e)
+		{
+			throw new ServiceException("Error connecting to JIRA repository.", e);
+		}
+		catch (JSONException e)
+		{
+			throw new ServiceException("Error parsing JIRA response.", e);
+		}
+	}
+
 }

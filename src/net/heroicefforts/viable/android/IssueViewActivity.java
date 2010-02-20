@@ -8,7 +8,10 @@ import net.heroicefforts.viable.android.content.IssueContentAdapter;
 import net.heroicefforts.viable.android.content.Issues;
 import net.heroicefforts.viable.android.content.RemoteCommentCursor;
 import net.heroicefforts.viable.android.dao.Issue;
+import net.heroicefforts.viable.android.rep.CreateException;
+import net.heroicefforts.viable.android.rep.IssueResource;
 import net.heroicefforts.viable.android.rep.RepositoryFactory;
+import net.heroicefforts.viable.android.rep.ServiceException;
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -46,43 +49,56 @@ public class IssueViewActivity extends Activity
         
 		factory = new RepositoryFactory(this);        
         
-        if(getIntent().getData() != null)
-        {
-        	Cursor cursor = managedQuery(getIntent().getData(), Issues.ISSUE_PROJECTION, null, null, Issues.DEFAULT_SORT_ORDER);
-            if(cursor.moveToFirst())
-            {
-            	Issue issue = new IssueContentAdapter(cursor).toIssue();
-            	appName = issue.getAppName();
-            	presentIssue(issue);
-            }
-            else
-            {
-            	Log.e(TAG, "Invalid intent data.  Closing activity.");
-            	finish();
-            }
-        }
-        else if(getIntent().getStringExtra(EXTRA_ISSUE_ID) != null)
-        {
-        	String issueId = getIntent().getStringExtra(EXTRA_ISSUE_ID);
-        	appName = getIntent().getStringExtra(EXTRA_APP_NAME);
-        	Issue issue = factory.getRepository(appName).findById(issueId);
-        	if(issue != null)
-        		presentIssue(issue);
-        	else
-        	{
-        		Log.e(TAG, "Issue '" + issueId + "' does not exist.  Closing activity.");
-        		finish();
-        	}
-        }
-        else
-        {
-        	Log.e(TAG, "No intent data.  Closing activity.");
-        	finish();        	
-        }
-        
-        ImageButton refreshButton = (ImageButton) findViewById(R.id.RefreshButton);
-        refreshButton.setOnClickListener(refreshClicked);
-        refreshButton.setImageResource(android.R.drawable.ic_popup_sync);
+    	try
+		{
+	        if(getIntent().getData() != null)
+	        {
+	        	Cursor cursor = managedQuery(getIntent().getData(), Issues.ISSUE_PROJECTION, null, null, Issues.DEFAULT_SORT_ORDER);
+	            if(cursor.moveToFirst())
+	            {
+	            	Issue issue = new IssueContentAdapter(cursor).toIssue();
+	            	appName = issue.getAppName();
+	            	presentIssue(issue);
+	            }
+	            else
+	            {
+	            	Log.e(TAG, "Invalid intent data.  Closing activity.");
+	            	finish();
+	            }
+	        }
+	        else if(getIntent().getStringExtra(EXTRA_ISSUE_ID) != null)
+	        {
+	        	String issueId = getIntent().getStringExtra(EXTRA_ISSUE_ID);
+	        	appName = getIntent().getStringExtra(EXTRA_APP_NAME);
+				Issue issue = factory.getRepository(appName).findById(issueId);
+				if(issue != null)
+					presentIssue(issue);
+				else
+				{
+					Log.e(TAG, "Issue '" + issueId + "' does not exist.  Closing activity.");
+					finish();
+				}
+	        }
+	        else
+	        {
+	        	Log.e(TAG, "No intent data.  Closing activity.");
+	        	finish();        	
+	        }
+	        
+	        ImageButton refreshButton = (ImageButton) findViewById(R.id.RefreshButton);
+	        refreshButton.setOnClickListener(refreshClicked);
+	        refreshButton.setImageResource(android.R.drawable.ic_popup_sync);
+		}
+		catch (CreateException e)
+		{
+			Error.handle(this, e);
+			finish();
+		}
+		catch (ServiceException e)
+		{
+			Error.handle(this, e);
+			finish();
+		}	        
     }
 
     private OnClickListener refreshClicked = new OnClickListener()
@@ -90,39 +106,45 @@ public class IssueViewActivity extends Activity
 		public void onClick(View v)
 		{
 			String issueId = ((TextView) findViewById(R.id.IssueIdTextView)).getText().toString();
-			Issue issue = factory.getRepository(appName).findById(issueId);
-			if(issue != null)
+			try
 			{
-				presentIssue(issue);			
-				getContentResolver().update(Issues.CONTENT_URI, new IssueContentAdapter(issue).toContentValues(), Issues.ISSUE_ID + " = ?", new String[] { issueId });
+				Issue issue = factory.getRepository(appName).findById(issueId);
+				if(issue != null)
+				{
+					presentIssue(issue);			
+					getContentResolver().update(Issues.CONTENT_URI, new IssueContentAdapter(issue).toContentValues(), Issues.ISSUE_ID + " = ?", new String[] { issueId });
+				}
+			}
+			catch (CreateException e)
+			{
+				Error.handle(IssueViewActivity.this, e);
+			}
+			catch (ServiceException e)
+			{
+				Error.handle(IssueViewActivity.this, e);
 			}
 		}
 
     	
     };
     
-    private void presentIssue(Issue issue)
+    private void presentIssue(Issue issue) 
+    	throws CreateException, ServiceException
 	{
-		IssueState issueState = IssueState.getState(issue);
+    	IssueResource issueState = factory.getRepository(issue.getAppName()).getState(issue.getType(), issue.getPriority(), issue.getState());
 		TextView issueView = (TextView) findViewById(R.id.IssueIdTextView);
 		issueView.setText(issue.getIssueId());
 		issueView.setTextColor(Color.WHITE);
-		((ImageView) findViewById(R.id.TypeImageView)).setImageResource(issueState.getIconRes());
+		((ImageView) findViewById(R.id.TypeImageView)).setImageDrawable(issueState.getIcon(this));
+		
 		TextView typeView = (TextView) findViewById(R.id.TypeTextView);
-		String type = issue.getType();
-		type = Character.toUpperCase(type.charAt(0)) + type.substring(1);
-		typeView.setText(type);
-		typeView.setTextColor(IssueState.getTypeColor(issue));
+		typeView.setText(issueState.getTypeText(issue));
+		
 		TextView priorityView = (TextView) findViewById(R.id.PriorityTextView);
-		String priority = issue.getPriority();
-		priority = Character.toUpperCase(priority.charAt(0)) + priority.substring(1);
-		priorityView.setText(priority);
-		priorityView.setTextColor(IssueState.getPriorityColor(issue));
+		priorityView.setText(issueState.getPriorityText(issue));
+
 		TextView stateView = (TextView) findViewById(R.id.StateTextView);
-		String state = issue.getState();
-		state = Character.toUpperCase(state.charAt(0)) + state.substring(1);
-		stateView.setText(state);
-		stateView.setTextColor(IssueState.getStateColor(issue));
+		stateView.setText(issueState.getStateText(issue));
 		
 		SpannableStringBuilder affectedVersions = new SpannableStringBuilder();
 		affectedVersions.append(getString(R.string.affected_versions_label));
@@ -154,7 +176,6 @@ public class IssueViewActivity extends Activity
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.comments_list_item, cursor,
 		        new String[] { Comments.AUTHOR, Comments.BODY, Comments.CREATED_DATE }, 
 		        new int[] { R.id.AuthorTextView, R.id.BodyTextView, R.id.CreateDateTextView });
-		//adapter.setViewBinder(new IssuesListViewBinder(this));
 		((ListView) findViewById(R.id.CommentsListView)).setAdapter(adapter);
 		
 		

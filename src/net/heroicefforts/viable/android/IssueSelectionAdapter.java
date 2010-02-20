@@ -1,10 +1,10 @@
 package net.heroicefforts.viable.android;
 
 import java.lang.ref.SoftReference;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.WeakHashMap;
 
+import net.heroicefforts.viable.android.rep.IssueResource;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -17,34 +17,22 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class IssueSelectionAdapter extends ArrayAdapter<IssueState>
+public class IssueSelectionAdapter extends ArrayAdapter<IssueResource>
 {
 	private static final int ICON_WIDTH = 48;
 	private static final int ICON_HEIGHT = 56;
 
 	private Context ctx;
-	protected boolean bugsOnly;
-	private HashMap<Integer,SoftReference<Drawable>> iconCache = new HashMap<Integer,SoftReference<Drawable>>();
+	private WeakHashMap<IssueResource,SoftReference<Drawable>> iconCache = new WeakHashMap<IssueResource,SoftReference<Drawable>>();
 	
-	public IssueSelectionAdapter(Context ctx, boolean bugsOnly)
+	public IssueSelectionAdapter(Context ctx, Set<? extends IssueResource> resources)
 	{
 		super(ctx, R.layout.plain_text_view);
 		this.ctx = ctx;
-		this.bugsOnly = bugsOnly;
-        for(IssueState state : getStates())
-			add(state);
+        for(IssueResource resource : resources)
+			add(resource);
 	}
 		
-	protected Set<IssueState> getStates()
-	{
-		LinkedHashSet<IssueState> retVal = new LinkedHashSet<IssueState>();
-		retVal.addAll(IssueState.DEFAULT_BUG_STATES);
-		if(!bugsOnly)
-			retVal.addAll(IssueState.DEFAULT_FEATURE_STATE);
-		
-		return retVal;
-	}
-	
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		Holder h = null;
@@ -58,10 +46,11 @@ public class IssueSelectionAdapter extends ArrayAdapter<IssueState>
 		else
 			h = (Holder) convertView.getTag();
 		
-		IssueState state = getItem(position);
+		IssueResource resource = getItem(position);
 		h.nameView.setTextColor(Color.BLACK);
-		h.nameView.setText(ctx.getString(state.getNameRes()));
-		h.iconView.setImageDrawable(getResizedIcon(state.getIconRes()));
+		h.nameView.setText(resource.getName(ctx));
+		h.iconView.setImageDrawable(getResizedIcon(resource));
+		
 		return convertView;
 	}
 	
@@ -80,34 +69,29 @@ public class IssueSelectionAdapter extends ArrayAdapter<IssueState>
 		else
 			h = (Holder) convertView.getTag();
 		
-		IssueState state = getItem(position);
+		IssueResource resource = getItem(position);
 		h.nameView.setTextColor(Color.BLACK);
-		h.nameView.setText(ctx.getString(state.getNameRes()));
-		h.descView.setText(ctx.getString(state.getDescRes()));
-		h.iconView.setImageDrawable(getIcon(state.getIconRes()));
+		h.nameView.setText(resource.getName(ctx));
+		h.descView.setText(resource.getDescription(ctx));
+		h.iconView.setImageDrawable(resource.getIcon(ctx));
+		
 		return convertView;
 	}
 
-	private Drawable getIcon(int resId)
-	{
-		return ctx.getResources().getDrawable(resId);
-	}
-	
-	private Drawable getResizedIcon(int resId)
+	private Drawable getResizedIcon(IssueResource resource)
 	{
 		Drawable retVal = null;
-		SoftReference<Drawable> ref = iconCache.get(resId);
+		SoftReference<Drawable> ref = iconCache.get(resource);
 		if(ref != null)
 			retVal = ref.get();
 		
 		if(retVal == null)
 		{
-			Drawable d = ctx.getResources().getDrawable(resId);
-
-			if(d instanceof BitmapDrawable)
+			Drawable src = resource.getIcon(ctx);
+			if(src instanceof BitmapDrawable)
 			{
-				retVal = resize((BitmapDrawable)d, ICON_WIDTH, ICON_HEIGHT);
-				iconCache.put(resId, new SoftReference<Drawable>(retVal));
+				retVal = resize((BitmapDrawable)src, ICON_WIDTH, ICON_HEIGHT);
+				iconCache.put(resource, new SoftReference<Drawable>(retVal));
 			}
 		}
 

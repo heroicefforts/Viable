@@ -1,14 +1,15 @@
 package net.heroicefforts.viable.android.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchParams
 {	
 	private String hash;
-	private List<String> ids;
+	private List<String> ids = new ArrayList<String>();
 
 	private String appName;
-	private List<String> affectedVersions;
+	private List<String> affectedVersions = new ArrayList<String>();
 	
 	private int page = 1;
 	private int pageSize = 10;

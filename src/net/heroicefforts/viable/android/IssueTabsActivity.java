@@ -38,5 +38,10 @@ public class IssueTabsActivity extends TabActivity
         	defaultTab = TAB_APPS;
         getTabHost().setCurrentTabByTag(defaultTab);
 	}
+
+	public void selectMyIssuesTab()
+	{
+		getTabHost().setCurrentTabByTag(TAB_MY_ISSUES);		
+	}
 }
  

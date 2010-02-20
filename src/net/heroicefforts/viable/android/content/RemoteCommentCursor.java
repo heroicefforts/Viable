@@ -8,6 +8,7 @@ import java.util.List;
 import net.heroicefforts.viable.android.dao.Comment;
 import net.heroicefforts.viable.android.dao.CommentSet;
 import net.heroicefforts.viable.android.rep.Repository;
+import net.heroicefforts.viable.android.rep.ServiceException;
 
 import android.database.AbstractCursor;
 import android.database.CursorIndexOutOfBoundsException;
@@ -29,7 +30,8 @@ public class RemoteCommentCursor extends AbstractCursor
 	private String issueId;
 	
 	
-	public RemoteCommentCursor(Repository remoteRepository, String issueId)
+	public RemoteCommentCursor(Repository remoteRepository, String issueId) 
+		throws ServiceException
 	{
 		this.repository = remoteRepository;
 		this.issueId = issueId;
@@ -40,17 +42,25 @@ public class RemoteCommentCursor extends AbstractCursor
 	{
 		if(!selfChange)
 		{			
-			CommentSet results = repository.findCommentsForIssue(issueId, 1, commentList.size());
-			commentList.clear();
-			commentList.addAll(results.getComments());
-			more = results.isMore();
-			
-			if(idx > commentList.size())
-				idx = commentList.size() - 1;
-			
-			page = commentList.size() / pageSize + 1;
-			
-			return super.requery();
+			try
+			{
+				CommentSet results = repository.findCommentsForIssue(issueId, 1, commentList.size());
+				commentList.clear();
+				commentList.addAll(results.getComments());
+				more = results.isMore();
+				
+				if(idx > commentList.size())
+					idx = commentList.size() - 1;
+				
+				page = commentList.size() / pageSize + 1;
+				
+				return super.requery();
+			}
+			catch (ServiceException e)
+			{
+				Log.e(TAG, "Error requerying remote resource.", e);
+				return false;
+			}
 		}
 		else
 		{
@@ -59,7 +69,8 @@ public class RemoteCommentCursor extends AbstractCursor
 		}
 	}
 	
-	private void loadPage()
+	private void loadPage() 
+		throws ServiceException
 	{
 		CommentSet results = repository.findCommentsForIssue(issueId, page++, pageSize);
 		commentList.addAll(results.getComments());
@@ -155,7 +166,17 @@ public class RemoteCommentCursor extends AbstractCursor
 		if(newPosition >= commentList.size() - 1 && more)
 		{
 			while(newPosition >= commentList.size() - 1 && more)
-				loadPage();
+			{
+				try
+				{
+					loadPage();
+				}
+				catch (ServiceException e)
+				{
+					Log.e(TAG, "Error advancing remote cursor.", e);
+					return false;
+				}
+			}
 			selfChange = true;
 			onChange(false);
 		}

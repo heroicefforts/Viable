@@ -7,7 +7,9 @@ import java.util.List;
 
 import net.heroicefforts.viable.android.dao.ProjectDetail;
 import net.heroicefforts.viable.android.dao.VersionDetail;
+import net.heroicefforts.viable.android.rep.CreateException;
 import net.heroicefforts.viable.android.rep.RepositoryFactory;
+import net.heroicefforts.viable.android.rep.ServiceException;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -60,7 +62,19 @@ public class AppStatsActivity extends Activity
 		public void onItemSelected(AdapterView<?> l, View v, int position, long id)
 		{
 			String appName = (String) l.getItemAtPosition(position);
-			loadStats(appName);
+			try
+			{
+				final ProjectDetail pd = factory.getRepository(appName).getApplicationStats(appName);
+				loadStats(appName, pd);
+			}
+			catch (CreateException e)
+			{
+				Error.handle(AppStatsActivity.this, e);
+			}
+			catch (ServiceException e)
+			{
+				Error.handle(AppStatsActivity.this, e);
+			}
 		}
 
 		public void onNothingSelected(AdapterView<?> arg0)
@@ -70,9 +84,8 @@ public class AppStatsActivity extends Activity
     	
     };
     
-	private void loadStats(String appName)
+	private void loadStats(String appName, final ProjectDetail pd)
 	{
-		final ProjectDetail pd = factory.getRepository(appName).getApplicationStats(appName);
 		if(pd == null)
 		{
 			Log.e(TAG, "Error retrieving app stats for '" + appName + "'.");

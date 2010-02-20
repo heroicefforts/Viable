@@ -2,13 +2,13 @@ package net.heroicefforts.viable.android.rep;
 
 import java.lang.reflect.Constructor;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-
-import android.content.Context;
+import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -22,10 +22,13 @@ public class RepositoryFactory
 	private Map<String, Bundle> appBundles = new TreeMap<String, Bundle>();
 	private Map<String, String> appVersion = new TreeMap<String, String>();
 	private Bundle viableBundle;
+	private Activity act;
+	private HashMap<String, Repository> repMap = new HashMap<String, Repository>();
 	
-	public RepositoryFactory(Context ctx)
+	public RepositoryFactory(Activity act)
 	{
-		PackageManager pkgMgr = ctx.getPackageManager();
+		this.act = act;
+		PackageManager pkgMgr = act.getPackageManager();
 		List<ApplicationInfo> infos = pkgMgr.getInstalledApplications(PackageManager.GET_META_DATA);
 		for(ApplicationInfo app : infos)
 		{
@@ -36,7 +39,7 @@ public class RepositoryFactory
 				{
 					appBundles.put(label, app.metaData);
 					PackageInfo info = pkgMgr.getPackageInfo(app.packageName, 0);
-					appVersion .put(label, info.versionName);
+					appVersion.put(label, info.versionName);
 				}
 				catch (NameNotFoundException e)
 				{
@@ -66,19 +69,35 @@ public class RepositoryFactory
 	public Repository getRepository(String appName)
 		throws CreateException
 	{
-		Bundle metaData = appBundles.get(appName);
-		if(metaData != null)
+		synchronized(repMap)
 		{
-			String providerName = metaData.getString("viable-provider");
-			return instantiateRepository(providerName, metaData);
-		}
-				
-		Log.e(TAG, "No '" + "viable-provider" + "' meta-data field defined for application '" + appName + ".  Repository cannot be constructed.");
-		return null;
+			Repository rep = repMap.get(appName);
+			
+			if(rep == null)
+			{
+				Bundle metaData = appBundles.get(appName);
+				if(metaData != null)
+				{
+					String providerName = metaData.getString("viable-provider");
+					if(providerName != null)
+					{
+						rep = instantiateRepository(appName, providerName, act, metaData);
+						repMap.put(appName, rep);					
+					}
+					else
+						Log.e(TAG, "No '" + "viable-provider" + "' meta-data field defined for application '" + appName + "'.  Repository cannot be constructed.");
+						
+				}
+				else
+					Log.e(TAG, "No meta-data bundle defined for application '" + appName + "'.  Repository cannot be constructed.");
+			}
+			
+			return rep;
+		}		
 	}
 
 	@SuppressWarnings("unchecked")
-	private Repository instantiateRepository(String providerName, Bundle metaData)
+	private Repository instantiateRepository(String appName, String providerName, Activity act, Bundle metaData)
 		throws CreateException
 	{
 		String clazzName = viableBundle.getString(providerName);
@@ -90,8 +109,8 @@ public class RepositoryFactory
 				if(cl == null)
 					cl = getClass().getClassLoader();
 				Class clazz = Class.forName(clazzName, true, cl);
-				Constructor<Repository> c = clazz.getConstructor(Bundle.class); 
-				return c.newInstance(metaData);
+				Constructor<Repository> c = clazz.getConstructor(String.class, Activity.class, Bundle.class); 
+				return c.newInstance(appName, act, metaData);
 			}
 			catch (ClassNotFoundException e)
 			{
@@ -99,7 +118,7 @@ public class RepositoryFactory
 			}
 			catch (NoSuchMethodException e)
 			{
-				throw new CreateException("Concrete repository class '" + clazzName + "' is expected to define a constructor of signature ConcreteClass(Bundle).  Cannot instantiate repository for this provider.", e);
+				throw new CreateException("Concrete repository class '" + clazzName + "' is expected to define a constructor of signature ConcreteClass(String, Activity, Bundle).  Cannot instantiate repository for this provider.", e);
 			}
 			catch (Exception e)
 			{

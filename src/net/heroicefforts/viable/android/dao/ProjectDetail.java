@@ -22,6 +22,11 @@ public class ProjectDetail
 	private long fixedFeatures;
 	private List<VersionDetail> versions = new ArrayList<VersionDetail>();
 
+	public ProjectDetail()
+	{
+		//empty
+	}
+	
 	public ProjectDetail(JSONObject obj)
 		throws JSONException
 	{

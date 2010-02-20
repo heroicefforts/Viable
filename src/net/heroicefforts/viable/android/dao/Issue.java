@@ -27,6 +27,10 @@ public class Issue
 	private Date createDate;
 	private Date modifiedDate;	
 	
+	private String[] affectedDevices;
+	private String[] affectedModels;
+	private String[] affectedSDKs;
+	
 	public Issue()
 	{
 		//empty
@@ -70,7 +74,43 @@ public class Issue
 			throw new JSONException("Error parsing JSON dates.");
 		}
 	}
-
+	
+	public JSONObject getJSON()
+		throws JSONException
+	{
+		JSONObject issueObj = new JSONObject();
+		issueObj.put("issueId", issueId);
+		issueObj.put("type", type);
+		issueObj.put("priority", priority);
+		issueObj.put("state", state);
+		issueObj.put("appName", appName);
+		issueObj.put("summary", summary);
+		issueObj.put("description", description);
+		if(affectedVersions != null && affectedVersions.length > 0)
+		{
+			JSONArray affVers = new JSONArray();
+			for(String version : affectedVersions)
+				affVers.put(version);
+			issueObj.put("affectedVersions", affVers);
+		}
+		issueObj.put("hash", hash);
+		issueObj.put("stacktrace", stacktrace);
+//		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//		fmt.setLenient(true);
+//		try
+//		{
+//			createDate = fmt.parse(issueObj.put("createDate"));
+//			modifiedDate = fmt.parse(issueObj.put("modifiedDate"));
+//		}
+//		catch (ParseException e)
+//		{
+//			Log.e(TAG, "Error parsing JSON dates.", e);
+//			throw new JSONException("Error parsing JSON dates.");
+//		}
+		Log.d(TAG, "Generated issue JSON:  " + issueObj.toString(4));
+		return issueObj;
+	}
+	
 	public String getIssueId()
 	{
 		return issueId;
@@ -246,6 +286,45 @@ public class Issue
 	public void setModifiedDate(Date modifiedDate)
 	{
 		this.modifiedDate = modifiedDate;
+	}
+
+	public String[] getAffectedDevices()
+	{
+		if(affectedDevices != null)
+			return affectedDevices;
+		else
+			return new String[0];
+	}
+
+	public void setAffectedDevices(String[] affectedDevices)
+	{
+		this.affectedDevices = affectedDevices;
+	}
+
+	public String[] getAffectedModels()
+	{
+		if(affectedModels != null)
+			return affectedModels;
+		else
+			return new String[0];
+	}
+
+	public void setAffectedModels(String[] affectedModels)
+	{
+		this.affectedModels = affectedModels;
+	}
+
+	public String[] getAffectedSDKs()
+	{
+		if(affectedSDKs != null)
+			return affectedSDKs;
+		else
+			return new String[0];
+	}
+
+	public void setAffectedSDKs(String[] affectedSDKs)
+	{
+		this.affectedSDKs = affectedSDKs;
 	}
 	
 }
