@@ -4,6 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+/**
+ * This class receives crash report intentions from other applications and invokes Viable, if necessary.
+ * 
+ * @see net.heroicefforts.viable.android.dist.BugReportIntent
+ * @see net.heroicefforts.viable.android.dist.ViableExceptionHandler
+ * 
+ * @author jevans
+ *
+ */
 public class CrashReceiver extends BroadcastReceiver
 {
 

@@ -10,17 +10,35 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ * Authenticates Google credentials using the Google Client Login.  This would not be required if Google Android supported
+ * all of Google's services instead of just cl and ah.
+ * 
+ * @author jevans
+ *
+ */
 public class GCLAccountAuthenticator extends AbstractAccountAuthenticator
 {
 	private static final String TAG = "GCLAccountAuthenticator";
-	
+
+	/**
+	 * Our Google Client Login account type definition for this authenticator.
+	 */
 	public static final String ACCT_TYPE = "net.heroicefforts.google.auth";
+	
+	/**
+	 * The service name, authentication token type for Google Issue Tracker.
+	 */
 	public static final String TOKEN_TYPE_ISSUE_TRACKER = "code";
+	
+	/**
+	 * Extra used to pass the requested token type to {@link CredsActivity}.
+	 */
 	public static final String EXTRA_TOKEN_TYPE = "tokenType";
 	
-
 	private AccountManager acctMgr;
 	private Context context;
+	
 	
 	public GCLAccountAuthenticator(Context context)
 	{
@@ -51,22 +69,6 @@ public class GCLAccountAuthenticator extends AbstractAccountAuthenticator
 	}
 
 	@Override
-	public Bundle confirmCredentials(AccountAuthenticatorResponse response, Account account, Bundle options)
-	{
-		Log.d(TAG, "confirmCredentials()");
-		return null;
-	}
-
-	@Override
-	public Bundle editProperties(AccountAuthenticatorResponse response, String accountType)
-	{
-		Log.d(TAG, "editProperties()");
-		
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType,
 			Bundle options) throws NetworkErrorException
 	{
@@ -94,21 +96,45 @@ public class GCLAccountAuthenticator extends AbstractAccountAuthenticator
 		return "Google Login for " + authTokenType;
 	}
 
+	/**
+	 * Not supported.
+	 */
+	@Override
+	public Bundle confirmCredentials(AccountAuthenticatorResponse response, Account account, Bundle options)
+	{
+		Log.d(TAG, "confirmCredentials()");
+		return null;
+	}
+
+	/**
+	 * Not supported.
+	 */
+	@Override
+	public Bundle editProperties(AccountAuthenticatorResponse response, String accountType)
+	{
+		Log.d(TAG, "editProperties()");
+		return null;
+	}
+
+	/**
+	 * Not supported.
+	 */
 	@Override
 	public Bundle hasFeatures(AccountAuthenticatorResponse response, Account account, String[] features)
 			throws NetworkErrorException
 	{
 		Log.d(TAG, "hasFeatures");
-		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * Not supported.
+	 */
 	@Override
 	public Bundle updateCredentials(AccountAuthenticatorResponse response, Account account, String authTokenType,
 			Bundle options)
 	{
 		Log.d(TAG, "updateCredentials");
-		// TODO Auto-generated method stub
 		return null;
 	}
 

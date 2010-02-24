@@ -4,6 +4,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+/**
+ * Service wrapper for the authenticator.
+ * 
+ * @author jevans
+ *
+ */
 public class GCLAuthenticatorService extends Service
 {
 	private GCLAccountAuthenticator authenticator;

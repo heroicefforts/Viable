@@ -10,6 +10,12 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
+/**
+ * Data class for an issue.
+ * 
+ * @author jevans
+ *
+ */
 public class Issue
 {
 	private static final String TAG = "Issue";
@@ -36,6 +42,12 @@ public class Issue
 		//empty
 	}
 	
+	/**
+	 * Instantiate the issue state based upon the JIRA JSON format.
+	 * 
+	 * @param obj JIRA JSON issue object 
+	 * @throws JSONException if there's an error parsing the JSON.
+	 */
 	public Issue(String json)
 		throws JSONException
 	{
@@ -75,6 +87,11 @@ public class Issue
 		}
 	}
 	
+	/**
+	 * Return the JIRA JSON representation of the Issue's state.
+	 * @return
+	 * @throws JSONException
+	 */
 	public JSONObject getJSON()
 		throws JSONException
 	{
@@ -111,41 +128,73 @@ public class Issue
 		return issueObj;
 	}
 	
+	/**
+	 * Return the unique issue id.
+	 * @return
+	 */
 	public String getIssueId()
 	{
 		return issueId;
 	}
 
+	/**
+	 * Return the type of issue e.g. defect.
+	 * @return
+	 */
 	public String getType()
 	{
 		return type;
 	}
 
+	/**
+	 * Return the priority of the issue.
+	 * @return
+	 */
 	public String getPriority()
 	{
 		return priority;
 	}
 
+	/**
+	 * Return the state of the issue e.g. open
+	 * @return
+	 */
 	public String getState()
 	{
 		return state;
 	}
 
+	/**
+	 * Return the label of the owning application.
+	 * @return
+	 */
 	public String getAppName()
 	{
 		return appName;
 	}
 
+	/**
+	 * Return the issue title.
+	 * @return
+	 */
 	public String getSummary()
 	{
 		return summary;
 	}
 
+	/**
+	 * Return the issue content.
+	 * @return
+	 */
 	public String getDescription()
 	{
 		return description;
 	}
 
+	/**
+	 * Return the application versions known to suffer from this issue.
+	 * @return
+	 */
 	public String[] getAffectedVersions()
 	{
 		if(affectedVersions != null)
@@ -154,21 +203,37 @@ public class Issue
 			return new String[0];
 	}
 
+	/**
+	 * Return the unique checksum for the issue.
+	 * @return
+	 */
 	public String getHash()
 	{
 		return hash;
 	}
 
+	/**
+	 * Return the defect's stacktrace.
+	 * @return
+	 */
 	public String getStacktrace()
 	{
 		return stacktrace;
 	}
 
+	/**
+	 * Return the date the issue was created.
+	 * @return
+	 */
 	public Date getCreateDate()
 	{
 		return createDate;
 	}
 
+	/**
+	 * Return the date that the issue was last modified.
+	 * @return
+	 */
 	public Date getModifiedDate()
 	{
 		return modifiedDate;
@@ -246,6 +311,10 @@ public class Issue
 		this.issueId = issueId;
 	}
 	
+	/**
+	 * Copy the state from the supplied issue
+	 * @param newIssue the source issue.
+	 */
 	public void copy(Issue newIssue)
 	{
 		this.issueId = newIssue.issueId;
@@ -288,6 +357,10 @@ public class Issue
 		this.modifiedDate = modifiedDate;
 	}
 
+	/**
+	 * Return the devices known to suffer from this issue.
+	 * @return
+	 */
 	public String[] getAffectedDevices()
 	{
 		if(affectedDevices != null)
@@ -295,12 +368,16 @@ public class Issue
 		else
 			return new String[0];
 	}
-
+	
 	public void setAffectedDevices(String[] affectedDevices)
 	{
 		this.affectedDevices = affectedDevices;
 	}
 
+	/**
+	 * Return the device models known to suffer from this issue.
+	 * @return
+	 */
 	public String[] getAffectedModels()
 	{
 		if(affectedModels != null)
@@ -314,6 +391,10 @@ public class Issue
 		this.affectedModels = affectedModels;
 	}
 
+	/**
+	 * Return the Android SDK versions known to suffer from this issue.
+	 * @return
+	 */
 	public String[] getAffectedSDKs()
 	{
 		if(affectedSDKs != null)

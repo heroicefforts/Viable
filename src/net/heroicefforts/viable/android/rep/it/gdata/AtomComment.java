@@ -12,6 +12,12 @@ import net.heroicefforts.viable.android.dao.Comment;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+/**
+ * This class extends comment to add handling of the Gdata Atom protocol.
+ * 
+ * @author jevans
+ *
+ */
 public class AtomComment extends Comment
 {
 

@@ -16,11 +16,11 @@ import java.util.zip.GZIPInputStream;
 
 import net.heroicefforts.viable.android.dao.Comment;
 import net.heroicefforts.viable.android.dao.Issue;
-import net.heroicefforts.viable.android.rep.NetworkException;
 import net.heroicefforts.viable.android.rep.ServiceException;
 import net.heroicefforts.viable.android.rep.it.auth.Authenticate;
 import net.heroicefforts.viable.android.rep.it.auth.AuthenticationException;
 import net.heroicefforts.viable.android.rep.it.auth.GCLAccountAuthenticator;
+import net.heroicefforts.viable.android.rep.it.auth.NetworkException;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -30,16 +30,24 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
 
-
+/**
+ * The service class for interacting with the Gdata Issues protocol.
+ * 
+ * @author jevans
+ *
+ */
 public class ProjectHostingService
 {
 	private static final String TAG = "ProjectHostingService";
+
+	private static final int CONN_TIMEOUT = 5000;
 	
 	private static final String EOL = System.getProperty("line.separator");
 	private static final String SALT_STACKTRACE = "<p>Stacktrace:  ";
@@ -53,24 +61,19 @@ public class ProjectHostingService
 
 	public ProjectHostingService()
 	{
-		httpclient = new DefaultHttpClient();		
+		httpclient = new DefaultHttpClient();
+		HttpConnectionParams.setConnectionTimeout(httpclient.getParams(), CONN_TIMEOUT);		
 	}
 
+	/**
+	 * Sets the authentication token to be used for actions that require authentication.
+	 * 
+	 * @param token a Google Client Login "code" token.
+	 */
 	public void setAuthSubToken(String token)
 	{
 		authToken = token;
 	}
-
-//	private static class Log {
-//		private static void v(String tag, String msg)
-//		{
-//			System.out.println(tag + ":  " + msg);
-//		}
-//		private static void d(String tag, String msg)
-//		{
-//			System.out.println(tag + ":  " + msg);
-//		}
-//	}
 	
 	public void setUserCredentials(String username, String password)
 		throws AuthenticationException, NetworkException
@@ -78,6 +81,13 @@ public class ProjectHostingService
 		authToken = Authenticate.authenticate(username, password, GCLAccountAuthenticator.TOKEN_TYPE_ISSUE_TRACKER);
 	}
 
+	/**
+	 * Wraps the request in authentication and gzip headers before executing it.
+	 * 
+	 * @param request the request to be executed.
+	 * @return the client response
+	 * @throws IOException if an error occurs
+	 */
 	private HttpResponse execute(HttpUriRequest request)
 		throws IOException
 	{
@@ -92,6 +102,13 @@ public class ProjectHostingService
 		return httpclient.execute(request);
 	}
 	
+	/**
+	 * Reads the supplied response body and converts it to a JSON object.
+	 * @param response the client response.
+	 * @return the JSON representation of the response
+	 * @throws IOException if an service error occurs
+	 * @throws JSONException if a parsing error occurs.
+	 */
 	private JSONObject readJSON(HttpResponse response) throws IOException, JSONException
 	{
 		String body = readResponse(response);
@@ -99,6 +116,12 @@ public class ProjectHostingService
 		return obj;
 	}
 
+	/**
+	 * Reads the response body and returns a string.  This also handles gzip decompression, if necessary.
+	 * @param response the client response
+	 * @return a string of the response body.
+	 * @throws IOException if a service error occurs.
+	 */
 	private String readResponse(HttpResponse response) throws IOException
 	{
 		InputStream instream = response.getEntity().getContent();
@@ -121,6 +144,12 @@ public class ProjectHostingService
 		return body;
 	}
 	
+	/**
+	 * Execute the specified query.
+	 * @param myQuery a legitimate Gdata Issue query.
+	 * @return a feed of corresponding found issues.
+	 * @throws ServiceException if a service error occurs.
+	 */
 	public IssuesFeed query(IssuesQuery myQuery)
 		throws ServiceException
 	{
@@ -141,6 +170,12 @@ public class ProjectHostingService
 		}
 	}
 
+	/**
+	 * Retrieves a single issue based upon an issue entity url.
+	 * @param feedUrl an issue entity url.
+	 * @return the issue entity or null if the entity was not found.
+	 * @throws ServiceException if a service error occurs.
+	 */
 	public Issue getEntry(URL feedUrl)
 		throws ServiceException
 	{
@@ -171,6 +206,12 @@ public class ProjectHostingService
 		}
 	}
 
+	/**
+	 * Fetches a feed of issue comments.
+	 * @param feedUrl a valid Gdata issue URL to issue comments
+	 * @return a feed of issue comments
+	 * @throws ServiceException if a service error occurs.
+	 */
 	public IssueCommentsFeed getFeed(URL feedUrl)
 		throws ServiceException
 	{
@@ -239,6 +280,14 @@ public class ProjectHostingService
 		return new Comment(id, body.toString(), author.toString(), created);
 	}
 
+	/**
+	 * Inserts the supplied issue using the GData Issue protocol.
+	 * @param postUrl the valid issue post URL.
+	 * @param issue the issue to insert.
+	 * @return the issue populated with the returned id and values.
+	 * @throws AuthenticationException if authentication to the service fails
+	 * @throws ServiceException if a service error occurs
+	 */
 	public Issue insert(URL postUrl, Issue issue)
 		throws AuthenticationException, ServiceException
 	{
@@ -271,6 +320,14 @@ public class ProjectHostingService
 		}
 	}
 
+	/**
+	 * Inserts the supplied issue comment using the GData Issue protocol.
+	 * @param postUrl the valid issue comment post URL.
+	 * @param issue the issue comment to insert.
+	 * @return the issue comment populated with the returned id and values.
+	 * @throws AuthenticationException if authentication to the service fails
+	 * @throws ServiceException if a service error occurs
+	 */
 	public Comment insert(URL postUrl, Comment comment)
 		throws AuthenticationException, ServiceException
 	{

@@ -10,11 +10,11 @@ import net.heroicefforts.viable.android.dao.VersionDetail;
 import net.heroicefforts.viable.android.rep.CreateException;
 import net.heroicefforts.viable.android.rep.RepositoryFactory;
 import net.heroicefforts.viable.android.rep.ServiceException;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -27,17 +27,26 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
+/**
+ * Activity for displaying the summary info and vital issue tracking statistics of a project.
+ * 
+ * @author jevans
+ *
+ */
 public class AppStatsActivity extends Activity
 {
 	private static final String TAG = "AppStatsActivity";
 	
 	private RepositoryFactory factory;
+
+	private ProgressBar progressBar;
 	
 	
     @Override
@@ -47,6 +56,7 @@ public class AppStatsActivity extends Activity
         
         setContentView(R.layout.app_stats);
 
+        progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
         factory = new RepositoryFactory(this);
         
     	Spinner appNameSpinner = (Spinner) findViewById(R.id.AppNameSpinner);
@@ -57,24 +67,15 @@ public class AppStatsActivity extends Activity
         
     }
     
+    /**
+     * The event handler for the application spinner.  It reloads the display information when a new application is selected.
+     */
     private OnItemSelectedListener appChosen = new OnItemSelectedListener()
     {
 		public void onItemSelected(AdapterView<?> l, View v, int position, long id)
 		{
 			String appName = (String) l.getItemAtPosition(position);
-			try
-			{
-				final ProjectDetail pd = factory.getRepository(appName).getApplicationStats(appName);
-				loadStats(appName, pd);
-			}
-			catch (CreateException e)
-			{
-				Error.handle(AppStatsActivity.this, e);
-			}
-			catch (ServiceException e)
-			{
-				Error.handle(AppStatsActivity.this, e);
-			}
+			new LoadAppStatsTask().execute(appName);
 		}
 
 		public void onNothingSelected(AdapterView<?> arg0)
@@ -84,7 +85,56 @@ public class AppStatsActivity extends Activity
     	
     };
     
-	private void loadStats(String appName, final ProjectDetail pd)
+    /**
+     * Asynchronous task for asynchronously requesting application information and later displaying it.
+     * 
+     * @author jevans
+     *
+     */
+    private class LoadAppStatsTask extends AsyncTask<String, Void, ProjectDetail> 
+    {
+    	private String appName;
+
+    	
+    	public void onPreExecute()
+    	{
+    		progressBar.setVisibility(View.VISIBLE);
+    	}
+    	
+    	protected ProjectDetail doInBackground(String...appNames)
+    	{
+    		this.appName = appNames[0];
+    		try {
+    			return factory.getRepository(appName).getApplicationStats();
+    		}
+			catch (CreateException e)
+			{
+				Error.handle(AppStatsActivity.this, e);
+				return null;
+			}
+			catch (ServiceException e)
+			{
+				Error.handle(AppStatsActivity.this, e);
+				return null;
+			}
+    		
+    	}
+    	
+    	protected void onPostExecute(final ProjectDetail pd)
+    	{
+			showProjectDetails(pd, appName);
+			progressBar.setVisibility(View.GONE);			
+		}
+		
+	}
+
+    /**
+     * Set the project details to the view.
+     * 
+     * @param pd the project details
+     * @param appName the application name of the project supplied
+     */
+	private void showProjectDetails(final ProjectDetail pd, String appName)
 	{
 		if(pd == null)
 		{
@@ -122,7 +172,7 @@ public class AppStatsActivity extends Activity
 		else
 			((TextView) findViewById(R.id.URLTextView)).setText("");
 
-		setCounts(R.id.BugsUnresTextView, R.id.BugsResTextView, pd.getUnfixedBugs(), pd.getFixedBugs());
+		setIssueCounts(R.id.BugsUnresTextView, R.id.BugsResTextView, pd.getUnfixedBugs(), pd.getFixedBugs());
 		((TextView) findViewById(R.id.ImprsUnresTextView)).setText(String.valueOf(pd.getUnfixedImprovements()));
 		((TextView) findViewById(R.id.ImprsResTextView)).setText(String.valueOf(pd.getFixedImprovements()));
 		((TextView) findViewById(R.id.FeaturesUnresTextView)).setText(String.valueOf(pd.getUnfixedFeatures()));
@@ -135,9 +185,9 @@ public class AppStatsActivity extends Activity
 		DateFormat fmt = SimpleDateFormat.getDateInstance();
 		for(VersionDetail version : pd.getVersions())
 		{
-			TableRow tr = new TableRow(this);
+			TableRow tr = new TableRow(AppStatsActivity.this);
 			
-			TextView name = new TextView(this);
+			TextView name = new TextView(AppStatsActivity.this);
 			SpannableStringBuilder nameStr = new SpannableStringBuilder();
 			nameStr.append(version.getName());
 			if(factory.getApplicationVersion(appName).equals(version.getName()))
@@ -145,7 +195,7 @@ public class AppStatsActivity extends Activity
 			name.setText(nameStr);			
 			tr.addView(name);
 			
-			TextView date = new TextView(this);
+			TextView date = new TextView(AppStatsActivity.this);
 			//date.setLayoutParams(lp);
 			if(version.getReleaseDate() != null)
 				date.setText(fmt.format(version.getReleaseDate()));
@@ -160,11 +210,18 @@ public class AppStatsActivity extends Activity
 
 			vTable.addView(tr);
 			vTable.requestLayout();
-		}
-		
+		}		
 	}
-
-	private void setCounts(int unresRes, int resRes, long unfixedCnt, long fixedCnt)
+    
+	/**
+	 * Sets the vital bug counts for a row in the table view.
+	 * 
+	 * @param unresRes resource id for the unresolved text view 
+	 * @param resRes resource id for the resolved text view
+	 * @param unfixedCnt the unresolved issue count
+	 * @param fixedCnt the fixed issue count
+	 */
+	private void setIssueCounts(int unresRes, int resRes, long unfixedCnt, long fixedCnt)
 	{
 		float pctFixed = ((float) fixedCnt) / unfixedCnt;
 

@@ -1,13 +1,19 @@
 package net.heroicefforts.viable.android.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Data class containing summary information for an issue project.
+ * 
+ * @author jevans
+ *
+ */
 public class ProjectDetail
 {
 	private String name;
@@ -27,6 +33,12 @@ public class ProjectDetail
 		//empty
 	}
 	
+	/**
+	 * Instantiate the project state based upon the JIRA JSON format.
+	 * 
+	 * @param obj JIRA JSON project object 
+	 * @throws JSONException if there's an error parsing the JSON.
+	 */
 	public ProjectDetail(JSONObject obj)
 		throws JSONException
 	{
@@ -46,9 +58,14 @@ public class ProjectDetail
 			JSONArray vers = obj.getJSONArray("versions");
 			for(int i = 0; i < vers.length(); i++)
 				versions.add(new VersionDetail(vers.getJSONObject(i)));
+			Collections.sort(versions);
 		}
 	}
 
+	/**
+	 * Return the user friendly name of the project.
+	 * @return
+	 */
 	public String getName()
 	{
 		return name;
@@ -59,6 +76,10 @@ public class ProjectDetail
 		this.name = name;
 	}
 
+	/**
+	 * Return a project summary.
+	 * @return
+	 */
 	public String getDescription()
 	{
 		return description;
@@ -69,6 +90,10 @@ public class ProjectDetail
 		this.description = description;
 	}
 
+	/**
+	 * Return the project's lead developer / contact.
+	 * @return
+	 */
 	public String getLead()
 	{
 		return lead;
@@ -79,6 +104,10 @@ public class ProjectDetail
 		this.lead = lead;
 	}
 
+	/**
+	 * Return the project's main site URL.
+	 * @return
+	 */
 	public String getUrl()
 	{
 		return url;
@@ -89,6 +118,10 @@ public class ProjectDetail
 		this.url = url;
 	}
 
+	/**
+	 * Return the number of defects that have not been closed.
+	 * @return
+	 */
 	public long getUnfixedBugs()
 	{
 		return unfixedBugs;
@@ -99,6 +132,10 @@ public class ProjectDetail
 		this.unfixedBugs = unfixedBugs;
 	}
 
+	/**
+	 * Return the number of defects that have been closed.
+	 * @return
+	 */
 	public long getFixedBugs()
 	{
 		return fixedBugs;
@@ -109,6 +146,10 @@ public class ProjectDetail
 		this.fixedBugs = fixedBugs;
 	}
 
+	/**
+	 * Return the number of improvements that have not been closed.
+	 * @return
+	 */
 	public long getUnfixedImprovements()
 	{
 		return unfixedImprovements;
@@ -119,6 +160,10 @@ public class ProjectDetail
 		this.unfixedImprovements = unfixedImprovements;
 	}
 
+	/**
+	 * Return the number of improvements that have been closed.
+	 * @return
+	 */
 	public long getFixedImprovements()
 	{
 		return fixedImprovements;
@@ -129,6 +174,10 @@ public class ProjectDetail
 		this.fixedImprovements = fixedImprovements;
 	}
 
+	/**
+	 * Return the number of new features that have not been closed.
+	 * @return
+	 */
 	public long getUnfixedFeatures()
 	{
 		return unfixedFeatures;
@@ -139,6 +188,10 @@ public class ProjectDetail
 		this.unfixedFeatures = unfixedFeatures;
 	}
 
+	/**
+	 * Return the number of new features that have been closed.
+	 * @return
+	 */
 	public long getFixedFeatures()
 	{
 		return fixedFeatures;
@@ -149,6 +202,10 @@ public class ProjectDetail
 		this.fixedFeatures = fixedFeatures;
 	}
 
+	/**
+	 * Return a list of releases:  past, present, and future.
+	 * @return a non-null list of release data.
+	 */
 	public List<VersionDetail> getVersions()
 	{
 		return versions;

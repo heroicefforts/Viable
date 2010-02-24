@@ -1,7 +1,6 @@
 package net.heroicefforts.viable.android.rep.it.auth;
 
 import net.heroicefforts.viable.android.R;
-import net.heroicefforts.viable.android.rep.NetworkException;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
@@ -12,9 +11,14 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * This activity collects the user's Google credentials authenticates them and creates the account.
+ * 
+ * @author jevans
+ *
+ */
 public class CredsActivity extends PreferenceActivity
 {
 	private Preference passPref;
@@ -38,8 +42,6 @@ public class CredsActivity extends PreferenceActivity
 	public void onStart()
 	{
 		super.onStart();
-		Log.d("CredsActivity", "OnStart!");
-		Log.d("CredsActivity", "Response:  " + response);
 	}
 	
 	@Override
@@ -74,14 +76,17 @@ public class CredsActivity extends PreferenceActivity
 				try
 				{
 					String tokenType = getIntent().getStringExtra(GCLAccountAuthenticator.EXTRA_TOKEN_TYPE);
+					if(tokenType == null)
+						tokenType = GCLAccountAuthenticator.TOKEN_TYPE_ISSUE_TRACKER; //TODO add pick list
 					String token = Authenticate.authenticate(email, (String) newValue, tokenType);
-					Log.v("CredsActivity", token);
+
 					AccountManager am = (AccountManager) getSystemService(Context.ACCOUNT_SERVICE);
 					Bundle bundle = new Bundle();
 					bundle.putString(AccountManager.KEY_ACCOUNT_NAME, email);
 					bundle.putString(AccountManager.KEY_ACCOUNT_TYPE, GCLAccountAuthenticator.ACCT_TYPE);
 					bundle.putString(tokenType, token);
 					am.addAccountExplicitly(new Account(email, GCLAccountAuthenticator.ACCT_TYPE), null, bundle);
+					
 					Intent intent = new Intent();
 					intent.putExtras(bundle);
 					response.onResult(bundle);

@@ -20,7 +20,12 @@ import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 
-
+/**
+ * This class handles the display of issues fetched from remote repositories.
+ * 
+ * @author jevans
+ *
+ */
 public class RemoteIssueListActivity extends AbstractIssueListActivity
 {
     public static final int MENU_ITEM_REFRESH = Menu.FIRST;
@@ -33,7 +38,7 @@ public class RemoteIssueListActivity extends AbstractIssueListActivity
 		return appNames;
 	}
     
-	protected SimpleCursorAdapter getIssueCursorAdapter(String firstApp, String version) 
+	protected Cursor getIssueCursor(String firstApp, String version) 
 		throws ServiceException
 	{
 		RemoteIssueCursor cursor = new RemoteIssueCursor(getFactory().getRepository(firstApp));
@@ -44,11 +49,7 @@ public class RemoteIssueListActivity extends AbstractIssueListActivity
 			params.setProjectAffectedVersions(firstApp, Arrays.asList(new String[] { "all" }));
 		cursor.setSearchParams(params);
 
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.issue_list_item, cursor,
-		    new String[] { Issues.SUMMARY, Issues.ISSUE_ID, Issues.ISSUE_TYPE, Issues.ISSUE_PRIORITY, Issues.ISSUE_STATE }, 
-		    new int[] { R.id.SummaryTextView, R.id.IssueIdTextView, R.id.TypeImageView, R.id.PriorityImageView, R.id.StateImageView });
-		
-		return adapter;
+		return cursor;
 	}
 		 
 	protected ArrayList<String> getVersionList(int position, String appName) 

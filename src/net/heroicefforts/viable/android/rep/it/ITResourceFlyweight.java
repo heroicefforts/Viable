@@ -13,12 +13,17 @@ import java.util.Set;
 import net.heroicefforts.viable.android.R;
 import net.heroicefforts.viable.android.dao.Issue;
 import net.heroicefforts.viable.android.rep.IssueResource;
-import net.heroicefforts.viable.android.rep.NoOpIssueResource;
+import net.heroicefforts.viable.android.rep.NullIssueResource;
 import net.heroicefforts.viable.android.rep.TypePriorityStateResource;
-import net.heroicefforts.viable.android.rep.jira.JIRAIssueResource;
 import android.graphics.Color;
 import android.util.Log;
 
+/**
+ * This class lazily caches all the issue states recognized by the I.T. repository. 
+ * 
+ * @author jevans
+ *
+ */
 public class ITResourceFlyweight
 {
 	private static final String TAG = "ITResourceFlyweight";
@@ -62,7 +67,7 @@ public class ITResourceFlyweight
 		if(resource == null)
 		{
 			Log.w(TAG, "No issue state defined for Type:  '" + type + "', Priority:  '" + priority + "', State:  '" + state + "'.  Returning no-op.");
-			resource = new NoOpIssueResource(type, priority, state);
+			resource = new NullIssueResource(type, priority, state);
 		}
 		
 		return resource;
@@ -148,7 +153,7 @@ public class ITResourceFlyweight
 	private static final TypePriorityStateResource put(HashMap<String, TypePriorityStateResource> states, String type, String priority,
 			String state, int nameRes, int descRes, int iconRes)
 	{
-		JIRAIssueResource resource = new JIRAIssueResource(type, priority, state, nameRes, descRes, iconRes);
+		ITIssueResource resource = new ITIssueResource(type, priority, state, nameRes, descRes, iconRes);
 		for(String t : select(type, TYPES))
 			for(String p : select(priority, PRIORITIES))
 				for(String s : select(state, STATES))

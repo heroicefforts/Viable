@@ -17,10 +17,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 
-
+/**
+ * This class handles the retrieval of user specific issues locally stored on the phone.
+ * 
+ * @author jevans
+ *
+ */
 public class LocalIssueListActivity extends AbstractIssueListActivity 
 {
     private static final String TAG = "IssuesList";
@@ -75,7 +79,7 @@ public class LocalIssueListActivity extends AbstractIssueListActivity
 
 	}
 	
-	protected SimpleCursorAdapter getIssueCursorAdapter(String appName, String version)
+	protected Cursor getIssueCursor(String appName, String version)
 	{
 	    final String[] PROJECTION = new String[] {
             Issues._ID,
@@ -100,10 +104,7 @@ public class LocalIssueListActivity extends AbstractIssueListActivity
 			cursor = managedQuery(getIntent().getData(), PROJECTION, Issues.APP_NAME + " = ? and " + Issues.APP_VERSION + " like ?", new String[] { appName, "%" + version + "%" },
 	                Issues.DEFAULT_SORT_ORDER);
 			
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(LocalIssueListActivity.this, R.layout.issue_list_item, cursor,
-                new String[] { Issues.SUMMARY, Issues.ISSUE_ID, Issues.ISSUE_TYPE, Issues.ISSUE_PRIORITY, Issues.ISSUE_STATE }, 
-                new int[] { R.id.SummaryTextView, R.id.IssueIdTextView, R.id.TypeImageView, R.id.PriorityImageView, R.id.StateImageView });
-		return adapter;
+		return cursor;
 	}
 
     protected OnItemClickListener getIssueListClickListener()

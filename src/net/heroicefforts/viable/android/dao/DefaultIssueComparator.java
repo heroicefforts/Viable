@@ -2,7 +2,12 @@ package net.heroicefforts.viable.android.dao;
 
 import java.util.Comparator;
 
-
+/**
+ * Sorts issues in descending order by application and id.
+ * 
+ * @author jevans
+ *
+ */
 public class DefaultIssueComparator implements Comparator<Issue>
 {
 

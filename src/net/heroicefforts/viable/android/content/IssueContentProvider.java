@@ -18,8 +18,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 /**
- * Provides access to a database of notes. Each note has a title, the note
- * itself, a creation date and a modified data.
+ * Provides access to a database of locally stored Issue content.
  */
 public class IssueContentProvider extends ContentProvider {
 

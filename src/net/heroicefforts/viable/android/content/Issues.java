@@ -3,6 +3,12 @@ package net.heroicefforts.viable.android.content;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+/**
+ * Constant class for issue content.
+ * 
+ * @author jevans
+ *
+ */
 public class Issues implements BaseColumns
 {
     public static final String AUTHORITY = "net.heroicefforts.viable.Issues";
@@ -17,14 +23,17 @@ public class Issues implements BaseColumns
     public static final Uri VERSION_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/versions");
     
     /**
-     * The MIME type of {@link #CONTENT_URI} providing a directory of notes.
+     * The MIME type of {@link #CONTENT_URI} providing a directory of issues.
      */
     public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.heroicefforts.issue";
 
+    /**
+     * The MIME type of {@link #CONTENT_URI} providing a directory of issue trackable applications.
+     */
     public static final String APP_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.heroicefforts.issue.app";
     
     /**
-     * The MIME type of a {@link #CONTENT_URI} sub-directory of a single note.
+     * The MIME type of a {@link #CONTENT_URI} sub-directory of a single issue.
      */
     public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.heroicefforts.issue";
 

@@ -13,6 +13,12 @@ import android.database.AbstractCursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.util.Log;
 
+/**
+ * A cursor that provides access to a issues in a remote repository.
+ * 
+ * @author jevans
+ *
+ */
 public class RemoteIssueCursor extends AbstractCursor
 {
 	private static final String TAG = "RemoteIssueCursor";
@@ -34,6 +40,11 @@ public class RemoteIssueCursor extends AbstractCursor
 	private boolean selfChange;
 	
 	
+	/**
+	 * Instantiate an issue cursor the the repository.
+	 * 
+	 * @param remoteRepository the remote issue repository.
+	 */
 	public RemoteIssueCursor(Repository remoteRepository)
 	{
 		this.repository = remoteRepository;

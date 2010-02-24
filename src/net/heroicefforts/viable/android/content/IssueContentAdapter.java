@@ -7,6 +7,12 @@ import net.heroicefforts.viable.android.dao.Issue;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+/**
+ * This class converts issues between object type and cursor type.
+ * 
+ * @author jevans
+ *
+ */
 public class IssueContentAdapter
 {
 	private Issue issue;
@@ -36,6 +42,10 @@ public class IssueContentAdapter
 		issue.setModifiedDate(new Date(cursor.getLong(cursor.getColumnIndex(Issues.MODIFIED_DATE))));		
 	}
 	
+	/**
+	 * Convert the issue state to content persistable values.
+	 * @return content values for the adapter's issue state.
+	 */
 	public ContentValues toContentValues()
 	{
 		ContentValues values = new ContentValues();
@@ -55,9 +65,12 @@ public class IssueContentAdapter
 		return values;
 	}
 	
+	/**
+	 * Convert the issue state to an issue
+	 * @return a populated issue
+	 */
 	public Issue toIssue()
 	{
-		
 		return issue;		
 	}
 }

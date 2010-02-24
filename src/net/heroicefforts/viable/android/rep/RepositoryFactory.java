@@ -16,6 +16,26 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ * A factory class for generating repositories associated with Viable client application.  The factory reads through the
+ * manifests of the installed applications.  Any containing Viable meta-data are prepared for instantiation.  This should be
+ * considered a heavy object.  It is thread-safe.<br/>
+ * <br/>
+ * Concrete repository implementations are expected to implement a public constructor matching the signature
+ * ConcreteClass(String, Activity, Bundle).<br/>
+ * <br/>
+ * New repository classes must be registered with Viable by entering a meta-data entry in the Viable's manifest.  The key should
+ * define the repository type name and the value should specify the fully qualified concrete repository class name.<br/>
+ * <br/>
+ * Client applications may reference repository types with the key "viable-provider" and value matching the repository type name.  Other
+ * information may be required, but will be specific to the repository implementation.
+ * 
+ * @see net.heroicefforts.viable.android.rep.it.GIssueTrackerRepository
+ * @see net.heroicefforts.viable.android.rep.jira.JIRARepository
+ * 
+ * @author jevans
+ *
+ */
 public class RepositoryFactory
 {
 	private static final String TAG = "RepositoryFactory";
@@ -25,7 +45,14 @@ public class RepositoryFactory
 	private Activity act;
 	private HashMap<String, Repository> repMap = new HashMap<String, Repository>();
 	
+	/**
+	 * Instantiate the factory.
+	 * 
+	 * @param act the main activity
+	 * @throws CreateException if Viable is misconfigured.
+	 */
 	public RepositoryFactory(Activity act)
+		throws CreateException
 	{
 		this.act = act;
 		PackageManager pkgMgr = act.getPackageManager();
@@ -56,16 +83,31 @@ public class RepositoryFactory
 			throw new CreateException("Cannot create factory.  Could not locate 'Viable' application info.  Was the app renamed?");
 	}
 	
+	/**
+	 * Returns the names of the Viable client applications.
+	 * @return a non-null set of application labels.
+	 */
 	public Set<String> getApplicationNames()
 	{
 		return Collections.unmodifiableSet(appBundles.keySet());
 	}
 	
+	/**
+	 * Returns the current version of the specified application installed on this device.
+	 * @param appName the application label.
+	 * @return the version name
+	 */
 	public String getApplicationVersion(String appName)
 	{
 		return appVersion.get(appName);
 	}
 	
+	/**
+	 * Instantiates a remote repository for this application. 
+	 * @param appName the application label.
+	 * @return a remote issue repository.
+	 * @throws CreateException if the application clients Viable configuration is incorrect.
+	 */
 	public Repository getRepository(String appName)
 		throws CreateException
 	{

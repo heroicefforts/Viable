@@ -5,7 +5,12 @@ import net.heroicefforts.viable.android.rep.ServiceException;
 import android.content.Context;
 import android.widget.Toast;
 
-
+/**
+ * Utility class for alerting users to errors that bubble to the UI in a uniform fashion.
+ * 
+ * @author jevans
+ *
+ */
 public class Error
 {
 	public static void handle(Context ctx, CreateException ce)

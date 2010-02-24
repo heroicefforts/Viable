@@ -105,4 +105,9 @@
 	<string name="auth_label">GCL Account</string>
 	<string name="auth_failed">Authentication Failed</string>
 	<string name="fatal_error">Fatal Error</string>
+	
+	<string name="disconnected_title">Network Unavailable</string>
+	<string name="retry">Retry</string>
+	<string name="close">Close</string>
+	<string name="disconnected_msg">A network connection is required to access the issue tracking systems.  If a connection cannot be re-established, then Viable will be closed.</string>
 </resources>

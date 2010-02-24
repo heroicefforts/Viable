@@ -2,9 +2,8 @@
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical">
-	<Spinner android:layout_height="wrap_content"
-		android:layout_width="fill_parent" android:id="@+id/AppNameSpinner"
-		android:prompt="@string/app_prompt"></Spinner>
+	<LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="fill_parent"><Spinner android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/AppNameSpinner" android:prompt="@string/app_prompt" android:layout_weight="1"></Spinner><ProgressBar android:layout_height="wrap_content" android:id="@+id/ProgressBar" android:layout_width="fill_parent" android:layout_weight="5" android:indeterminate="true" android:indeterminateBehavior="repeat"></ProgressBar>
+</LinearLayout>
 	<TextView android:text="@+id/TextView01" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/DescriptionTextView"></TextView>
 	<TextView android:text="@+id/TextView01" android:layout_width="wrap_content"
@@ -31,5 +30,6 @@
 <TableLayout android:layout_height="wrap_content" android:layout_marginTop="20sp" android:id="@+id/VersionTableLayout" android:layout_width="fill_parent" android:stretchColumns="0, 1"><TableRow android:id="@+id/TableRow05" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView07" android:layout_height="wrap_content" android:text="@string/version" android:layout_weight="1" android:layout_width="fill_parent"></TextView>
 <TextView android:id="@+id/TextView08" android:layout_height="wrap_content" android:text="@string/release_date" android:layout_weight="1" android:layout_width="fill_parent"></TextView>
 </TableRow></TableLayout>
+
 
 </LinearLayout>

@@ -21,12 +21,12 @@ import net.heroicefforts.viable.android.dao.SearchResults;
 import net.heroicefforts.viable.android.dao.VersionDetail;
 import net.heroicefforts.viable.android.rep.CreateException;
 import net.heroicefforts.viable.android.rep.IssueResource;
-import net.heroicefforts.viable.android.rep.NetworkException;
 import net.heroicefforts.viable.android.rep.Repository;
 import net.heroicefforts.viable.android.rep.ServiceException;
 import net.heroicefforts.viable.android.rep.it.auth.Authenticate;
 import net.heroicefforts.viable.android.rep.it.auth.AuthenticationException;
 import net.heroicefforts.viable.android.rep.it.auth.GCLAccountAuthenticator;
+import net.heroicefforts.viable.android.rep.it.auth.NetworkException;
 import net.heroicefforts.viable.android.rep.it.gdata.IssueCommentsFeed;
 import net.heroicefforts.viable.android.rep.it.gdata.IssuesFeed;
 import net.heroicefforts.viable.android.rep.it.gdata.IssuesQuery;
@@ -44,16 +44,34 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ * This is the repository implementation that bridges to the Google Issue Tracker.  Viable client applications that
+ * wish to register their I.T. project should add lines similar to those found below:<br/>
+ * <br/><pre>
+   &lt;meta-data android:name="viable-provider" android:value="Google" /&gt;
+   &lt;meta-data android:name="viable-project-name" android:value="&lt;your project name, defined after the /p/ in Google's URL&gt;" /&gt;
+   &lt;meta-data android:name="viable-project-description" android:value="A description of your project." /&gt;
+   &lt;meta-data android:name="viable-project-lead" android:value="&lt;Your Name&gt;" /&gt;
+   &lt;meta-data android:name="viable-project-versions" android:value="1.0.0, 1.1.0" /&gt;
+ * </pre><br/>
+ * 
+ * @author jevans
+ * 
+ */
 public class GIssueTrackerRepository implements Repository
 {
 	private static final String PARAM_PROJECT_NAME = "viable-project-name";
 	private static final String PARAM_VERSIONS = "viable-project-versions";
 	protected static final String TAG = "GIssueTrackerRepository";
+	private static final String PARAM_PROJECT_DESC = "viable-project-description";
+	private static final String PARAM_PROJECT_ADMIN = "viable-project-lead";
 
 	private Activity act;
 	private static ProjectHostingService host;
 	private String projectName;
 	private String appName;
+	private String description;
+	private String lead;
 
 	private List<VersionDetail> versions = new ArrayList<VersionDetail>();
 	private AccountManagerCallback<Bundle> callback = new AccountManagerCallback<Bundle>() {
@@ -82,7 +100,8 @@ public class GIssueTrackerRepository implements Repository
 		this.projectName = metaData.getString(PARAM_PROJECT_NAME);
 		if(projectName == null)
 			throw new CreateException("No '" + "viable-project-name" + "' meta-data field defined for application.  Google Isusue Tracker Repository cannot be constructed.");
-		
+		this.description = metaData.getString(PARAM_PROJECT_DESC);
+		this.lead = metaData.getString(PARAM_PROJECT_ADMIN);
 		String versionStr = metaData.getString(PARAM_VERSIONS);
 		if(versionStr != null)
 		{
@@ -94,7 +113,7 @@ public class GIssueTrackerRepository implements Repository
 		try
 		{				
 			host = new ProjectHostingService();
-			String token = Authenticate.authenticate(act);
+			String token = Authenticate.authenticate(act, GCLAccountAuthenticator.TOKEN_TYPE_ISSUE_TRACKER);
 			if(token != null)
 				host.setAuthSubToken(token);
 			else
@@ -203,12 +222,10 @@ public class GIssueTrackerRepository implements Repository
 		}
 	}
 
-	public ProjectDetail getApplicationStats(String appName)
+	public ProjectDetail getApplicationStats()
 		throws ServiceException
 	{
 		String name = appName;
-		String description = "";
-		String lead = "";
 		String url = "http://code.google.com/p/" + projectName;
 		long unfixedBugs = count("http://code.google.com/feeds/issues/p/" + projectName + "/issues/full?can=open&label=Type-Defect");
 		long fixedBugs = count("http://code.google.com/feeds/issues/p/" + projectName + "/issues/full?label=Type-Defect") - unfixedBugs;

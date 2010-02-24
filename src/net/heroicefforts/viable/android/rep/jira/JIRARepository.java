@@ -49,6 +49,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ * This is the repository implementation that bridges to the JIRA Issue Tracker.  Viable client applications that
+ * wish to register their JIRA project should add lines similar to those found below:<br/>
+ * <br/><pre>
+   &lt;meta-data android:name="viable-provider" android:value="JIRA" /&gt;
+   &lt;meta-data android:name="viable-provider-location" android:value="http://&lt;your domain&gt;/rest/viable/1.0/issue" /&gt;	
+ * </pre><br/>
+ *
+ * Please note that you must install Viable's server-side JIRA plugin before the Viable client can connect.  See 
+ * the viable-jira-plugin subproject for further details.
+ * 
+ * @author jevans
+ *
+ */
 public class JIRARepository implements Repository
 {
 	private static final String TAG = "JIRARepository";
@@ -67,7 +81,7 @@ public class JIRARepository implements Repository
 		this(appName, metaData.getString("viable-provider-location"));
 	}
 
-    public JIRARepository(String appName, String location)
+    private JIRARepository(String appName, String location)
     	throws CreateException
 	{
 		if(location == null)
@@ -79,9 +93,6 @@ public class JIRARepository implements Repository
 		HttpConnectionParams.setConnectionTimeout(httpclient.getParams(), CONN_TIMEOUT);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.heroicefforts.viable.android.Repository#exists(net.heroicefforts.viable.android.Issue)
-	 */
 	public Issue exists(Issue issue) 
 		throws ServiceException
     {
@@ -311,7 +322,7 @@ public class JIRARepository implements Repository
 		}
     }
     
-    public ProjectDetail getApplicationStats(String appName) 
+    public ProjectDetail getApplicationStats() 
     	throws ServiceException
     {
 		try

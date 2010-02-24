@@ -17,6 +17,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * This class handles the binding of IssueResources to the issue type spinner views (i.e. icon, issue type name, description).
+ * 
+ * @author jevans
+ *
+ */
 public class IssueSelectionAdapter extends ArrayAdapter<IssueResource>
 {
 	private static final int ICON_WIDTH = 48;

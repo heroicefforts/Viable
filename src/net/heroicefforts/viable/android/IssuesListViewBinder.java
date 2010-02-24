@@ -10,6 +10,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 
+/**
+ * Binds issue values to the list view.
+ * 
+ * @author jevans
+ *
+ */
 public class IssuesListViewBinder implements ViewBinder
 {
 	private Context ctx;

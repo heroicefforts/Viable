@@ -13,11 +13,17 @@ import java.util.Set;
 import net.heroicefforts.viable.android.R;
 import net.heroicefforts.viable.android.dao.Issue;
 import net.heroicefforts.viable.android.rep.IssueResource;
-import net.heroicefforts.viable.android.rep.NoOpIssueResource;
+import net.heroicefforts.viable.android.rep.NullIssueResource;
 import net.heroicefforts.viable.android.rep.TypePriorityStateResource;
 import android.graphics.Color;
 import android.util.Log;
 
+/**
+ * This class lazily caches all the issue states recognized by the JIRA repository. 
+ * 
+ * @author jevans
+ *
+ */
 public class JIRAResourceFlyweight
 {
 	private static final String TAG = "JIRAResourceFlyweight";
@@ -51,7 +57,7 @@ public class JIRAResourceFlyweight
 		if(resource == null)
 		{
 			Log.w(TAG, "No issue state defined for Type:  '" + type + "', Priority:  '" + priority + "', State:  '" + state + "'.  Returning no-op.");
-			resource = new NoOpIssueResource(type, priority, state);
+			resource = new NullIssueResource(type, priority, state);
 		}
 		
 		return resource;

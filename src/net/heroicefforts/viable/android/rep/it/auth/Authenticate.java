@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
-import net.heroicefforts.viable.android.rep.NetworkException;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -31,11 +30,27 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ * This class is used to interact with the Google Client Login protocol to attain user tokens for Google services.
+ * 
+ * @author jevans
+ *
+ */
 public class Authenticate
 {
 	private static final String TAG = "Authenticate";
 
-	public static String authenticate(Activity act)
+	/**
+	 * Attempts to authenticate the user using a pre-existing stored authentication token.  If an account exists, but no such token 
+	 * exists, then the user will be prompted by the account authenticator to re-enter their Google credentials to generate the new token.
+	 * 
+	 * @param act the calling activity
+	 * @return the authentication token for the requested service or null if there is no Google Account.
+	 * @throws AuthenticatorException if an error occurs during authentication.
+	 * @throws OperationCanceledException
+	 * @throws IOException
+	 */
+	public static String authenticate(Activity act, String serviceCode)
 		throws AuthenticatorException, OperationCanceledException, IOException
 	{
 		AccountManager mgr = AccountManager.get(act); 
@@ -46,7 +61,7 @@ public class Authenticate
         if(accts.length > 0)
         {
 	        Account acct = accts[0]; 
-	        AccountManagerFuture<Bundle> accountManagerFuture = mgr.getAuthToken(acct, "code", null, act, null, null); 
+	        AccountManagerFuture<Bundle> accountManagerFuture = mgr.getAuthToken(acct, serviceCode, null, act, null, null); 
 	        Bundle authTokenBundle = accountManagerFuture.getResult(); 
 	        String authToken = authTokenBundle.get(AccountManager.KEY_AUTHTOKEN).toString();
 	        
@@ -59,7 +74,18 @@ public class Authenticate
         }
 	}
 	
-	public static final String authenticate(String username, String password, String service) throws AuthenticationException, NetworkException
+	/**
+	 * Directly posts to Google Client Login service to generate an authentication token.
+	 * 
+	 * @param username
+	 * @param password
+	 * @param service the code for the service desired e.g. code
+	 * @return the authentication token for that service.
+	 * @throws AuthenticationException if authentication failed.
+	 * @throws NetworkException if there is an error communicating with the login service.
+	 */
+	public static final String authenticate(String username, String password, String service) 
+		throws AuthenticationException, NetworkException
 	{
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost post = new HttpPost("https://www.google.com/accounts/ClientLogin");

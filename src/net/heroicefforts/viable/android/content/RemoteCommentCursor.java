@@ -14,6 +14,12 @@ import android.database.AbstractCursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.util.Log;
 
+/**
+ * A cursor that provides access to an issue's comments in a remote repository.
+ * 
+ * @author jevans
+ *
+ */
 public class RemoteCommentCursor extends AbstractCursor
 {
 	private static final String TAG = "RemoteIssueCursor";
@@ -30,6 +36,14 @@ public class RemoteCommentCursor extends AbstractCursor
 	private String issueId;
 	
 	
+	/**
+	 * Instantiate the cursor.
+	 * 
+	 * @param remoteRepository the remote repository.
+	 * @param issueId the id of the issue owning the comments.
+	 * 
+	 * @throws ServiceException if there's an error contacting the repository.
+	 */
 	public RemoteCommentCursor(Repository remoteRepository, String issueId) 
 		throws ServiceException
 	{

@@ -1,7 +1,6 @@
 package net.heroicefforts.viable.android;
 
 import java.text.DateFormat;
-import java.util.List;
 
 import net.heroicefforts.viable.android.content.Comments;
 import net.heroicefforts.viable.android.content.IssueContentAdapter;
@@ -13,9 +12,6 @@ import net.heroicefforts.viable.android.rep.IssueResource;
 import net.heroicefforts.viable.android.rep.RepositoryFactory;
 import net.heroicefforts.viable.android.rep.ServiceException;
 import android.app.Activity;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -31,10 +27,23 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+/**
+ * This activity displays the Issue details source from either the local content repository or the issue application's remote repository.
+ * 
+ * @author jevans
+ *
+ */
 public class IssueViewActivity extends Activity
 {
 	private static final String TAG = "IssueViewActivity";
+	
+	/**
+	 * Supply the name of the application to which the issue id belongs.
+	 */
 	public static final String EXTRA_APP_NAME = Issues.APP_NAME;
+	/**
+	 * Supply the id of the issue that should be retrieve from the remote repository.
+	 */
 	public static String EXTRA_ISSUE_ID = Issues.ISSUE_ID;
 	
 	private String appName;
@@ -47,11 +56,11 @@ public class IssueViewActivity extends Activity
         
         setContentView(R.layout.issue_view);
         
-		factory = new RepositoryFactory(this);        
-        
     	try
 		{
-	        if(getIntent().getData() != null)
+    		factory = new RepositoryFactory(this);        
+
+    		if(getIntent().getData() != null)
 	        {
 	        	Cursor cursor = managedQuery(getIntent().getData(), Issues.ISSUE_PROJECTION, null, null, Issues.DEFAULT_SORT_ORDER);
 	            if(cursor.moveToFirst())
@@ -101,6 +110,9 @@ public class IssueViewActivity extends Activity
 		}	        
     }
 
+    /**
+     * Handler for menu refresh.  Pulls the latest info from the remote repository and updates the local content store.
+     */
     private OnClickListener refreshClicked = new OnClickListener()
     {
 		public void onClick(View v)
@@ -128,8 +140,13 @@ public class IssueViewActivity extends Activity
     	
     };
     
+    /**
+     * Binds the issue data to the view
+     * @param issue the issue to display
+     * @throws ServiceException if there is an error connecting to the remote repository configuration.
+     */
     private void presentIssue(Issue issue) 
-    	throws CreateException, ServiceException
+    	throws ServiceException
 	{
     	IssueResource issueState = factory.getRepository(issue.getAppName()).getState(issue.getType(), issue.getPriority(), issue.getState());
 		TextView issueView = (TextView) findViewById(R.id.IssueIdTextView);
@@ -148,7 +165,7 @@ public class IssueViewActivity extends Activity
 		
 		SpannableStringBuilder affectedVersions = new SpannableStringBuilder();
 		affectedVersions.append(getString(R.string.affected_versions_label));
-		String currVersion = getCurrVersion(issue);
+		String currVersion = factory.getApplicationVersion(issue.getAppName());
 		Log.d(TAG, "Current version:  " + currVersion);
 		for(String version : issue.getAffectedVersions())
 		{
@@ -179,26 +196,6 @@ public class IssueViewActivity extends Activity
 		((ListView) findViewById(R.id.CommentsListView)).setAdapter(adapter);
 		
 		
-	}
-
-	private String getCurrVersion(Issue issue)
-	{
-		PackageManager pkgMgr = getPackageManager();
-        List<ApplicationInfo> apps = pkgMgr.getInstalledApplications(PackageManager.GET_META_DATA);
-        for(ApplicationInfo appInfo : apps)
-        {
-        	try
-			{
-				if(pkgMgr.getApplicationLabel(appInfo).equals(issue.getAppName()))
-					return pkgMgr.getPackageInfo(appInfo.packageName, PackageManager.GET_META_DATA).versionName;
-			}
-			catch (NameNotFoundException e)
-			{
-				return null;
-			}
-        }
-        
-        return null;
 	}    
 
 }

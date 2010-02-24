@@ -4,14 +4,20 @@ import net.heroicefforts.viable.android.dao.Issue;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
-public class NoOpIssueResource implements IssueResource
+/**
+ * A text-only IssueResource implementation used for unknown resource types.
+ * 
+ * @author jevans
+ *
+ */
+public class NullIssueResource implements IssueResource
 {
 	private String type;
 	private String priority;
 	private String state;
 
 	
-	public NoOpIssueResource(String type, String priority, String state)
+	public NullIssueResource(String type, String priority, String state)
 	{
 		this.type = type;
 		this.priority = priority;
@@ -40,20 +46,17 @@ public class NoOpIssueResource implements IssueResource
 
 	public CharSequence getStateText(Issue issue)
 	{
-		// TODO Auto-generated method stub
 		return issue.getState();
 	}
 
 	public CharSequence getTypeText(Issue issue)
 	{
-		// TODO Auto-generated method stub
 		return issue.getType();
 	}
 
 	public void setState(Issue issue)
 	{
-		// TODO Auto-generated method stub
-
+		//empty
 	}
 
 }

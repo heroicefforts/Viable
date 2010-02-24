@@ -2,6 +2,12 @@ package net.heroicefforts.viable.android.rep.it.gdata;
 
 import java.net.URL;
 
+/**
+ * Represents an issue query.
+ * 
+ * @author jevans
+ *
+ */
 public class IssuesQuery
 {
 	private URL feedUrl;

@@ -9,7 +9,13 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class AtomHandler extends DefaultHandler
+/**
+ * This is a common handler implementation for the comment and issue Gdata Atom parser handlers.
+ * 
+ * @author jevans
+ *
+ */
+public abstract class AtomHandler extends DefaultHandler
 {
 
 	protected static final String EOL = System.getProperty("line.separator");

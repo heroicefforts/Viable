@@ -2,26 +2,37 @@ package net.heroicefforts.viable.android;
 
 import java.util.List;
 
-import net.heroicefforts.viable.android.rep.CreateException;
+import net.heroicefforts.viable.android.content.Issues;
+import net.heroicefforts.viable.android.content.NullCursor;
 import net.heroicefforts.viable.android.rep.RepositoryFactory;
 import net.heroicefforts.viable.android.rep.ServiceException;
 import android.app.Activity;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 
+/**
+ * This is the abstract template class for handling the display of a list of Issues.
+ * 
+ * @author jevans
+ *
+ */
 public abstract class AbstractIssueListActivity extends Activity
 {
 	protected ListView listView;
 	private RepositoryFactory factory;
 	private Spinner appNameSpinner;
 	private Spinner versionSpinner;
+	private ProgressBar progressBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -30,6 +41,7 @@ public abstract class AbstractIssueListActivity extends Activity
 		
         setContentView(R.layout.issue_list);		
 		
+        progressBar = (ProgressBar) findViewById(R.id.ProgressBar);
 		appNameSpinner = (Spinner) findViewById(R.id.AppNameSpinner);
 		
 		this.factory = new RepositoryFactory(this);		
@@ -46,40 +58,52 @@ public abstract class AbstractIssueListActivity extends Activity
         versionSpinner.setOnItemSelectedListener(versionChosen);
 	}
 
+	/**
+	 * Returns a list of application names to display in the application spinner.
+	 * 
+	 * @return a non-null list of application names.
+	 */
 	protected abstract List<String> getAppNames();
+	
+	/**
+	 * Returns a click event listener that defines the behavior that occurs when a user clicks on an Issue in the list.
+	 *  
+	 * @return a non-null listener.
+	 */
 	protected abstract OnItemClickListener getIssueListClickListener();
-	protected abstract SimpleCursorAdapter getIssueCursorAdapter(String appName, String version) 
+	
+	/**
+	 * Returns a cursor to the issues that will be displayed for the supplied application and version.
+	 * @param appName the name of the application selected by the user
+	 * @param version the version of the application selected by the user
+	 * @return a non-null cursor of Issues.
+	 * 
+	 * @throws ServiceException if an error occurs fetching the cursor.
+	 */
+	protected abstract Cursor getIssueCursor(String appName, String version) 
 		throws ServiceException;
+	
+	/**
+	 * Returns the versions available for the specified application.
+	 * 
+	 * @param position the position of the application spinner.
+	 * @param appName the application name
+	 * @return a non-null list of version names.
+	 * 
+	 * @throws ServiceException if an error occurs loading the version names.
+	 */
 	protected abstract List<String> getVersionList(int position, String appName) 
-		throws CreateException, ServiceException;
+		throws ServiceException;
 
     private OnItemSelectedListener appChosen = new OnItemSelectedListener()
     {
 		public void onItemSelected(AdapterView<?> l, View v, int position, long id)
 		{
-			try
-			{
-				String appName = (String) l.getItemAtPosition(position);
+			String appName = (String) l.getItemAtPosition(position);
+			if(appName.equals(getString(R.string.all)))
+				appName = null;
 
-				List<String> versions = getVersionList(position, appName);
-				ArrayAdapter<String> vAdapter = new ArrayAdapter<String>(AbstractIssueListActivity.this, android.R.layout.simple_spinner_item, versions);
-				versionSpinner.setAdapter(vAdapter);
-				
-				if(appName.equals(getString(R.string.all)))
-					appName = null;
-
-				SimpleCursorAdapter adapter = getIssueCursorAdapter(appName, null);
-				adapter.setViewBinder(new IssuesListViewBinder(AbstractIssueListActivity.this, factory));
-				listView.setAdapter(adapter);
-			}
-			catch (CreateException e)
-			{
-				Error.handle(AbstractIssueListActivity.this, e);
-			}
-			catch (ServiceException e)
-			{
-				Error.handle(AbstractIssueListActivity.this, e);
-			}			
+			new LoadIssuesTask().execute(String.valueOf(position), appName, null);
 		}
 
 		public void onNothingSelected(AdapterView<?> arg0)
@@ -88,29 +112,20 @@ public abstract class AbstractIssueListActivity extends Activity
 		}
     	
     };
-	
+
     private OnItemSelectedListener versionChosen = new OnItemSelectedListener()
     {
 		public void onItemSelected(AdapterView<?> l, View v, int position, long id)
 		{
-			try
-			{
-				String appName = (String) appNameSpinner.getItemAtPosition(appNameSpinner.getLastVisiblePosition());
-				String version = (String) l.getItemAtPosition(position);
-				
-				if(appName.equals(getString(R.string.all)))
-					appName = null;
-				if(position == 0)
-					version = null;
-				
-				SimpleCursorAdapter adapter = getIssueCursorAdapter(appName, version);
-				adapter.setViewBinder(new IssuesListViewBinder(AbstractIssueListActivity.this, factory));
-				listView.setAdapter(adapter);
-			}
-			catch (ServiceException e)
-			{
-				Error.handle(AbstractIssueListActivity.this, e);
-			}			
+			String appName = (String) appNameSpinner.getItemAtPosition(appNameSpinner.getLastVisiblePosition());
+			String version = (String) l.getItemAtPosition(position);
+			
+			if(appName.equals(getString(R.string.all)))
+				appName = null;
+			if(position == 0)
+				version = null;
+			
+			new LoadIssuesTask().execute(String.valueOf(-1), appName, version);
 		}
 
 		public void onNothingSelected(AdapterView<?> arg0)
@@ -119,5 +134,85 @@ public abstract class AbstractIssueListActivity extends Activity
 		}
     	
     };
+    
+    /**
+     * Results class for returning asynchronous result values.
+     */
+	private class IssueHolder
+	{
+		public List<String> versionList;
+		public Cursor issueCursor;
+		public ServiceException exc;
+	}
+
+	/**
+	 * Asynchronously loads the versions and issues for the specified application. 
+	 */
+	private class LoadIssuesTask extends AsyncTask<String, Void, IssueHolder> 
+	{
+		@Override
+		protected void onPreExecute()
+		{
+			progressBar.setVisibility(View.VISIBLE);
+		}
+		
+		/**
+		 * @param position the application spinner position
+		 * @param appName the application name
+		 * @param version the version name
+		 * @return a result with a list of version names and a list of issues.
+		 */
+		@Override
+		protected IssueHolder doInBackground(String... params)
+		{
+			IssueHolder holder = new IssueHolder();
+			try
+			{
+				int position = Integer.parseInt(params[0]);
+				String appName = params[1];
+				String version = params[2];
+
+				if(position >= 0)
+					holder.versionList = getVersionList(position, appName);
+				
+				holder.issueCursor = getIssueCursor(appName, version);
+			}
+			catch (ServiceException e)
+			{
+				holder.exc = e;
+			}			
+				
+			return holder;
+		}
+		
+		@Override
+		protected void onPostExecute(IssueHolder holder)
+		{
+			if(holder.exc == null)
+			{
+				if(holder.versionList != null)
+				{
+					ArrayAdapter<String> vAdapter = new ArrayAdapter<String>(AbstractIssueListActivity.this, android.R.layout.simple_spinner_item, holder.versionList);
+					versionSpinner.setAdapter(vAdapter);
+				}
+				
+				SimpleCursorAdapter adapter = new SimpleCursorAdapter(AbstractIssueListActivity.this, R.layout.issue_list_item, holder.issueCursor,
+					    new String[] { Issues.SUMMARY, Issues.ISSUE_ID, Issues.ISSUE_TYPE, Issues.ISSUE_PRIORITY, Issues.ISSUE_STATE }, 
+					    new int[] { R.id.SummaryTextView, R.id.IssueIdTextView, R.id.TypeImageView, R.id.PriorityImageView, R.id.StateImageView });
+
+				adapter.setViewBinder(new IssuesListViewBinder(AbstractIssueListActivity.this, factory));
+				listView.setAdapter(adapter);				
+			}
+			else
+			{
+				Error.handle(AbstractIssueListActivity.this, holder.exc);
+				SimpleCursorAdapter adapter = new SimpleCursorAdapter(AbstractIssueListActivity.this, R.layout.issue_list_item, new NullCursor(), new String[] {}, new int[] {});
+				listView.setAdapter(adapter);								
+			}
+			
+			progressBar.setVisibility(View.GONE);
+		}
+		
+	}	    
 
 }

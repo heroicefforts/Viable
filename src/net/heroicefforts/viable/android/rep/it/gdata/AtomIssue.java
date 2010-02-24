@@ -16,7 +16,12 @@ import org.xml.sax.SAXException;
 
 import android.os.Build;
 
-
+/**
+ * This class extends issue to add handling of the Gdata Atom protocol.
+ * 
+ * @author jevans
+ *
+ */
 public class AtomIssue extends Issue
 {
 	private static final String SALT_STACKTRACE = "<p>Stacktrace:  ";
@@ -62,8 +67,7 @@ public class AtomIssue extends Issue
 		builder.append("<author><name>Anonymous</name></author>");
 		builder.append(getLabels());
 		builder.append("</entry>");
-//		Log.v(TAG, "Atom Issue:  " + builder);
-		System.out.println("Atom Issue source:  " + builder);
+
 		return builder.toString();
 	}
 

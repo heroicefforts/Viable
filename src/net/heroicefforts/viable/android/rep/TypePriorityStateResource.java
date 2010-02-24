@@ -6,6 +6,12 @@ import net.heroicefforts.viable.android.dao.Issue;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
+/**
+ * An issue resource based upon type, priority, and state.
+ * 
+ * @author jevans
+ *
+ */
 public class TypePriorityStateResource implements IssueResource
 {
 	public final static String ANY = "*"; 

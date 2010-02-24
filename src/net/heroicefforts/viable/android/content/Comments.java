@@ -2,6 +2,12 @@ package net.heroicefforts.viable.android.content;
 
 import android.provider.BaseColumns;
 
+/**
+ * Constant class for comment cursor.
+ * 
+ * @author jevans
+ *
+ */
 public class Comments implements BaseColumns
 {
 	public final static String AUTHOR = "author";

@@ -10,6 +10,12 @@ import org.json.JSONObject;
 import android.util.Log;
 
 
+/**
+ * Data class representing comment information.
+ * 
+ * @author jevans
+ *
+ */
 public class Comment
 {
 	private static final String TAG = "Comment";
@@ -33,6 +39,12 @@ public class Comment
 		this.createDate = createDate;
 	}
 
+	/**
+	 * Instantiate the comment state based upon the JIRA JSON format.
+	 * 
+	 * @param obj JIRA JSON comment object 
+	 * @throws JSONException if there's an error parsing the JSON.
+	 */
 	public Comment(JSONObject jsonObject) throws JSONException
 	{
 		this.id = jsonObject.getLong("id");
@@ -54,21 +66,37 @@ public class Comment
 
 	}
 
+	/**
+	 * Return the unique identifier of the comment.
+	 * @return
+	 */
 	public Long getId()
 	{
 		return id;
 	}
 
+	/**
+	 * Return the content of the comment.
+	 * @return
+	 */
 	public String getBody()
 	{
 		return body;
 	}
 
+	/**
+	 * Return the author of the comment.
+	 * @return
+	 */
 	public String getAuthor()
 	{
 		return author;
 	}
 
+	/**
+	 * Return the date that the comment was created.
+	 * @return
+	 */
 	public Date getCreateDate()
 	{
 		return createDate;
@@ -118,6 +146,10 @@ public class Comment
 		this.author = author;
 	}
 
+	/**
+	 * Copy the state of the supplied comment
+	 * @param newComment the source comment
+	 */
 	public void copy(Comment newComment)
 	{
 		this.id = newComment.id;

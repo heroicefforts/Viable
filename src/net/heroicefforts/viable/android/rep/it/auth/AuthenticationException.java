@@ -1,10 +1,18 @@
 package net.heroicefforts.viable.android.rep.it.auth;
 
+/**
+ * Thrown if authentication fails.
+ * 
+ * @author jevans
+ *
+ */
 public class AuthenticationException extends Exception
 {
 	private static final long serialVersionUID = 1L;
+	
 	private int responseCode;
 
+	
 	public AuthenticationException(int responseCode, String msg)
 	{
 		super(msg);
@@ -16,6 +24,10 @@ public class AuthenticationException extends Exception
 		super(msg, e);
 	}
 
+	/**
+	 * Return the response code sent by the authentication server.
+	 * @return
+	 */
 	public int getResponseCode()
 	{
 		return responseCode;

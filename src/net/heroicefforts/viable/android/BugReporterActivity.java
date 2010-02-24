@@ -1,7 +1,5 @@
 package net.heroicefforts.viable.android;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -12,15 +10,12 @@ import net.heroicefforts.viable.android.dao.BugContext;
 import net.heroicefforts.viable.android.dao.Comment;
 import net.heroicefforts.viable.android.dao.Issue;
 import net.heroicefforts.viable.android.dist.BugReportIntent;
-import net.heroicefforts.viable.android.rep.CreateException;
 import net.heroicefforts.viable.android.rep.IssueResource;
 import net.heroicefforts.viable.android.rep.Repository;
 import net.heroicefforts.viable.android.rep.RepositoryFactory;
 import net.heroicefforts.viable.android.rep.ServiceException;
 
 import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
-import org.json.JSONException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,6 +23,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -41,6 +37,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
+/**
+ * This class handles the collection and submission of user issues.  The issue submitted may be due to an application crash or
+ * independently submitted by the user.
+ * 
+ * @author jevans
+ *
+ */
 public class BugReporterActivity extends Activity
 {
 	private static final String TAG = "BugReporterActivity";
@@ -121,6 +124,7 @@ public class BugReporterActivity extends Activity
     	}    	
     }
 
+	@SuppressWarnings("unchecked")
 	private void setDefectState(String appName, String stacktrace) 
 		throws ServiceException
 	{		
@@ -140,7 +144,13 @@ public class BugReporterActivity extends Activity
 		((Button) findViewById(R.id.DetailsButton)).setVisibility(View.VISIBLE);
 	}
 
-	private void duplicateIssueCheck(BugContext ctx) 
+	/**
+	 * Check if the defect has already been reported to the application developers.
+	 * 
+	 * @param ctx the defect
+	 * @throws ServiceException if there's an error contacting the remote repository.
+	 */
+	private void duplicateIssueCheck(Issue ctx) 
 		throws ServiceException
 	{
     	Repository rep = factory.getRepository(ctx.getAppName());
@@ -159,6 +169,11 @@ public class BugReporterActivity extends Activity
     	}    		
 	}
 	
+	/**
+	 * Abort the application launch.
+	 * 
+	 * @param msg the message to log.
+	 */
 	private void abort(String msg)
 	{
 		Log.d(TAG, msg);
@@ -168,6 +183,11 @@ public class BugReporterActivity extends Activity
 			finish();
 	}
 
+	/**
+	 * Issue already exists.  Now prompt the user whether they want to add an additional comment.
+	 *  
+	 * @param issue the defect
+	 */
 	private void showSupplementDialog(Issue issue)
 	{
 		Log.d(TAG, "Prompting user to comment on existing issue '" + issue.getIssueId() + "'.");
@@ -193,6 +213,11 @@ public class BugReporterActivity extends Activity
 		builder.create().show();
 	}
  
+	/**
+	 * Dumps the issue details collected by the system to a string.  Allow the user to see what will be submitted.
+	 * @param issue the defect
+	 * @return a pretty printed string of issue details.
+	 */
     protected String formatDetails(Issue issue)
     {
     	final String EOL = System.getProperty("line.separator");
@@ -210,6 +235,25 @@ public class BugReporterActivity extends Activity
     	
     	return buf.toString();
     }
+    
+	private OnItemSelectedListener appNameSelected = new OnItemSelectedListener() {
+
+		public void onItemSelected(AdapterView<?> v, View arg1, int position, long id)
+		{
+			if(position > 0)
+			{
+				String appName = (String) v.getAdapter().getItem(v.getLastVisiblePosition()); 
+		    	Set<? extends IssueResource> resources = factory.getRepository(appName).getDefaultStates();
+				typeSpinner.setAdapter(new IssueSelectionAdapter(BugReporterActivity.this, resources));
+			}
+		}
+
+		public void onNothingSelected(AdapterView<?> arg0)
+		{
+			//empty
+		}
+		
+	};
     
 	private OnClickListener clickListener = new OnClickListener()
 	{
@@ -234,57 +278,16 @@ public class BugReporterActivity extends Activity
 					return;
 		        }
 
-		        try {  
-			        int position = typeSpinner.getLastVisiblePosition();
-			        IssueResource resource = (IssueResource) typeSpinner.getAdapter().getItem(position);
-			        int responseCode;
-			        if(comment)
-			        	responseCode = reportComment(appName, summary, desc);
-			        else
-			        	responseCode = reportBug(appName, summary, desc, resource);
+		        int position = typeSpinner.getLastVisiblePosition();
+		        IssueResource resource = (IssueResource) typeSpinner.getAdapter().getItem(position);
+		        if(comment)
+		        	reportComment(appName, summary, desc);
+		        else
+		        	reportBug(appName, summary, desc, resource);
 			        
-					if(HttpStatus.SC_CREATED == responseCode || HttpStatus.SC_OK == responseCode)
-					{			
-						ContentValues values = new IssueContentAdapter(curIssue).toContentValues();
-						BugReporterActivity.this.getContentResolver().insert(Issues.CONTENT_URI, values);
-					}
-					curIssue = null;
-
-			        
-					Activity parent = BugReporterActivity.this.getParent();
-					if(parent != null && parent instanceof IssueTabsActivity)
-					{
-						((IssueTabsActivity) parent).selectMyIssuesTab();
-						appNameSpinner.setEnabled(true);
-						summaryText.setText("");
-						descriptionText.setText("");
-						detailsTextView.setText("");
-						detailsButton.setText(getText(R.string.show_details));
-						detailsScroll.setVisibility(View.INVISIBLE);
-					}
-			        
-			        stacktrace = null;
-			    } 
-			    catch (JSONException e)
-			    {
-			    	Log.e(TAG, "Error parsing modify response.", e);
-			    }
-			    catch (ClientProtocolException e) 
-			    {
-			    	Log.e(TAG, "Error posting issue.", e);
-			    } 
-			    catch (IOException e) 
-			    {  
-			    	Log.e(TAG, "Error posting issue.", e);
-			    }
-				catch (CreateException e)
-				{
-					Error.handle(BugReporterActivity.this, e);
-				}
-				catch (ServiceException e)
-				{
-					Error.handle(BugReporterActivity.this, e);
-				}				
+				Activity parent = BugReporterActivity.this.getParent();
+				if(parent != null && parent instanceof IssueTabsActivity)
+					((IssueTabsActivity) parent).selectMyIssuesTab();			        
 			}
 			else if(v.getId() == R.id.BugSearchButton)
 			{
@@ -307,48 +310,118 @@ public class BugReporterActivity extends Activity
 			}
 		}
 
-		private int reportComment(String appName, String summary, String desc)
-			throws UnsupportedEncodingException, IOException, ClientProtocolException, JSONException, ServiceException
-		{			
-			Comment comment = new Comment(summary + EOL + EOL + desc);
-			int responseCode = factory.getRepository(appName).postIssueComment(curIssue, comment);
-			BugReporterActivity.this.comment = false;
-			return responseCode;
-		}
-
-		private int reportBug(String appName, String summary, String desc, IssueResource resource)
-				throws UnsupportedEncodingException, IOException, ClientProtocolException, JSONException, CreateException, ServiceException
-		{
-			curIssue = new BugContext();
-			resource.setState(curIssue);
-			curIssue.setAppName(appName);
-			curIssue.setSummary(summary);
-			curIssue.setDescription(desc);
-			curIssue.setStacktrace(stacktrace);
-			curIssue.setAffectedVersions(new String[] { factory.getApplicationVersion(appName) });
-			
-			return factory.getRepository(appName).postIssue(curIssue);  						
-		}
-
 	};
-	
-	private OnItemSelectedListener appNameSelected = new OnItemSelectedListener() {
 
-		public void onItemSelected(AdapterView<?> v, View arg1, int position, long id)
+	private void reportComment(String appName, String summary, String desc)
+	{			
+		Comment comment = new Comment(summary + EOL + EOL + desc);
+		new ReportCommentTask().execute(comment);
+	}
+
+	private void reportBug(String appName, String summary, String desc, IssueResource resource)
+	{
+		curIssue = new BugContext();
+		resource.setState(curIssue);
+		curIssue.setAppName(appName);
+		curIssue.setSummary(summary);
+		curIssue.setDescription(desc);
+		curIssue.setStacktrace(stacktrace);
+		curIssue.setAffectedVersions(new String[] { factory.getApplicationVersion(appName) });
+		
+		new ReportBugTask().execute(curIssue);  						
+	}
+
+	/**
+	 * Asynchronous task for submitting the issue comment to the remote repository. 
+	 */
+	private class ReportCommentTask extends AsyncTask<Comment, Void, ServiceException>
+	{
+		@Override
+		protected ServiceException doInBackground(Comment... params)
 		{
-			if(position > 0)
+			try
 			{
-				String appName = (String) v.getAdapter().getItem(v.getLastVisiblePosition()); 
-		    	Set<? extends IssueResource> resources = factory.getRepository(appName).getDefaultStates();
-				typeSpinner.setAdapter(new IssueSelectionAdapter(BugReporterActivity.this, resources));
+				Comment comment = params[0];
+				int responseCode = factory.getRepository(curIssue.getAppName()).postIssueComment(curIssue, comment);
+				saveMyIssue(responseCode, curIssue);
+				BugReporterActivity.this.comment = false;
+				curIssue = null;
+				return null;
+			}
+			catch (ServiceException e)
+			{
+				return e;
+			}			
+		}
+		
+		protected void onPostExecute(ServiceException e)
+		{
+			if(e == null)
+				clearState();
+			else
+				Error.handle(BugReporterActivity.this, e);				
+		}
+		
+	}	
+
+	/**
+	 * Save the issue to the local content repository.
+	 * @param responseCode the post response code.
+	 * @param curIssue the issue to save
+	 */
+	private void saveMyIssue(int responseCode, Issue curIssue)
+	{
+		if(HttpStatus.SC_CREATED == responseCode || HttpStatus.SC_OK == responseCode)
+		{			
+			ContentValues values = new IssueContentAdapter(curIssue).toContentValues();
+			BugReporterActivity.this.getContentResolver().insert(Issues.CONTENT_URI, values);
+		}
+	}
+	
+	/**
+	 * Asynchronous task for submitting the issue to the remote repository. 
+	 */
+	private class ReportBugTask extends AsyncTask<Issue, Void, ServiceException> 
+	{
+		@Override
+		protected ServiceException doInBackground(Issue... params)
+		{
+			try {
+				Issue curIssue = params[0];
+				int responseCode = factory.getRepository(curIssue.getAppName()).postIssue(curIssue);
+				saveMyIssue(responseCode, curIssue);
+				curIssue = null;
+				
+				return null;
+			}
+			catch(ServiceException e)
+			{
+				return e;
 			}
 		}
 
-		public void onNothingSelected(AdapterView<?> arg0)
+		protected void onPostExecute(ServiceException e)
 		{
-			//empty
+			if(e == null)
+				clearState();				
+			else
+				Error.handle(BugReporterActivity.this, e);				
 		}
+
+	}
+
+	/**
+	 * Reset the view state after the issue has been successfully submitted.
+	 */
+	private void clearState()
+	{
+		appNameSpinner.setEnabled(true);
+		summaryText.setText("");
+		descriptionText.setText("");
+		detailsTextView.setText("");
+		detailsButton.setText(getText(R.string.show_details));
+		detailsScroll.setVisibility(View.INVISIBLE);
+        stacktrace = null;		
+	}
 		
-	};
-	
 }

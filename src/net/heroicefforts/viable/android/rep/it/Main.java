@@ -110,7 +110,7 @@ public class Main
 
 	private static void printAppStats(Repository rep, String projectName) throws ServiceException
 	{
-		ProjectDetail detail = rep.getApplicationStats(projectName);
+		ProjectDetail detail = rep.getApplicationStats();
 		print(detail);
 	}
 

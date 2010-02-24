@@ -9,7 +9,13 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-public class VersionDetail
+/**
+ * Data class containing information for a project release.
+ * 
+ * @author jevans
+ *
+ */
+public class VersionDetail implements Comparable<VersionDetail>
 {
 	private static final String TAG = "VersionDetail";
 	
@@ -21,7 +27,13 @@ public class VersionDetail
 	{
 		this.name = name;
 	}
-	
+		
+	/**
+	 * Instantiate the release state based upon the JIRA JSON format.
+	 * 
+	 * @param obj JIRA JSON release object 
+	 * @throws JSONException if there's an error parsing the JSON.
+	 */
 	public VersionDetail(JSONObject obj)
 		throws JSONException
 	{
@@ -44,6 +56,10 @@ public class VersionDetail
 		}
 	}
 
+	/**
+	 * The version name of the release e.g. 1.0.0.
+	 * @return
+	 */
 	public String getName()
 	{
 		return name;
@@ -54,6 +70,10 @@ public class VersionDetail
 		this.name = name;
 	}
 
+	/**
+	 * A summary of the release.
+	 * @return
+	 */
 	public String getDescription()
 	{
 		return description;
@@ -64,6 +84,10 @@ public class VersionDetail
 		this.description = description;
 	}
 
+	/**
+	 * The date that the release was (or will be) made public.
+	 * @return
+	 */
 	public Date getReleaseDate()
 	{
 		return releaseDate;
@@ -103,4 +127,11 @@ public class VersionDetail
 		return true;
 	}
 
+	public int compareTo(VersionDetail version)
+	{
+		if(releaseDate != null && version.releaseDate != null)
+			return releaseDate.compareTo(version.releaseDate);
+		else
+			return this.name.compareTo(version.name);
+	}	
 }
