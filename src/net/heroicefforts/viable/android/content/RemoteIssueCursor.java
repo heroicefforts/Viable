@@ -47,7 +47,9 @@ public class RemoteIssueCursor extends AbstractCursor
         Issues.ISSUE_TYPE,
         Issues.ISSUE_PRIORITY,
         Issues.ISSUE_STATE,
-        Issues.SUMMARY
+        Issues.SUMMARY,
+        Issues.VOTED,
+        Issues.VOTES
     };
 
 	private Repository repository;
@@ -173,6 +175,10 @@ public class RemoteIssueCursor extends AbstractCursor
 				return issueList.get(idx).getState();
 			case 6:
 				return issueList.get(idx).getSummary();
+			case 7:
+				return issueList.get(idx).isVoted();
+			case 8:
+				return issueList.get(idx).getVotes();
 			default:
 				throw new CursorIndexOutOfBoundsException("No column index of:  " + column);
 		}

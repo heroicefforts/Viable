@@ -13,6 +13,8 @@
 <TextView android:text="@+id/TextView01" android:layout_height="wrap_content" android:id="@+id/TypeTextView" android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="center"></TextView><TextView android:text="@+id/TextView01" android:layout_height="wrap_content" android:id="@+id/PriorityTextView" android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="center"></TextView>
 
 <TextView android:text="@+id/TextView01" android:layout_height="wrap_content" android:id="@+id/StateTextView" android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="center"></TextView>
+<ImageView android:layout_height="wrap_content" android:id="@+id/VotedImageView" android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="center_vertical"></ImageView>
+<TextView android:text="@+id/TextView01" android:layout_height="wrap_content" android:id="@+id/VotesTextView" android:layout_width="fill_parent" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
 </LinearLayout><TextView android:text="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/AffectedVersionsTextView" android:textSize="12sp"></TextView><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/DescriptonTextView" android:layout_marginTop="15sp"></TextView>
 
 

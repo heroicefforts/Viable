@@ -116,6 +116,15 @@ public interface Repository
 		throws ServiceException;
 
     /**
+     * Submits a vote for the specified issue on behalf of the user.
+     * @param issue the issue for which to vote
+     * @return true if the vote was successful.
+     * @throws ServiceException
+     */
+	public boolean vote(Issue issue)
+		throws ServiceException;
+    
+    /**
      * Returns an IssueResource matching the state of the issue.
      * @param type the issue type
      * @param priority the issue priority
@@ -135,5 +144,5 @@ public interface Repository
 	 * @return
 	 */
 	public Set<? extends IssueResource> getDefaultStates();
-    
+    	
 }

@@ -45,6 +45,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -338,6 +339,39 @@ public class ProjectHostingService
 		}
 	}
 
+	public Issue update(URL postUrl, Issue issue)
+	throws AuthenticationException, ServiceException
+	{
+		try
+		{
+			String appName = issue.getAppName();
+			HttpPut post = new HttpPut(postUrl.toString());
+			post.addHeader("Content-Type", "application/atom+xml");
+			post.setEntity(new StringEntity(new AtomIssue(issue).toString()));
+			HttpResponse response = execute(post);
+			int responseCode = response.getStatusLine().getStatusCode();
+			Log.d(TAG, "Update response code:  " + responseCode);
+			String body = readResponse(response);
+			if(HttpStatus.SC_CREATED == responseCode)
+			{
+				Issue wireIssue = new AtomIssue(body);
+				issue.copy(wireIssue);
+			}
+			else if(HttpStatus.SC_FORBIDDEN == responseCode || HttpStatus.SC_UNAUTHORIZED == responseCode)
+				throw new AuthenticationException(responseCode, body);
+			else
+				throw new ServiceException("Exception creating issue:  " + body);
+			
+			issue.setAppName(appName);
+			
+			return issue;
+		}
+		catch (Exception e)
+		{
+			throw new ServiceException("Error creating issue.", e);
+		}
+	}
+	
 	/**
 	 * Inserts the supplied issue comment using the GData Issue protocol.
 	 * @param postUrl the valid issue comment post URL.
@@ -415,6 +449,7 @@ public class ProjectHostingService
 			issue.setDescription(bodyStr.replaceAll("<p>", "").replaceAll("</p>", EOL));
 		
 		issue.setIssueId(obj.getJSONObject("issues$id").getString("$t"));
+		issue.setVotes(obj.getJSONObject("issues$stars").getLong("$t"));
 		JSONArray labels = obj.getJSONArray("issues$label");
 		ArrayList<String> affectedVersions = new ArrayList<String>();
 		for(int i = 0; i < labels.length(); i++)

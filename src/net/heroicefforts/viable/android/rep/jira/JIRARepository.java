@@ -55,8 +55,11 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -107,8 +110,12 @@ public class JIRARepository implements Repository
 
 		this.rootURL = location;
 		this.appName = appName;
-		httpclient = new DefaultHttpClient();
-		HttpConnectionParams.setConnectionTimeout(httpclient.getParams(), CONN_TIMEOUT);
+		
+		DefaultHttpClient client = new DefaultHttpClient();
+		SchemeRegistry schemes = client.getConnectionManager().getSchemeRegistry();		
+		BasicHttpParams params = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(params, CONN_TIMEOUT);
+		httpclient = new DefaultHttpClient(new ThreadSafeClientConnManager(params, schemes), params);
 	}
 
 	public Issue exists(Issue issue) 
@@ -550,4 +557,25 @@ public class JIRARepository implements Repository
 		}
 	}
 
+	public boolean vote(Issue issue)
+		throws ServiceException
+	{
+		try
+		{
+			HttpPost post = new HttpPost(rootURL + "/issue/" + issue.getIssueId() + "/vote.json");
+			HttpResponse response = execute(post);
+			if(HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
+			{
+				issue.setVoted(true);
+				issue.setVotes(issue.getVotes() + 1);
+				return true;
+			}
+			else
+				return false;
+		}
+		catch (IOException e)
+		{
+			throw new ServiceException("Error connecting to JIRA repository.", e);
+		}
+	}
 }

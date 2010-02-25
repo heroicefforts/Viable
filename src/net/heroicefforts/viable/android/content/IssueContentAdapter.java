@@ -56,6 +56,8 @@ public class IssueContentAdapter
 		issue.setAffectedVersions(versionString.split("[ ]*,[ ]*"));
 		issue.setHash(cursor.getString(cursor.getColumnIndex(Issues.HASH)));
 		issue.setStacktrace(cursor.getString(cursor.getColumnIndex(Issues.STACKTRACE)));
+		issue.setVoted(cursor.getInt(cursor.getColumnIndex(Issues.VOTED)) > 0);
+		issue.setVotes(cursor.getLong(cursor.getColumnIndex(Issues.VOTES)));
 		issue.setCreateDate(new Date(cursor.getLong(cursor.getColumnIndex(Issues.CREATED_DATE))));
 		issue.setModifiedDate(new Date(cursor.getLong(cursor.getColumnIndex(Issues.MODIFIED_DATE))));		
 	}
@@ -76,6 +78,8 @@ public class IssueContentAdapter
 		values.put(Issues.SUMMARY, issue.getSummary());
 		values.put(Issues.DESCRIPTION, issue.getDescription());
 		values.put(Issues.HASH, issue.getHash());
+		values.put(Issues.VOTED, issue.isVoted() ? 1 : 0);
+		values.put(Issues.VOTES, issue.getVotes());
 		values.put(Issues.CREATED_DATE, issue.getCreateDate().getTime());
 		values.put(Issues.MODIFIED_DATE, issue.getModifiedDate().getTime());
 		values.put(Issues.APP_VERSION, Arrays.asList(issue.getAffectedVersions()).toString());

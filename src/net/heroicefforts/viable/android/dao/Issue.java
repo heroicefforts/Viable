@@ -48,12 +48,15 @@ public class Issue
 	protected String[] affectedVersions;
 	private String hash;
 	protected String stacktrace;
+	private boolean voted;
+	private long votes;
 	private Date createDate;
 	private Date modifiedDate;	
 	
 	private String[] affectedDevices;
 	private String[] affectedModels;
 	private String[] affectedSDKs;
+	
 	
 	public Issue()
 	{
@@ -69,7 +72,7 @@ public class Issue
 	public Issue(String json)
 		throws JSONException
 	{
-		Log.d(TAG, "Parsing issue JSON:  " + json);		
+		Log.v(TAG, "Parsing issue JSON:  " + json);		
 		JSONObject issueObj = new JSONObject(json);
 		issueId = issueObj.getString("issueId");
 		type = issueObj.getString("type");
@@ -78,6 +81,8 @@ public class Issue
 		state = issueObj.getString("state");
 		appName = issueObj.getString("appName");
 		summary = issueObj.getString("summary");
+		if(issueObj.has("votes"))
+			votes = issueObj.getLong("votes");
 		if(issueObj.has("description"))
 			description = issueObj.getString("description");
 		if(issueObj.has("affectedVersions"))
@@ -142,7 +147,7 @@ public class Issue
 //			Log.e(TAG, "Error parsing JSON dates.", e);
 //			throw new JSONException("Error parsing JSON dates.");
 //		}
-		Log.d(TAG, "Generated issue JSON:  " + issueObj.toString(4));
+		Log.v(TAG, "Generated issue JSON:  " + issueObj.toString(4));
 		return issueObj;
 	}
 	
@@ -424,6 +429,26 @@ public class Issue
 	public void setAffectedSDKs(String[] affectedSDKs)
 	{
 		this.affectedSDKs = affectedSDKs;
+	}
+
+	public long getVotes()
+	{
+		return votes;
+	}
+
+	public void setVotes(long votes)
+	{
+		this.votes = votes;
+	}
+
+	public boolean isVoted()
+	{
+		return voted;
+	}
+
+	public void setVoted(boolean voted)
+	{
+		this.voted = voted;
 	}
 	
 }

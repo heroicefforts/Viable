@@ -137,7 +137,6 @@ public class GIssueTrackerRepository implements Repository
 			else
 			{
 				//TODO add popup.
-				//host.setUserCredentials("viable-it-test@heroicefforts.net", "viableTest123");
 				AccountManager acct = (AccountManager) act.getSystemService(Context.ACCOUNT_SERVICE);
 				Log.d(TAG, "Requesting account creation.");
 				acct.addAccount(GCLAccountAuthenticator.ACCT_TYPE, "code", null, null, act, callback  , null);
@@ -310,6 +309,31 @@ public class GIssueTrackerRepository implements Repository
 			throw new ServiceException("Error posting issue.", e);
 		}
 	}
+
+	private int updateIssue(Issue issue) 
+		throws ServiceException
+	{
+		try
+		{
+			URL putUrl = new URL("http://code.google.com/feeds/issues/p/" + projectName + "/issues/" + issue.getIssueId());
+			issue.setHash(createHash(issue));			
+			host.update(putUrl, issue);
+			issue.setAppName(appName);
+			return HttpStatus.SC_CREATED;
+		}
+		catch (AuthenticationException e)
+		{
+			Log.i(TAG, "Authorization failed.", e);
+			manageAccount();
+			return HttpStatus.SC_UNAUTHORIZED;
+		}
+		catch (MalformedURLException e)
+		{
+			throw new ServiceException("Error posting issue.", e);
+		}
+	}
+
+	
 	
 	private void manageAccount()
 	{
@@ -433,6 +457,13 @@ public class GIssueTrackerRepository implements Repository
 			return new SearchResults(new ArrayList<Issue>(issues), false);
 	}
 
+	public boolean vote(Issue issue) throws ServiceException
+	{
+//		issue.setVotes(issue.getVotes() + 1);
+//		return HttpStatus.SC_CREATED == updateIssue(issue);
+		return false;
+	}
+	
 	private void setAppName(LinkedHashSet<Issue> issues)
 	{
 		for(Issue issue : issues)
@@ -491,5 +522,6 @@ public class GIssueTrackerRepository implements Repository
 	{
 		return versions ;
 	}
+
 
 }

@@ -19,35 +19,37 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int apps=0x7f020000;
-        public static final int bug_ablaze=0x7f020001;
-        public static final int bug_big=0x7f020002;
-        public static final int bug_desiccated=0x7f020003;
-        public static final int bug_medium=0x7f020004;
-        public static final int bug_on_fire=0x7f020005;
-        public static final int bug_small=0x7f020006;
-        public static final int bug_squished=0x7f020007;
-        public static final int bulb=0x7f020008;
-        public static final int bulb_cracked=0x7f020009;
-        public static final int bulb_half=0x7f02000a;
-        public static final int bulb_negative=0x7f02000b;
-        public static final int bulb_off=0x7f02000c;
-        public static final int bulb_on_fire=0x7f02000d;
-        public static final int bulb_third=0x7f02000e;
-        public static final int icon=0x7f02000f;
-        public static final int imp_blocker=0x7f020010;
-        public static final int imp_closed=0x7f020011;
-        public static final int imp_critical=0x7f020012;
-        public static final int imp_major=0x7f020013;
-        public static final int imp_minor=0x7f020014;
-        public static final int imp_resolved=0x7f020015;
-        public static final int imp_trivial=0x7f020016;
-        public static final int pen=0x7f020017;
-        public static final int v=0x7f020018;
-        public static final int v2=0x7f020019;
+        public static final int all_issues=0x7f020000;
+        public static final int apps=0x7f020001;
+        public static final int bug_ablaze=0x7f020002;
+        public static final int bug_big=0x7f020003;
+        public static final int bug_desiccated=0x7f020004;
+        public static final int bug_medium=0x7f020005;
+        public static final int bug_on_fire=0x7f020006;
+        public static final int bug_small=0x7f020007;
+        public static final int bug_squished=0x7f020008;
+        public static final int bulb=0x7f020009;
+        public static final int bulb_cracked=0x7f02000a;
+        public static final int bulb_half=0x7f02000b;
+        public static final int bulb_negative=0x7f02000c;
+        public static final int bulb_off=0x7f02000d;
+        public static final int bulb_on_fire=0x7f02000e;
+        public static final int bulb_third=0x7f02000f;
+        public static final int icon=0x7f020010;
+        public static final int imp_blocker=0x7f020011;
+        public static final int imp_closed=0x7f020012;
+        public static final int imp_critical=0x7f020013;
+        public static final int imp_major=0x7f020014;
+        public static final int imp_minor=0x7f020015;
+        public static final int imp_resolved=0x7f020016;
+        public static final int imp_trivial=0x7f020017;
+        public static final int my_issues=0x7f020018;
+        public static final int pen=0x7f020019;
+        public static final int v=0x7f02001a;
+        public static final int v2=0x7f02001b;
     }
     public static final class id {
-        public static final int AffectedVersionsTextView=0x7f07003d;
+        public static final int AffectedVersionsTextView=0x7f07003f;
         public static final int AppNameSpinner=0x7f070002;
         public static final int AppVersionSpinner=0x7f07002a;
         public static final int AuthorTextView=0x7f070027;
@@ -59,11 +61,11 @@ public final class R {
         public static final int BugSummaryEditText=0x7f070020;
         public static final int BugsResTextView=0x7f070010;
         public static final int BugsUnresTextView=0x7f07000e;
-        public static final int CommentsListView=0x7f07003f;
+        public static final int CommentsListView=0x7f070041;
         public static final int CreateDateTextView=0x7f070028;
         public static final int CreatedDateTextView=0x7f070038;
         public static final int DescriptionTextView=0x7f070005;
-        public static final int DescriptonTextView=0x7f07003e;
+        public static final int DescriptonTextView=0x7f070040;
         public static final int DetailsButton=0x7f070023;
         public static final int EditIssueLayout=0x7f070036;
         public static final int FeaturesResTextView=0x7f070017;
@@ -106,11 +108,13 @@ public final class R {
         public static final int TextView06=0x7f070015;
         public static final int TextView07=0x7f07001a;
         public static final int TextView08=0x7f07001b;
-        public static final int TextViewLayout=0x7f070040;
+        public static final int TextViewLayout=0x7f070042;
         public static final int TypeImageView=0x7f07002c;
         public static final int TypeTextView=0x7f07003a;
         public static final int URLTextView=0x7f070007;
         public static final int VersionTableLayout=0x7f070018;
+        public static final int VotedImageView=0x7f07003d;
+        public static final int VotesTextView=0x7f07003e;
         public static final int include01=0x7f070034;
     }
     public static final class layout {

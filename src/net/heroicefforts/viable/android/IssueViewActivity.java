@@ -27,11 +27,15 @@ import net.heroicefforts.viable.android.content.RemoteCommentCursor;
 import net.heroicefforts.viable.android.dao.Issue;
 import net.heroicefforts.viable.android.rep.CreateException;
 import net.heroicefforts.viable.android.rep.IssueResource;
+import net.heroicefforts.viable.android.rep.Repository;
 import net.heroicefforts.viable.android.rep.RepositoryFactory;
 import net.heroicefforts.viable.android.rep.ServiceException;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -135,7 +139,7 @@ public class IssueViewActivity extends Activity
     {
 		public void onClick(View v)
 		{
-			String issueId = ((TextView) findViewById(R.id.IssueIdTextView)).getText().toString();
+			String issueId = getIssueId();
 			try
 			{
 				Issue issue = factory.getRepository(appName).findById(issueId);
@@ -154,9 +158,13 @@ public class IssueViewActivity extends Activity
 				Error.handle(IssueViewActivity.this, e);
 			}
 		}
-
     	
     };
+
+	private String getIssueId()
+	{
+		return ((TextView) findViewById(R.id.IssueIdTextView)).getText().toString();
+	}
     
     /**
      * Binds the issue data to the view
@@ -213,7 +221,102 @@ public class IssueViewActivity extends Activity
 		        new int[] { R.id.AuthorTextView, R.id.BodyTextView, R.id.CreateDateTextView });
 		((ListView) findViewById(R.id.CommentsListView)).setAdapter(adapter);
 		
+		Cursor c = getContentResolver().query(Issues.CONTENT_URI, Issues.ISSUE_PROJECTION, Issues.ISSUE_ID + " = ?", new String[] { issue.getIssueId() }, null);
+		Boolean voted = null;
+		if(c.moveToFirst())
+		{
+			Issue localIssue = new IssueContentAdapter(c).toIssue();
+			voted = localIssue.isVoted();
+		}
 		
+		if(voted == null)
+			voted = issue.isVoted();
+		
+		ImageView iv = (ImageView) findViewById(R.id.VotedImageView);
+		if(voted)
+			iv.setImageResource(android.R.drawable.star_big_on);
+		else
+		{
+			iv.setImageResource(android.R.drawable.star_big_off);
+			iv.setOnClickListener(starClicked);
+		}
+		
+		TextView votesView = (TextView) findViewById(R.id.VotesTextView);
+		votesView.setText(String.valueOf(issue.getVotes()));
+		
+
+		((TextView) findViewById(R.id.VotesTextView)).setText(String.valueOf(issue.getVotes()));
+
 	}    
 
+	private OnClickListener starClicked = new OnClickListener() {
+
+		public void onClick(View v)
+		{
+			new AsyncVoteTask().execute(((TextView) findViewById(R.id.IssueIdTextView)).getText().toString());
+		}
+		
+	};
+
+	/**
+     * Results class for returning asynchronous result values.
+     */
+	private class VoteHolder
+	{
+		public Issue issue;
+		public Boolean success;
+		public ServiceException exc;
+	}
+    
+	public class AsyncVoteTask extends AsyncTask<String, Void, VoteHolder>
+	{
+
+		@Override
+		protected VoteHolder doInBackground(String...args)
+		{
+			VoteHolder holder = new VoteHolder();
+			try
+			{
+				String issueId = args[0];
+				Repository rep = factory.getRepository(appName);
+				holder.issue = rep.findById(issueId);
+				holder.success = rep.vote(holder.issue);
+			}
+			catch (ServiceException e)
+			{
+				holder.exc = e;
+			}
+			
+			return holder;
+		}
+
+		@Override
+		protected void onPostExecute(VoteHolder holder)
+		{
+			if(holder.exc == null)
+			{
+				String issueId = IssueViewActivity.this.getIssueId();
+				if(holder.success && issueId.equals(holder.issue.getIssueId()))
+				{
+					updateIssue(holder.issue);
+
+					TextView votesView = ((TextView) findViewById(R.id.VotesTextView));
+					votesView.setText(String.valueOf(holder.issue.getVotes()));
+					ImageView iv = ((ImageView) findViewById(R.id.VotedImageView));
+					iv.setImageResource(android.R.drawable.star_big_on);
+					iv.setOnClickListener(null);
+				}
+			}
+			else
+				Error.handle(IssueViewActivity.this, holder.exc);
+		}
+
+	}
+
+	private void updateIssue(Issue issue)
+	{
+		ContentValues values = new IssueContentAdapter(issue).toContentValues();
+		getContentResolver().update(Issues.CONTENT_URI, values, Issues.ISSUE_ID + " = ?", new String[] { issue.getIssueId() });			
+	}		
+	
 }

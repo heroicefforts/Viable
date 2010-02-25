@@ -83,6 +83,7 @@ public class AtomIssue extends Issue
 		builder.append("<title>").append(getSummary()).append("</title>");
 		builder.append("<content type='html'>").append(getBody()).append("</content>");
 		builder.append("<author><name>Anonymous</name></author>");
+		builder.append("<issues:stars>").append(getVotes()).append("</issues:stars>");
 		builder.append(getLabels());
 		builder.append("</entry>");
 

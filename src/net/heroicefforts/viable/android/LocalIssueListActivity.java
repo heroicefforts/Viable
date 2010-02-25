@@ -106,6 +106,8 @@ public class LocalIssueListActivity extends AbstractIssueListActivity
             Issues.ISSUE_TYPE,
             Issues.ISSUE_PRIORITY,
             Issues.ISSUE_STATE,
+            Issues.VOTED,
+            Issues.VOTES,
             Issues.SUMMARY
 	    };
 				

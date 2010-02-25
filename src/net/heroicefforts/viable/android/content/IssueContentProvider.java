@@ -84,6 +84,8 @@ public class IssueContentProvider extends ContentProvider {
                     + Issues.HASH + " TEXT,"
                     + Issues.APP_NAME + " TEXT NOT NULL ON CONFLICT ROLLBACK,"
                     + Issues.APP_VERSION + " TEXT NOT NULL ON CONFLICT ROLLBACK,"
+                    + Issues.VOTED + " INTEGER DEFAULT 0,"
+                    + Issues.VOTES + " INTEGER DEFAULT 0,"
                     + Issues.CREATED_DATE + " INTEGER,"
                     + Issues.MODIFIED_DATE + " INTEGER"
                     + ");"); 
@@ -99,8 +101,7 @@ public class IssueContentProvider extends ContentProvider {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-                    + newVersion + ", which will destroy all old data");
+            Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ".");            
         }
     }
 
@@ -281,12 +282,14 @@ public class IssueContentProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
         case ISSUES:
             count = db.update(ISSUES_TABLE_NAME, values, where, whereArgs);
+            if(count == 0)
+            	db.insert(ISSUES_TABLE_NAME, null, values);
             break;
 
         case ISSUES_ID:
-            String noteId = uri.getPathSegments().get(1);
-            count = db.update(ISSUES_TABLE_NAME, values, Issues._ID + "=" + noteId
-                    + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
+            String issueId = uri.getPathSegments().get(1);
+            count = db.update(ISSUES_TABLE_NAME, values, Issues._ID + "='" + issueId + "'"
+                    + (!TextUtils.isEmpty(where) ? " AND (" + where + ")" : ""), whereArgs);
             break;
 
         case APPS:
@@ -320,6 +323,8 @@ public class IssueContentProvider extends ContentProvider {
         issuesProjectionMap.put(Issues.DESCRIPTION, Issues.DESCRIPTION);
         issuesProjectionMap.put(Issues.HASH, Issues.HASH);
         issuesProjectionMap.put(Issues.STACKTRACE, Issues.STACKTRACE);
+        issuesProjectionMap.put(Issues.VOTED, Issues.VOTED);
+        issuesProjectionMap.put(Issues.VOTES, Issues.VOTES);
         issuesProjectionMap.put(Issues.CREATED_DATE, Issues.CREATED_DATE);
         issuesProjectionMap.put(Issues.MODIFIED_DATE, Issues.MODIFIED_DATE); 
         

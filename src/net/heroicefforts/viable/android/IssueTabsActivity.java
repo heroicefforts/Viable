@@ -98,9 +98,9 @@ public class IssueTabsActivity extends TabActivity implements NetworkDependentAc
 		TabHost mTabHost = getTabHost();
 		mTabHost.addTab(mTabHost.newTabSpec(TAB_APP_STATS).setIndicator(getString(R.string.apps), getResources().getDrawable(R.drawable.apps)).setContent(
 				new Intent(this, AppStatsActivity.class)));
-		mTabHost.addTab(mTabHost.newTabSpec(TAB_MY_ISSUES).setIndicator(getString(R.string.my_issues), null)
+		mTabHost.addTab(mTabHost.newTabSpec(TAB_MY_ISSUES).setIndicator(getString(R.string.my_issues), getResources().getDrawable(R.drawable.my_issues))
 				.setContent(new Intent(this, LocalIssueListActivity.class)));
-		mTabHost.addTab(mTabHost.newTabSpec(TAB_ALL_ISSUES).setIndicator(getString(R.string.all_issues), null)
+		mTabHost.addTab(mTabHost.newTabSpec(TAB_ALL_ISSUES).setIndicator(getString(R.string.all_issues), getResources().getDrawable(R.drawable.all_issues))
 				.setContent(new Intent(this, RemoteIssueListActivity.class)));
 		mTabHost.addTab(mTabHost.newTabSpec(TAB_REPORT_ISSUE).setIndicator(getString(R.string.report_issue), getResources().getDrawable(R.drawable.pen))
 				.setContent(new Intent(this, BugReporterActivity.class)));

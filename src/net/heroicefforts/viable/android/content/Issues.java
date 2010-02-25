@@ -133,6 +133,16 @@ public class Issues implements BaseColumns
      */
     public static final String MODIFIED_DATE = "modified";
 
+    /**
+     * Indicates if the user has voted for the issue.
+     */
+	public static final String VOTED = "voted";
+	
+	/**
+	 * Indicates how many users have voted for the issue.
+	 */
+	public static final String VOTES = "votes";
+
 	public static final String[] ISSUE_PROJECTION = new String[] {
         Issues._ID,
         Issues.ISSUE_ID,
@@ -145,9 +155,10 @@ public class Issues implements BaseColumns
         Issues.DESCRIPTION,
         Issues.HASH,
         Issues.STACKTRACE,
+        Issues.VOTED,
+        Issues.VOTES,
         Issues.CREATED_DATE,
         Issues.MODIFIED_DATE
 	};
-;
     
 }
