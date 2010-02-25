@@ -18,26 +18,30 @@
  */
 package net.heroicefforts.viable.android;
 
-import net.heroicefforts.viable.android.rep.CreateException;
-import net.heroicefforts.viable.android.rep.ServiceException;
+import net.heroicefforts.viable.android.rep.RepositoryRegistry;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.widget.Toast;
+import android.content.Intent;
+import android.util.Log;
 
 /**
- * Utility class for alerting users to errors that bubble to the UI in a uniform fashion.
+ * This listener receives application (re)installation events.  If the application is
+ * a Viable client application, then their Viable configuration is added to the registry.
  * 
  * @author jevans
  *
  */
-public class Error
+public class InstallReceiver extends BroadcastReceiver
 {
-	public static void handle(Context ctx, CreateException ce)
+	private static final String TAG = "InstallReceiver";
+
+	@Override
+	public void onReceive(Context context, Intent intent)
 	{
-		Toast.makeText(ctx, ctx.getString(R.string.create_error_msg), Toast.LENGTH_LONG).show();
+		Log.v(TAG, "Received installation event notification.");
+		int uid = intent.getIntExtra(Intent.EXTRA_UID, -1);
+		RepositoryRegistry registry = new RepositoryRegistry(context);
+		registry.modify(uid);						
 	}
 
-	public static void handle(Context ctx, ServiceException ce)
-	{
-		Toast.makeText(ctx, ctx.getString(R.string.service_error_msg), Toast.LENGTH_LONG).show();
-	}
 }

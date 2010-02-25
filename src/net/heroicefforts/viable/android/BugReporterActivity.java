@@ -1,3 +1,21 @@
+/*
+ *  Copyright 2010 Heroic Efforts, LLC
+ *  
+ *  This file is part of Viable.
+ *
+ *  Viable is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Viable is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Viable.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package net.heroicefforts.viable.android;
 
 import java.util.ArrayList;
@@ -72,7 +90,6 @@ public class BugReporterActivity extends Activity
         setContentView(R.layout.bug_report_activity);
             	
         ((Button) findViewById(R.id.ReportBugButton)).setOnClickListener(clickListener);
-        ((Button) findViewById(R.id.BugSearchButton)).setOnClickListener(clickListener);
         ((Button) findViewById(R.id.DetailsButton)).setOnClickListener(clickListener);
 
         appNameSpinner = (Spinner) findViewById(R.id.AppNameSpinner);    	
@@ -288,11 +305,6 @@ public class BugReporterActivity extends Activity
 				Activity parent = BugReporterActivity.this.getParent();
 				if(parent != null && parent instanceof IssueTabsActivity)
 					((IssueTabsActivity) parent).selectMyIssuesTab();			        
-			}
-			else if(v.getId() == R.id.BugSearchButton)
-			{
-				Intent intent = new Intent(BugReporterActivity.this, LocalIssueListActivity.class);
-				startActivity(intent);
 			}
 			else if(v.getId() == R.id.DetailsButton)
 			{

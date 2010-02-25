@@ -2,8 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.heroicefforts.viable</groupId>
   <artifactId>viable-android</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
   <packaging>apk</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Viable</name>
+  <url></url>
   
   <dependencies>
   	<dependency>
@@ -20,6 +22,13 @@
   		<resource>
   			<targetPath>dist/aj</targetPath>
   			<directory>dist/aj</directory>
+  		</resource>
+  		<resource>
+  			<targetPath></targetPath>
+  			<directory>.</directory>
+  			<includes>
+  				<include>LICENSE</include>
+  			</includes>
   		</resource>
   	</resources>
   	<plugins>

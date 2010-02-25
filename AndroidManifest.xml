@@ -21,6 +21,14 @@
         	</intent-filter>        	
         </activity>
 
+		<activity android:name="UninstallActivity">
+        	<intent-filter>        	
+        		<action android:name="android.intent.action.MAIN"/>
+        		<category android:name="android.intent.category.DEFAULT"/>
+        		<category android:name="android.intent.category.REPORT_UNINSTALL"/>
+        	</intent-filter>        				
+		</activity>
+
 		<activity android:name="IssueViewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -65,10 +73,24 @@
             </intent-filter>
 		</activity>
 
-		<receiver android:name="net.heroicefforts.viable.android.CrashReceiver">
+		<receiver android:name="CrashReceiver">
 			<intent-filter>
         		<action android:name="android.intent.action.MAIN"/>
         		<category android:name="android.intent.category.BUGREPORT_JIRA"/>
+			</intent-filter>
+		</receiver>
+
+		<receiver android:name="InstallReceiver">
+			<intent-filter>
+        		<action android:name="android.intent.action.PACKAGE_ADDED"/>
+        		<data android:scheme="package"/>
+			</intent-filter>
+		</receiver>
+
+		<receiver android:name="UninstallReceiver">
+			<intent-filter>
+        		<action android:name="android.intent.action.PACKAGE_REMOVED"/>
+        		<data android:scheme="package"/>
 			</intent-filter>
 		</receiver>
 

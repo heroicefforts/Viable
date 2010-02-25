@@ -44,8 +44,11 @@
 	<string name="issue_id">Issue Id:&#160;&#160;</string>
 	<string name="report_issue">Report Issue</string>
 	
-	<string name="bug_comment">Crash Comment</string>
+	<string name="bug_comment">Report Crash</string>
 	<string name="bug_comment_prompt">The crash you experienced has already been reported to the {appName} development team.  Would you like to add a comment?</string>
+	<string name="uninstall_comment">Provide Feedback</string>
+	<string name="uninstall_comment_prompt">You recently uninstalled {appName}.  Feedback helps developers improve their products.  Would you like to provide the developer a reason for the uninstall?</string>
+	<string name="uninstall_reasons">Uninstall reasons.</string>
 	<string name="yes">Yes</string>
 	<string name="no">No</string>	
     <string name="title_issues_list">Issues</string>
@@ -110,4 +113,8 @@
 	<string name="retry">Retry</string>
 	<string name="close">Close</string>
 	<string name="disconnected_msg">A network connection is required to access the issue tracking systems.  If a connection cannot be re-established, then Viable will be closed.</string>
+	
+    <string name="eula_title">End User Licensing Agreement</string>
+    <string name="eula_accept">I accept.</string>
+    <string name="eula_refuse">I refuse.</string>	
 </resources>
