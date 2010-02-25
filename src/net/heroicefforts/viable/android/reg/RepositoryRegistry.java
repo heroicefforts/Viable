@@ -16,9 +16,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Viable.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.heroicefforts.viable.android.rep;
+package net.heroicefforts.viable.android.reg;
 
 import java.util.ArrayList;
+
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;

@@ -16,10 +16,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Viable.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.heroicefforts.viable.android;
+package net.heroicefforts.viable.android.reg;
 
-import net.heroicefforts.viable.android.rep.RegEntry;
-import net.heroicefforts.viable.android.rep.RepositoryRegistry;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;

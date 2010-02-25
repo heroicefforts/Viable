@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import net.heroicefforts.viable.android.reg.RegEntry;
+import net.heroicefforts.viable.android.reg.RepositoryRegistry;
+
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;

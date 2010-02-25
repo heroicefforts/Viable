@@ -80,14 +80,14 @@
 			</intent-filter>
 		</receiver>
 
-		<receiver android:name="InstallReceiver">
+		<receiver android:name=".reg.InstallReceiver">
 			<intent-filter>
         		<action android:name="android.intent.action.PACKAGE_ADDED"/>
         		<data android:scheme="package"/>
 			</intent-filter>
 		</receiver>
 
-		<receiver android:name="UninstallReceiver">
+		<receiver android:name=".reg.UninstallReceiver">
 			<intent-filter>
         		<action android:name="android.intent.action.PACKAGE_REMOVED"/>
         		<data android:scheme="package"/>

@@ -23,7 +23,8 @@ import java.util.List;
 
 import net.heroicefforts.viable.android.dao.Comment;
 import net.heroicefforts.viable.android.dao.Issue;
-import net.heroicefforts.viable.android.rep.RegEntry;
+import net.heroicefforts.viable.android.reg.RegEntry;
+import net.heroicefforts.viable.android.reg.UninstallIntent;
 import net.heroicefforts.viable.android.rep.Repository;
 import net.heroicefforts.viable.android.rep.RepositoryFactory;
 import net.heroicefforts.viable.android.rep.ServiceException;
