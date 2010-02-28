@@ -124,14 +124,19 @@ public class BugReporterActivity extends Activity
     		intent = getParent().getIntent();
     	else
     		intent = getIntent();
-    	
+Log.d(TAG, "Handled:" + handled + "=" + intent);    	
     	if(handled != intent)
     	{
     		try
 			{
 				BugReportIntent bri = new BugReportIntent(intent);
 				if(bri.isValid())
+				{
+Log.d(TAG, "Bri is valid.");					
 					setDefectState(bri.getAppName(), bri.getStacktrace());
+				}
+				else
+Log.d(TAG, "Bri is not valid.");					
 				handled = intent;
 			}
 			catch (ServiceException e)
@@ -150,7 +155,7 @@ public class BugReporterActivity extends Activity
 		appNameSpinner.setEnabled(false);		
     	Set<? extends IssueResource> resources = factory.getRepository(appName).getDefaultDefectStates();
 		typeSpinner.setAdapter(new IssueSelectionAdapter(this, resources));  
-
+Log.d(TAG, "" + resources.size() + " resources.");
 		BugContext ctx = new BugContext();
 		ctx.setAppName(appName);
 		ctx.setStacktrace(stacktrace);
@@ -257,7 +262,7 @@ public class BugReporterActivity extends Activity
 
 		public void onItemSelected(AdapterView<?> v, View arg1, int position, long id)
 		{
-			if(position > 0)
+			if(position > 0 && v.isEnabled())
 			{
 				String appName = (String) v.getAdapter().getItem(v.getLastVisiblePosition()); 
 		    	Set<? extends IssueResource> resources = factory.getRepository(appName).getDefaultStates();
