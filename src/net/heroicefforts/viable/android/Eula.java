@@ -27,6 +27,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 /**
  * Displays an EULA ("End User License Agreement") that the user has to accept before
@@ -36,6 +37,8 @@ import android.content.SharedPreferences;
  * on your activity.
  */
 class Eula {
+	private static final String TAG = "Eula";
+	
     private static final String ASSET_EULA = "EULA";
     private static final String PREFERENCE_EULA_ACCEPTED = "eula.accepted";
     private static final String PREFERENCES_EULA = "eula";
@@ -123,7 +126,7 @@ class Eula {
             try {
                 stream.close();
             } catch (IOException e) {
-                // Ignore
+                Log.e(TAG, "Error closing EULA input file stream.", e);
             }
         }
     }

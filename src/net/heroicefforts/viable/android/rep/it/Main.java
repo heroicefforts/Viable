@@ -36,6 +36,8 @@ import net.heroicefforts.viable.android.rep.ServiceException;
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
+
+@SuppressWarnings("PMD")
 public class Main
 {
 	private static final String PASSWORD = "viableTest123";

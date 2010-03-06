@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
+import net.heroicefforts.viable.android.Config;
 import net.heroicefforts.viable.android.dao.Comment;
 import net.heroicefforts.viable.android.dao.Issue;
 import net.heroicefforts.viable.android.rep.ServiceException;
@@ -65,6 +66,9 @@ import android.util.Log;
 public class ProjectHostingService
 {
 	private static final String TAG = "ProjectHostingService";
+
+	private static final String ENTRY = "entry";
+	private static final String PUBLISHED_DATE = "published";
 
 	private static final int CONN_TIMEOUT = 5000;
 	
@@ -110,13 +114,15 @@ public class ProjectHostingService
 	private HttpResponse execute(HttpUriRequest request)
 		throws IOException
 	{
-		Log.v(TAG, "Requesting:  " + request.getURI().toASCIIString());
+		if(Config.LOGV)
+			Log.v(TAG, "Requesting:  " + request.getURI().toASCIIString());
 		request.addHeader("Accept-Encoding", "gzip");
 		if(authToken != null)
 		{
 			request.addHeader("Authorization", "GoogleLogin auth=" + authToken);
 //			request.addHeader("Authorization", "AuthSub token=" + authToken);
-			Log.v(TAG, "Added auth token '" + authToken + "' to request.");
+			if(Config.LOGV)
+				Log.v(TAG, "Added auth token '" + authToken + "' to request.");
 		}
 		return httpclient.execute(request);
 	}
@@ -145,10 +151,12 @@ public class ProjectHostingService
 	{
 		InputStream instream = response.getEntity().getContent();
 		Header contentEncoding = response.getFirstHeader("Content-Encoding");
-		if(contentEncoding != null)
-			Log.d(TAG, "Response content encoding was '" + contentEncoding.getValue() + "'");
+		if(Config.LOGV) //NOPMD
+			if(contentEncoding != null) //NOPMD
+				Log.v(TAG, "Response content encoding was '" + contentEncoding.getValue() + "'");
 		if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
-			Log.d(TAG, "Handling GZIP response.");
+			if(Config.LOGD)
+				Log.d(TAG, "Handling GZIP response.");
 		    instream = new GZIPInputStream(instream);
 		}		
 
@@ -159,7 +167,8 @@ public class ProjectHostingService
 		while((read = bis.read(buf)) > 0)
 			baos.write(buf, 0, read);
 		String body = baos.toString();
-		Log.v(TAG, "Response:  " + body);
+		if(Config.LOGV)
+			Log.v(TAG, "Response:  " + body);
 		return body;
 	}
 	
@@ -175,7 +184,8 @@ public class ProjectHostingService
 		try
 		{
 			String url = myQuery.toUrl();
-			Log.v(TAG, "Query url:  " + url);
+			if(Config.LOGV)
+				Log.v(TAG, "Query url:  " + url);
 			HttpGet get = new HttpGet(new URI(url));
 			HttpResponse response = execute(get);
 			JSONObject obj = readJSON(response);
@@ -201,7 +211,7 @@ public class ProjectHostingService
 		try
 		{
 			String url = feedUrl.toExternalForm();
-			if(url.indexOf("?") != -1)
+			if(url.indexOf('?') != -1)
 				url += "&";
 			else
 				url += "?";
@@ -212,9 +222,10 @@ public class ProjectHostingService
 			if(!notFound(body))
 			{
 				JSONObject obj = new JSONObject(body);
-				Log.v(TAG, "Entry response:  " + obj.toString(4));
-				if(obj.has("entry"))
-					return loadIssue(obj.getJSONObject("entry"));
+				if(Config.LOGV)
+					Log.v(TAG, "Entry response:  " + obj.toString(4));
+				if(obj.has(ENTRY))
+					return loadIssue(obj.getJSONObject(ENTRY));
 			}
 
 			return null;
@@ -237,7 +248,7 @@ public class ProjectHostingService
 		try
 		{
 			String url = feedUrl.toExternalForm();
-			if(url.indexOf("?") != -1)
+			if(url.indexOf('?') != -1)
 				url += "&";
 			else
 				url += "?";
@@ -256,12 +267,13 @@ public class ProjectHostingService
 	private IssueCommentsFeed loadCommentFeed(JSONObject obj)
 		throws JSONException
 	{
-		Log.v(TAG, "CommentFeed query response:  " + obj.toString(4));
+		if(Config.LOGV)
+			Log.v(TAG, "CommentFeed query response:  " + obj.toString(4));
 		List<Comment> comments = new ArrayList<Comment>();
 		JSONObject feed = obj.getJSONObject("feed");
-		if(feed.has("entry"))
+		if(feed.has(ENTRY))
 		{
-			JSONArray entries = feed.getJSONArray("entry");
+			JSONArray entries = feed.getJSONArray(ENTRY);
 			for(int i = 0; i < entries.length(); i++)
 				comments.add(loadComment(entries.getJSONObject(i)));
 		}			
@@ -275,7 +287,7 @@ public class ProjectHostingService
 		throws JSONException
 	{
 		String idStr = obj.getJSONObject("id").getString("$t");
-		long id = Long.parseLong(idStr.substring(idStr.lastIndexOf("/") + 1));
+		long id = Long.parseLong(idStr.substring(idStr.lastIndexOf('/') + 1));
 		StringBuilder body = new StringBuilder();
 		body.append(obj.getJSONObject("title").getString("$t")).append(EOL);
 		body.append(EOL);
@@ -289,11 +301,11 @@ public class ProjectHostingService
 		Date created = null;
 		try
 		{
-			created = sdf.parse(obj.getJSONObject("published").getString("$t"));
+			created = sdf.parse(obj.getJSONObject(PUBLISHED_DATE).getString("$t"));
 		}
 		catch (ParseException e)
 		{
-			throw new JSONException("Error parsing JSON date:  " + obj.getJSONObject("published").getString("$t"));
+			throw new JSONException("Error parsing JSON date:  " + obj.getJSONObject(PUBLISHED_DATE).getString("$t"));
 		}
 		
 		return new Comment(id, body.toString(), author.toString(), created);
@@ -350,7 +362,8 @@ public class ProjectHostingService
 			post.setEntity(new StringEntity(new AtomIssue(issue).toString()));
 			HttpResponse response = execute(post);
 			int responseCode = response.getStatusLine().getStatusCode();
-			Log.d(TAG, "Update response code:  " + responseCode);
+			if(Config.LOGD)
+				Log.d(TAG, "Update response code:  " + responseCode);
 			String body = readResponse(response);
 			if(HttpStatus.SC_CREATED == responseCode)
 			{
@@ -417,12 +430,13 @@ public class ProjectHostingService
 	private List<Issue> loadIssueFeed(JSONObject obj)
 		throws JSONException
 	{
-		Log.v(TAG, "IssueFeed query response:  " + obj.toString(4));
+		if(Config.LOGV)
+			Log.v(TAG, "IssueFeed query response:  " + obj.toString(4));
 		List<Issue> issues = new ArrayList<Issue>();
 		JSONObject feed = obj.getJSONObject("feed");
-		if(feed.has("entry"))
+		if(feed.has(ENTRY))
 		{
-			JSONArray entries = feed.getJSONArray("entry");
+			JSONArray entries = feed.getJSONArray(ENTRY);
 			for(int i = 0; i < entries.length(); i++)
 			{
 				issues.add(loadIssue(entries.getJSONObject(i)));
@@ -455,7 +469,8 @@ public class ProjectHostingService
 		for(int i = 0; i < labels.length(); i++)
 		{
 			String label = labels.getJSONObject(i).getString("$t");
-			Log.v(TAG, "Label:  " + label);
+			if(Config.LOGV)
+				Log.v(TAG, "Label:  " + label);
 			if(label.startsWith("Type-"))
 				issue.setType(label.substring("Type-".length()));
 			else if(label.startsWith("Priority-"))
@@ -470,11 +485,11 @@ public class ProjectHostingService
 		issue.setState(obj.getJSONObject("issues$state").getString("$t"));
 		try
 		{
-			issue.setCreateDate(sdf.parse(obj.getJSONObject("published").getString("$t")));
+			issue.setCreateDate(sdf.parse(obj.getJSONObject(PUBLISHED_DATE).getString("$t")));
 		}
 		catch (ParseException e)
 		{
-			throw new JSONException("Error parsing JSON date:  " + obj.getJSONObject("published").getString("$t"));
+			throw new JSONException("Error parsing JSON date:  " + obj.getJSONObject(PUBLISHED_DATE).getString("$t"));
 		}
 
 		try

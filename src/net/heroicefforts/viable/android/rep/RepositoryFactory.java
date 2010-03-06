@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import net.heroicefforts.viable.android.Config;
 import net.heroicefforts.viable.android.reg.RegEntry;
 import net.heroicefforts.viable.android.reg.RepositoryRegistry;
-
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -60,12 +60,16 @@ import android.util.Log;
 public class RepositoryFactory
 {
 	private static final String TAG = "RepositoryFactory";
+
+	private static final String ENTRY_VIABLE_PROVIDER = "viable-provider";
+
 	private Map<String, Bundle> appBundles = new TreeMap<String, Bundle>();
 	private Map<String, String> appVersion = new TreeMap<String, String>();
 	private Bundle viableBundle;
 	private Activity act;
 	private HashMap<String, Repository> repMap = new HashMap<String, Repository>();
 	private RepositoryRegistry registry;
+	
 	
 	/**
 	 * Instantiate the factory.
@@ -82,7 +86,7 @@ public class RepositoryFactory
 		for(ApplicationInfo app : infos)
 		{
 			String label = pkgMgr.getApplicationLabel(app).toString();
-			if(app.metaData != null && app.metaData.getString("viable-provider") != null)
+			if(app.metaData != null && app.metaData.getString(ENTRY_VIABLE_PROVIDER) != null)
 			{
 				try
 				{
@@ -144,14 +148,14 @@ public class RepositoryFactory
 				Bundle metaData = appBundles.get(appName);
 				if(metaData != null)
 				{
-					String providerName = metaData.getString("viable-provider");
+					String providerName = metaData.getString(ENTRY_VIABLE_PROVIDER);
 					if(providerName != null)
 					{
 						rep = instantiateRepository(appName, providerName, act, metaData);
 						repMap.put(appName, rep);					
 					}
 					else
-						Log.e(TAG, "No '" + "viable-provider" + "' meta-data field defined for application '" + appName + "'.  Repository cannot be constructed.");
+						Log.e(TAG, "No '" + ENTRY_VIABLE_PROVIDER + "' meta-data field defined for application '" + appName + "'.  Repository cannot be constructed.");
 						
 				}
 				else
@@ -159,7 +163,8 @@ public class RepositoryFactory
 					RegEntry entry = registry.getEntryForApp(appName);
 					if(entry != null)
 					{
-						Log.d(TAG, "Application is no longer installed.  Resorting to registry.");
+						if(Config.LOGD)
+							Log.d(TAG, "Application is no longer installed.  Resorting to registry.");
 						rep = instantiateRepository(entry);
 					}
 					else
@@ -174,7 +179,7 @@ public class RepositoryFactory
 	public Repository instantiateRepository(RegEntry entry)
 	{
 		Bundle metaData = entry.getParams();
-		String providerName = metaData.getString("viable-provider"); 
+		String providerName = metaData.getString(ENTRY_VIABLE_PROVIDER); 
 		return instantiateRepository(entry.getAppName(), providerName, act, metaData);
 	}
 	

@@ -137,7 +137,8 @@ public class UninstallActivity extends Activity
 	 */
 	private void promptToComment()
 	{
-		Log.d(TAG, "Prompting user to comment on uninstall of '" + entry.getAppName() + "'.");
+		if(Config.LOGD)
+			Log.d(TAG, "Prompting user to comment on uninstall of '" + entry.getAppName() + "'.");
 		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.uninstall_comment);
 		builder.setCancelable(true);

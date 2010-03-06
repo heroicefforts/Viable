@@ -123,11 +123,11 @@ public class IssueSelectionAdapter extends ArrayAdapter<IssueResource>
 		
 	}
 
-	static class Holder
+	private static class Holder
 	{
 		public ImageView iconView;
 		public TextView descView;
-		private TextView nameView;
+		public TextView nameView;
 		
 		public Holder(TextView nameView, TextView descView, ImageView iconView)
 		{

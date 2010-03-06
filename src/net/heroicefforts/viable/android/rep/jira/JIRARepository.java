@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
+import net.heroicefforts.viable.android.Config;
 import net.heroicefforts.viable.android.dao.BugContext;
 import net.heroicefforts.viable.android.dao.Comment;
 import net.heroicefforts.viable.android.dao.CommentSet;
@@ -88,6 +89,10 @@ public class JIRARepository implements Repository
 {
 	private static final String TAG = "JIRARepository";
 
+	private static final String MSG_REMOTE_ERROR = "Remote error occurred.  Response code was :  ";
+	private static final String MSG_CONNECT_ERROR = "Error connecting to JIRA repository.";
+	private static final String MSG_PARSE_ERROR = "Error parsing JIRA response.";
+
 	private static final int CONN_TIMEOUT = 5000;
 	
 	private String rootURL;
@@ -96,7 +101,7 @@ public class JIRARepository implements Repository
 	
 
 
-	public JIRARepository(String appName, Activity act, Bundle metaData)
+	public JIRARepository(String appName, Activity act, Bundle metaData) //NOPMD
 		throws CreateException
 	{
 		this(appName, metaData.getString("viable-provider-location"));
@@ -130,12 +135,14 @@ public class JIRARepository implements Repository
     	
     	if(issues.size() > 0)
     	{
-    		Log.d(TAG, "Hashed bug exists:  '" + hash + "'");
+    		if(Config.LOGD)
+    			Log.d(TAG, "Hashed bug exists:  '" + hash + "'");
     		return issues.get(0);
     	}
     	else
     	{
-    		Log.d(TAG, "Hashed bug does not exist:  '" + hash + "'");
+    		if(Config.LOGD)
+    			Log.d(TAG, "Hashed bug does not exist:  '" + hash + "'");
     		return null;
     	}
     }
@@ -185,29 +192,32 @@ public class JIRARepository implements Repository
 			int code = response.getStatusLine().getStatusCode();
 			if(HttpStatus.SC_NOT_FOUND == code)
 			{
-				Log.d(TAG, "No comments for issue '" + issueId + "'.");
+				if(Config.LOGD)
+					Log.d(TAG, "No comments for issue '" + issueId + "'.");
 				List<Comment> comments = Collections.emptyList();
 				return new CommentSet(comments, false);
 			}
 			else if(HttpStatus.SC_OK == code)
 			{
 	        	JSONObject obj = readJSON(response);
-				Log.d(TAG, "Comments JSON:  " + obj.toString(4));
+	    		if(Config.LOGV)
+	    			Log.v(TAG, "Comments JSON:  " + obj.toString(4));
 	        	List<Comment> issues = loadComments(obj);
 	        	boolean more = obj.getBoolean("more");
-				Log.d(TAG, "Searched returned " + issues.size() + " results.");
+	    		if(Config.LOGD)
+	    			Log.d(TAG, "Searched returned " + issues.size() + " results.");
 				return new CommentSet(issues, more);
 			}
 			else
-				throw new ServiceException("Remote error occurred.  Response code was :  " + code);
+				throw new ServiceException(MSG_REMOTE_ERROR + code);
 		}
 		catch (JSONException e)
 		{
-			throw new ServiceException("Error parsing JIRA response.", e);
+			throw new ServiceException(MSG_PARSE_ERROR, e);
 		}
 		catch (IOException e)
 		{
-			throw new ServiceException("Error connecting to JIRA repository.", e);
+			throw new ServiceException(MSG_CONNECT_ERROR, e);
 		}
 
     }
@@ -243,36 +253,40 @@ public class JIRARepository implements Repository
 			if(params.getPageSize() > 0)
 				nameValuePairs.add(new BasicNameValuePair("page_size", String.valueOf(params.getPageSize())));
 			
-			Log.d(TAG, "Posting search paramters:  " + nameValuePairs.toString());
+			if(Config.LOGD)
+				Log.d(TAG, "Posting search paramters:  " + nameValuePairs.toString());
 			
 			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));  		   
 			HttpResponse response = execute(post);
 			int code = response.getStatusLine().getStatusCode();
 			if(HttpStatus.SC_NOT_FOUND == code)
 			{
-				Log.d(TAG, "Search returned no results:  '" + params + "'");
+				if(Config.LOGD)
+					Log.d(TAG, "Search returned no results:  '" + params + "'");
 				List<Issue> empty = Collections.emptyList();
 				return new SearchResults(empty, false);
 			}
 			else if(HttpStatus.SC_OK == code)
 			{
 	        	JSONObject obj = readJSON(response);
-				Log.d(TAG, "Search JSON:  " + obj.toString(4));
+	    		if(Config.LOGV)
+	    			Log.v(TAG, "Search JSON:  " + obj.toString(4));
 	        	List<Issue> issues = loadIssues(obj);
 	        	boolean more = obj.getBoolean("more");
-				Log.d(TAG, "Searched returned " + issues.size() + " results:  " + params);
+	    		if(Config.LOGD)
+	    			Log.d(TAG, "Searched returned " + issues.size() + " results:  " + params);
 				return new SearchResults(issues, more);
 			}
 			else
-				throw new ServiceException("Remote error occurred.  Response code was :  " + code);
+				throw new ServiceException(MSG_REMOTE_ERROR + code);
 		}
 		catch (JSONException e)
 		{
-			throw new ServiceException("Error parsing JIRA response.", e);
+			throw new ServiceException(MSG_PARSE_ERROR, e);
 		}
 		catch (IOException e)
 		{
-			throw new ServiceException("Error connecting to JIRA repository.", e);
+			throw new ServiceException(MSG_CONNECT_ERROR, e);
 		}
     }
     
@@ -317,13 +331,15 @@ public class JIRARepository implements Repository
 			int code = response.getStatusLine().getStatusCode();
 			if(HttpStatus.SC_NOT_FOUND == code)
 			{
-				Log.d(TAG, "No project versions found for '" + appName + "'.");
+				if(Config.LOGD)
+					Log.d(TAG, "No project versions found for '" + appName + "'.");
 				return Collections.emptyList();
 			}
 			else if(HttpStatus.SC_OK == code)
 			{
 	        	JSONObject obj = readJSON(response);
-				Log.d(TAG, "Project stats JSON:  " + obj.toString(4));
+	    		if(Config.LOGV)
+	    			Log.v(TAG, "Project stats JSON:  " + obj.toString(4));
 				ArrayList<VersionDetail> details = new ArrayList<VersionDetail>();
 				if(obj.has("versions"))
 				{
@@ -335,15 +351,15 @@ public class JIRARepository implements Repository
 				return details;
 			}
 			else
-				throw new ServiceException("Remote error occurred.  Response code was :  " + code);
+				throw new ServiceException(MSG_REMOTE_ERROR + code);
 		}
 		catch (JSONException e)
 		{
-			throw new ServiceException("Error parsing JIRA response.", e);
+			throw new ServiceException(MSG_PARSE_ERROR, e);
 		}
 		catch (IOException e)
 		{
-			throw new ServiceException("Error connecting to JIRA repository.", e);
+			throw new ServiceException(MSG_CONNECT_ERROR, e);
 		}
     }
     
@@ -360,25 +376,27 @@ public class JIRARepository implements Repository
 			int code = response.getStatusLine().getStatusCode();
 			if(HttpStatus.SC_NOT_FOUND == code)
 			{
-				Log.d(TAG, "No project stats found for '" + appName + "'.");
+				if(Config.LOGD)
+					Log.d(TAG, "No project stats found for '" + appName + "'.");
 				return null;
 			}
 			else if(HttpStatus.SC_OK == code)
 			{
 	        	JSONObject obj = readJSON(response);
-				Log.d(TAG, "Project stats JSON:  " + obj.toString(4));
+	    		if(Config.LOGV)
+	    			Log.v(TAG, "Project stats JSON:  " + obj.toString(4));
 				return new ProjectDetail(obj);
 			}
 			else
-				throw new ServiceException("Remote error occurred.  Response code was :  " + code);
+				throw new ServiceException(MSG_REMOTE_ERROR + code);
 		}
 		catch (JSONException e)
 		{
-			throw new ServiceException("Error parsing JIRA response.", e);
+			throw new ServiceException(MSG_PARSE_ERROR, e);
 		}
 		catch (IOException e)
 		{
-			throw new ServiceException("Error connecting to JIRA repository.", e);
+			throw new ServiceException(MSG_CONNECT_ERROR, e);
 		}
 		//TODO unwrap
     }
@@ -410,7 +428,8 @@ public class JIRARepository implements Repository
 				nameValuePairs.add(new BasicNameValuePair("phone_version", String.valueOf(Build.VERSION.SDK_INT)));
 			}
 
-			Log.d(TAG, "post params:  " + nameValuePairs.toString());
+			if(Config.LOGD)
+				Log.d(TAG, "post params:  " + nameValuePairs.toString());
 			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));  
 
 			// Execute HTTP Post Request  
@@ -419,15 +438,17 @@ public class JIRARepository implements Repository
 			if(HttpStatus.SC_OK == responseCode || HttpStatus.SC_CREATED == responseCode)
 			{			
 				JSONObject obj = readJSON(response);
-				Log.d(TAG, "postIssue response:  \n" + obj.toString(4));		
+				if(Config.LOGV)
+					Log.v(TAG, "postIssue response:  \n" + obj.toString(4));		
 				//TODO pull dates from response
 				Issue newIssue = new Issue(obj.getJSONObject("issue").toString(4));
 				issue.copy(newIssue);
 			}
 			else
-				throw new ServiceException("Remote error occurred.  Response code was :  " + responseCode);
+				throw new ServiceException(MSG_REMOTE_ERROR + responseCode);
 			
-			Log.d(TAG, "postIssue code " + responseCode);
+			if(Config.LOGD)
+				Log.d(TAG, "postIssue code " + responseCode);
 			
 			return responseCode;
 		}
@@ -437,11 +458,11 @@ public class JIRARepository implements Repository
 		}
 		catch (IOException e)
 		{
-			throw new ServiceException("Error connecting to JIRA repository.", e);
+			throw new ServiceException(MSG_CONNECT_ERROR, e);
 		}
 		catch (JSONException e)
 		{
-			throw new ServiceException("Error parsing JIRA response.", e);
+			throw new ServiceException(MSG_PARSE_ERROR, e);
 		}
 	}
 
@@ -461,7 +482,7 @@ public class JIRARepository implements Repository
 				String hex = new BigInteger(1, hashBytes).toString(16);
 				if(hex.length() % 2 != 0)
 					hex = "0" + hex;
-				hash = new String(hex);
+				hash = hex;
 			}
 			catch (UnsupportedEncodingException e)
 			{
@@ -487,10 +508,13 @@ public class JIRARepository implements Repository
 	{
 		InputStream instream = response.getEntity().getContent();
 		Header contentEncoding = response.getFirstHeader("Content-Encoding");
-		if(contentEncoding != null)
-			Log.d(TAG, "Response content encoding was '" + contentEncoding.getValue() + "'");
+		if(Config.LOGV) //NOPMD
+			if(contentEncoding != null) //NOPMD
+				Log.v(TAG, "Response content encoding was '" + contentEncoding.getValue() + "'");
+
 		if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
-			Log.d(TAG, "Handling GZIP response.");
+			if(Config.LOGD)
+				Log.d(TAG, "Handling GZIP response.");
 		    instream = new GZIPInputStream(instream);
 		}		
 
@@ -522,7 +546,8 @@ public class JIRARepository implements Repository
 				nameValuePairs.add(new BasicNameValuePair("phone_version", String.valueOf(Build.VERSION.SDK_INT)));
 			}
 
-			Log.d(TAG, "post params:  " + nameValuePairs.toString());
+			if(Config.LOGD)
+				Log.d(TAG, "post params:  " + nameValuePairs.toString());
 			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));  
 
 			// Execute HTTP Post Request  
@@ -531,15 +556,17 @@ public class JIRARepository implements Repository
 			if(HttpStatus.SC_OK == responseCode || HttpStatus.SC_CREATED == responseCode)
 			{			
 				JSONObject obj = readJSON(response);
-				Log.d(TAG, "postIssueComment response:  \n" + obj.toString(4));		
+				if(Config.LOGV)
+					Log.v(TAG, "postIssueComment response:  \n" + obj.toString(4));		
 				//TODO pull dates from response
 				Comment newComment = new Comment(obj);
 				comment.copy(newComment);
 			}
 			else
-				throw new ServiceException("Remote error occurred.  Response code was :  " + responseCode);
+				throw new ServiceException(MSG_REMOTE_ERROR + responseCode);
 			
-			Log.d(TAG, "postIssueComment code " + responseCode);
+			if(Config.LOGD)
+				Log.d(TAG, "postIssueComment code " + responseCode);
 			
 			return responseCode;
 		}
@@ -549,11 +576,11 @@ public class JIRARepository implements Repository
 		}
 		catch (IOException e)
 		{
-			throw new ServiceException("Error connecting to JIRA repository.", e);
+			throw new ServiceException(MSG_CONNECT_ERROR, e);
 		}
 		catch (JSONException e)
 		{
-			throw new ServiceException("Error parsing JIRA response.", e);
+			throw new ServiceException(MSG_PARSE_ERROR, e);
 		}
 	}
 
@@ -575,7 +602,7 @@ public class JIRARepository implements Repository
 		}
 		catch (IOException e)
 		{
-			throw new ServiceException("Error connecting to JIRA repository.", e);
+			throw new ServiceException(MSG_CONNECT_ERROR, e);
 		}
 	}
 }

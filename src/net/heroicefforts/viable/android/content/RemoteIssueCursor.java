@@ -21,12 +21,12 @@ package net.heroicefforts.viable.android.content;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.heroicefforts.viable.android.Config;
 import net.heroicefforts.viable.android.dao.Issue;
 import net.heroicefforts.viable.android.dao.SearchParams;
 import net.heroicefforts.viable.android.dao.SearchResults;
 import net.heroicefforts.viable.android.rep.Repository;
 import net.heroicefforts.viable.android.rep.ServiceException;
-
 import android.database.AbstractCursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.util.Log;
@@ -247,7 +247,8 @@ public class RemoteIssueCursor extends AbstractCursor
 		}
 		else
 		{
-			Log.d(TAG, "Can't move to position " + newPosition);
+			if(Config.LOGD) 
+				Log.d(TAG, "Can't move to position " + newPosition);
 			return false;
 		}
 	}

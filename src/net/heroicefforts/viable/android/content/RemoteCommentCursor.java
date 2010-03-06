@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.heroicefforts.viable.android.Config;
 import net.heroicefforts.viable.android.dao.Comment;
 import net.heroicefforts.viable.android.dao.CommentSet;
 import net.heroicefforts.viable.android.rep.Repository;
 import net.heroicefforts.viable.android.rep.ServiceException;
-
 import android.database.AbstractCursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.util.Log;
@@ -219,7 +219,8 @@ public class RemoteCommentCursor extends AbstractCursor
 		}
 		else
 		{
-			Log.d(TAG, "Can't move to position " + newPosition);
+			if(Config.LOGD) 
+				Log.d(TAG, "Can't move to position " + newPosition);
 			return false;
 		}
 	}

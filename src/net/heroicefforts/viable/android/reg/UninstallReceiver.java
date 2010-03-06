@@ -18,6 +18,7 @@
  */
 package net.heroicefforts.viable.android.reg;
 
+import net.heroicefforts.viable.android.Config;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -37,13 +38,15 @@ public class UninstallReceiver extends BroadcastReceiver
 	@Override
 	public void onReceive(Context ctx, Intent uninstall)
 	{
-		Log.d(TAG, "Uninstall initiated:  " + uninstall);
+		if(Config.LOGV)		
+			Log.v(TAG, "Uninstall initiated:  " + uninstall);
 		
 		if(!uninstall.getBooleanExtra(Intent.EXTRA_REPLACING, false))
 		{
 			
 			int uid = uninstall.getIntExtra(Intent.EXTRA_UID, -1);
-			Log.d(TAG, "Uninstalling uid:  " + uid);
+			if(Config.LOGD)
+				Log.d(TAG, "Uninstalling uid:  " + uid);
 			if(uid > -1)
 			{
 				RepositoryRegistry registry = new RepositoryRegistry(ctx);

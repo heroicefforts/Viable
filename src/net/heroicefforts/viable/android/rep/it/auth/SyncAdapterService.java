@@ -18,6 +18,7 @@
  */
 package net.heroicefforts.viable.android.rep.it.auth;
  
+import net.heroicefforts.viable.android.Config;
 import android.accounts.Account;
 import android.app.Service;
 import android.content.AbstractThreadedSyncAdapter;
@@ -51,7 +52,8 @@ public class SyncAdapterService extends Service
  
 		@Override
 		public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-			Log.d(TAG, "perform noop sync called on account:  " + account.name + ":" + account.type + ".");
+			if(Config.LOGD)
+				Log.d(TAG, "perform noop sync called on account:  " + account.name + ":" + account.type + ".");
 			if(GCLAccountAuthenticator.ACCT_TYPE.equals(account.type))
 			{
 				syncResult.stats.numUpdates++;
@@ -61,7 +63,8 @@ public class SyncAdapterService extends Service
  
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.d(TAG, "Binding...");
+		if(Config.LOGV)
+			Log.v(TAG, "Binding...");
 		IBinder ret = null;
 		ret = getSyncAdapter().getSyncAdapterBinder();
 		return ret;

@@ -28,6 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
+import net.heroicefforts.viable.android.Config;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -72,9 +73,6 @@ public class Authenticate
 		throws AuthenticatorException, OperationCanceledException, IOException
 	{
 		AccountManager mgr = AccountManager.get(act); 
-		Account[] temp = mgr.getAccounts();
-		for(Account t : temp)
-			Log.d(TAG, "Account Type/Name:  " + t.type + "/" + t.name);
         Account[] accts = mgr.getAccountsByType(GCLAccountAuthenticator.ACCT_TYPE); 
         if(accts.length > 0)
         {
@@ -114,7 +112,6 @@ public class Authenticate
 		nameValuePairs.add(new BasicNameValuePair("service", service));
 		nameValuePairs.add(new BasicNameValuePair("source", "heroicefforts-viable-1.0.0"));
 		
-		Log.d(TAG, "post params:  " + nameValuePairs.toString());
 		int responseCode;
 		String body;
 		try
@@ -133,13 +130,13 @@ public class Authenticate
 		
 		if(HttpStatus.SC_OK == responseCode)
 		{	
-			Log.v(TAG, "Auth body response:  " + body);
+			if(Config.LOGV)
+				Log.v(TAG, "Auth body response:  " + body);
 			Pattern authPat = Pattern.compile("Auth=([A-Za-z0-9_-]+)");
 			Matcher m = authPat.matcher(body);
 			if(m.find())
 			{
 				String authToken = m.group(1);
-				Log.v(TAG, "Auth token:  " + authToken);
 				return authToken;
 			}
 			else
@@ -153,10 +150,13 @@ public class Authenticate
 	{
 		InputStream instream = response.getEntity().getContent();
 		Header contentEncoding = response.getFirstHeader("Content-Encoding");
-		if(contentEncoding != null)
-			Log.d(TAG, "Response content encoding was '" + contentEncoding.getValue() + "'");
-		if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
-			Log.d(TAG, "Handling GZIP response.");
+		if(Config.LOGV)	//NOPMD
+			if(contentEncoding != null) //NOPMD
+				Log.v(TAG, "Response content encoding was '" + contentEncoding.getValue() + "'");
+		if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) 
+		{
+			if(Config.LOGD)
+				Log.d(TAG, "Handling GZIP response.");
 		    instream = new GZIPInputStream(instream);
 		}		
 
@@ -167,7 +167,8 @@ public class Authenticate
 		while((read = bis.read(buf)) > 0)
 			baos.write(buf, 0, read);
 		String body = baos.toString();
-		Log.v(TAG, "Response:  " + body);
+		if(Config.LOGV)
+			Log.v(TAG, "Response:  " + body);
 		return body;
 	}
 	

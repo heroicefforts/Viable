@@ -38,9 +38,11 @@ import android.util.Log;
 /**
  * Provides access to a database of locally stored Issue content.
  */
-public class IssueContentProvider extends ContentProvider {
+public class IssueContentProvider extends ContentProvider 
+{
+	private static final String TAG = "IssueContentProvider";
 
-    private static final String TAG = "IssueContentProvider";
+    private static final String MSG_UNKNOWN_URI_ERROR = "Unknown URI ";
 
     private static final String DATABASE_NAME = "issue.db";
     private static final int DATABASE_VERSION = 1;
@@ -71,6 +73,7 @@ public class IssueContentProvider extends ContentProvider {
         }
 
         @Override
+        @SuppressWarnings("PMD.AvoidDuplicateLiterals")
         public void onCreate(SQLiteDatabase db) {
             db.execSQL("CREATE TABLE " + ISSUES_TABLE_NAME + " ("
                     + Issues._ID + " INTEGER PRIMARY KEY,"
@@ -88,7 +91,7 @@ public class IssueContentProvider extends ContentProvider {
                     + Issues.VOTES + " INTEGER DEFAULT 0,"
                     + Issues.CREATED_DATE + " INTEGER,"
                     + Issues.MODIFIED_DATE + " INTEGER"
-                    + ");"); 
+                    + ");");
             
             db.execSQL("CREATE TABLE " + REG_APPS_TABLE_NAME + " ("
                     + Issues._ID + " INTEGER PRIMARY KEY,"
@@ -141,7 +144,7 @@ public class IssueContentProvider extends ContentProvider {
 	        	break;
 	        	
 	        default:
-	            throw new IllegalArgumentException("Unknown URI " + uri);
+	            throw new IllegalArgumentException(MSG_UNKNOWN_URI_ERROR + uri);
         }
 
         // If no sort order is specified use the default
@@ -174,7 +177,7 @@ public class IssueContentProvider extends ContentProvider {
         	return Issues.APP_CONTENT_TYPE;
             
         default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
+            throw new IllegalArgumentException(MSG_UNKNOWN_URI_ERROR + uri);
         }
     }
 
@@ -183,7 +186,7 @@ public class IssueContentProvider extends ContentProvider {
         // Validate the requested uri
     	int type = sUriMatcher.match(uri);
         if (type != ISSUES && type != APPS) {
-            throw new IllegalArgumentException("Unknown URI " + uri);
+            throw new IllegalArgumentException(MSG_UNKNOWN_URI_ERROR + uri);
         }
         
         ContentValues values;
@@ -268,7 +271,7 @@ public class IssueContentProvider extends ContentProvider {
         	break;
             
         default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
+            throw new IllegalArgumentException(MSG_UNKNOWN_URI_ERROR + uri);
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
@@ -297,7 +300,7 @@ public class IssueContentProvider extends ContentProvider {
         	break;
             
         default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
+            throw new IllegalArgumentException(MSG_UNKNOWN_URI_ERROR + uri);
         }
 
         getContext().getContentResolver().notifyChange(uri, null);

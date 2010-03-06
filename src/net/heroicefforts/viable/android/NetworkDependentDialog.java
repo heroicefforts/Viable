@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 /**
  * Monitors network connectivity.  If connectivity is lost, then a modal dialog is raised prompting the user to 
@@ -41,6 +42,8 @@ import android.net.NetworkInfo;
  */
 public class NetworkDependentDialog extends BroadcastReceiver
 {
+	private static final String TAG = "NetworkDependentDialog";
+	
 	private NetworkDependentActivity parent;
 	protected AlertDialog dialog;
 	private Activity activity;
@@ -184,7 +187,13 @@ public class NetworkDependentDialog extends BroadcastReceiver
 		}
 		if(dialog != null)
 		{
-			dialog.dismiss();
+			try {
+				dialog.dismiss();
+			}
+			catch(IllegalArgumentException iae)
+			{
+				Log.e(TAG, "Error dismissing dialog.", iae);
+			}
 			dialog = null;
 		}
 		activity.setVisible(true);

@@ -21,6 +21,7 @@ package net.heroicefforts.viable.android.dist;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.ref.WeakReference;
 
+import net.heroicefforts.viable.android.Config;
 import android.content.Context;
 import android.util.Log;
 
@@ -33,8 +34,11 @@ import android.util.Log;
  */
 public class ViableExceptionHandler implements UncaughtExceptionHandler
 {
+	private static final String TAG = "ViableExceptionHandler";
+	
 	private WeakReference<Context> activityRef;
 	private UncaughtExceptionHandler parent;
+	
 	
 	/**
 	 * Registers a client activity or service so that exceptions will be reported by Viable.  Registration will not replace the
@@ -56,7 +60,8 @@ public class ViableExceptionHandler implements UncaughtExceptionHandler
 		
 		if(oldCtx == null)
 		{
-			Log.d("ViableExceptionHandler", "Original ExceptionHandler:  " + Thread.getDefaultUncaughtExceptionHandler());
+			if(Config.LOGD)			
+				Log.d(TAG, "Original ExceptionHandler:  " + Thread.getDefaultUncaughtExceptionHandler());
 			Thread.setDefaultUncaughtExceptionHandler(new ViableExceptionHandler(ctx.getApplicationContext()));
 		}					
 	}
@@ -77,17 +82,21 @@ public class ViableExceptionHandler implements UncaughtExceptionHandler
 		if(activityRef.get() != null)
 		{ 
 			String appName = ctx.getApplicationContext().getApplicationInfo().loadLabel(ctx.getPackageManager()).toString();			
-			Log.d("ViableExceptionHandler", "Exception in app '" + appName + "'.");
+			if(Config.LOGD) 
+				Log.d(TAG, "Exception in app '" + appName + "'.");
 			BugReportIntent intent = new BugReportIntent(appName, ex);
 			ctx.sendBroadcast(intent);
-			Log.d("ExceptionHandler", "Storing bug context.");
+			if(Config.LOGD) 
+				Log.d("ExceptionHandler", "Storing bug context.");
 		}
 		else
 		{
-			Log.d("ViableExceptionHandler", "Context was already collected.  Could not report exception.");
+			if(Config.LOGD) 
+				Log.d(TAG, "Context was already collected.  Could not report exception.");
 		}
 		
-		Log.d("ViableExceptionHandler", "Parent:  " + parent);
+		if(Config.LOGD) 
+			Log.d(TAG, "Parent:  " + parent);
 		if(parent != null)
 			parent.uncaughtException(thread, ex);
 

@@ -25,10 +25,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import net.heroicefforts.viable.android.Config;
 import net.heroicefforts.viable.android.dao.Comment;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import android.util.Log;
 
 /**
  * This class extends comment to add handling of the Gdata Atom protocol.
@@ -38,6 +41,8 @@ import org.xml.sax.SAXException;
  */
 public class AtomComment extends Comment
 {
+	private static final String TAG = "AtomComment";
+	
 
 	public AtomComment(Comment issue)
 	{
@@ -55,7 +60,8 @@ public class AtomComment extends Comment
 	protected void parse(String atomEntry)
 		throws SAXException, IOException, ParserConfigurationException
 	{
-		System.out.println("Parsing:  " + atomEntry);
+		if(Config.LOGV)
+			Log.v(TAG, "Parsing:  " + atomEntry);
 		SAXParserFactory f = SAXParserFactory.newInstance();
 		SAXParser p = f.newSAXParser();
 		p.parse(new InputSource(new StringReader(atomEntry)), new CommentContentHandler(this));

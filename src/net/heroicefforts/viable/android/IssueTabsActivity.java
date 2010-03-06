@@ -55,12 +55,6 @@ public class IssueTabsActivity extends TabActivity implements NetworkDependentAc
 	}
 	
 	@Override
-	public void onStart()
-	{
-		super.onStart();		
-	}
-
-	@Override
 	public void finish()
 	{
 		super.finish();
@@ -74,8 +68,11 @@ public class IssueTabsActivity extends TabActivity implements NetworkDependentAc
 	private void setDefaultTab(Intent intent)
 	{
 		String defaultTab = intent.getStringExtra(EXTRA_DEFAULT_TAB);
-		Log.d("IssueTabsActivity", "Received intent:  " + intent.toString());
-		Log.d("IssueTabsActivity", "Setting tab to '" + defaultTab + "'.");
+		if(Config.LOGD) 
+		{		
+			Log.d("IssueTabsActivity", "Received intent:  " + intent.toString());
+			Log.d("IssueTabsActivity", "Setting tab to '" + defaultTab + "'.");
+		}
 		if (defaultTab == null)
 			defaultTab = TAB_APP_STATS;
 		getTabHost().setCurrentTabByTag(defaultTab);

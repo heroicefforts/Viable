@@ -18,6 +18,7 @@
  */
 package net.heroicefforts.viable.android.reg;
 
+import net.heroicefforts.viable.android.Config;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -37,7 +38,8 @@ public class InstallReceiver extends BroadcastReceiver
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
-		Log.v(TAG, "Received installation event notification.");
+		if(Config.LOGV)
+			Log.v(TAG, "Received installation event notification.");
 		int uid = intent.getIntExtra(Intent.EXTRA_UID, -1);
 		RepositoryRegistry registry = new RepositoryRegistry(context);
 		registry.modify(uid);						

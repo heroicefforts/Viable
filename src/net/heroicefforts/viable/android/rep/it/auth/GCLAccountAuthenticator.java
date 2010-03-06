@@ -18,6 +18,7 @@
  */
 package net.heroicefforts.viable.android.rep.it.auth;
 
+import net.heroicefforts.viable.android.Config;
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
@@ -62,7 +63,8 @@ public class GCLAccountAuthenticator extends AbstractAccountAuthenticator
 	{
 		super(context);
 		this.context = context;
-		Log.d(TAG, "instantiated");
+		if(Config.LOGV)
+			Log.v(TAG, "instantiated");
 		acctMgr = (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
 	}
 
@@ -70,7 +72,8 @@ public class GCLAccountAuthenticator extends AbstractAccountAuthenticator
 	public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType,
 			String[] requiredFeatures, Bundle options) throws NetworkErrorException
 	{
-		Log.d(TAG, "addAccount()");
+		if(Config.LOGV)
+			Log.v(TAG, "addAccount()");
 		Bundle bundle = createLoginBundle(response, authTokenType);
 		return bundle;
 	}
@@ -90,7 +93,8 @@ public class GCLAccountAuthenticator extends AbstractAccountAuthenticator
 	public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType,
 			Bundle options) throws NetworkErrorException
 	{
-		Log.d(TAG, "getAuthToken()");
+		if(Config.LOGV)
+			Log.v(TAG, "getAuthToken()");
 		String authToken = acctMgr.getUserData(account, authTokenType);
 		if(authToken != null)
 		{ 
@@ -109,7 +113,8 @@ public class GCLAccountAuthenticator extends AbstractAccountAuthenticator
 	@Override
 	public String getAuthTokenLabel(String authTokenType)
 	{
-		Log.d(TAG, "getAuthTokenLabel()");
+		if(Config.LOGV)
+			Log.v(TAG, "getAuthTokenLabel()");
 
 		return "Google Login for " + authTokenType;
 	}
@@ -120,7 +125,8 @@ public class GCLAccountAuthenticator extends AbstractAccountAuthenticator
 	@Override
 	public Bundle confirmCredentials(AccountAuthenticatorResponse response, Account account, Bundle options)
 	{
-		Log.d(TAG, "confirmCredentials()");
+		if(Config.LOGV)
+			Log.v(TAG, "confirmCredentials()");
 		return null;
 	}
 
@@ -130,7 +136,8 @@ public class GCLAccountAuthenticator extends AbstractAccountAuthenticator
 	@Override
 	public Bundle editProperties(AccountAuthenticatorResponse response, String accountType)
 	{
-		Log.d(TAG, "editProperties()");
+		if(Config.LOGV)
+			Log.v(TAG, "editProperties()");
 		return null;
 	}
 
@@ -141,7 +148,8 @@ public class GCLAccountAuthenticator extends AbstractAccountAuthenticator
 	public Bundle hasFeatures(AccountAuthenticatorResponse response, Account account, String[] features)
 			throws NetworkErrorException
 	{
-		Log.d(TAG, "hasFeatures");
+		if(Config.LOGV)
+			Log.v(TAG, "hasFeatures");
 		return null;
 	}
 
@@ -152,7 +160,8 @@ public class GCLAccountAuthenticator extends AbstractAccountAuthenticator
 	public Bundle updateCredentials(AccountAuthenticatorResponse response, Account account, String authTokenType,
 			Bundle options)
 	{
-		Log.d(TAG, "updateCredentials");
+		if(Config.LOGV)
+			Log.v(TAG, "updateCredentials");
 		return null;
 	}
 

@@ -124,19 +124,15 @@ public class BugReporterActivity extends Activity
     		intent = getParent().getIntent();
     	else
     		intent = getIntent();
-Log.d(TAG, "Handled:" + handled + "=" + intent);    	
+
     	if(handled != intent)
     	{
     		try
 			{
 				BugReportIntent bri = new BugReportIntent(intent);
 				if(bri.isValid())
-				{
-Log.d(TAG, "Bri is valid.");					
 					setDefectState(bri.getAppName(), bri.getStacktrace());
-				}
-				else
-Log.d(TAG, "Bri is not valid.");					
+
 				handled = intent;
 			}
 			catch (ServiceException e)
@@ -155,7 +151,6 @@ Log.d(TAG, "Bri is not valid.");
 		appNameSpinner.setEnabled(false);		
     	Set<? extends IssueResource> resources = factory.getRepository(appName).getDefaultDefectStates();
 		typeSpinner.setAdapter(new IssueSelectionAdapter(this, resources));  
-Log.d(TAG, "" + resources.size() + " resources.");
 		BugContext ctx = new BugContext();
 		ctx.setAppName(appName);
 		ctx.setStacktrace(stacktrace);
@@ -198,7 +193,8 @@ Log.d(TAG, "" + resources.size() + " resources.");
 	 */
 	private void abort(String msg)
 	{
-		Log.d(TAG, msg);
+		if(Config.LOGD) 
+			Log.d(TAG, msg);
 		if(getParent() != null)
 			getParent().finish();
 		else
@@ -212,7 +208,8 @@ Log.d(TAG, "" + resources.size() + " resources.");
 	 */
 	private void showSupplementDialog(Issue issue)
 	{
-		Log.d(TAG, "Prompting user to comment on existing issue '" + issue.getIssueId() + "'.");
+		if(Config.LOGD) 		
+			Log.d(TAG, "Prompting user to comment on existing issue '" + issue.getIssueId() + "'.");
 		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.bug_comment);
 		builder.setCancelable(true);
@@ -303,7 +300,7 @@ Log.d(TAG, "" + resources.size() + " resources.");
 		        int position = typeSpinner.getLastVisiblePosition();
 		        IssueResource resource = (IssueResource) typeSpinner.getAdapter().getItem(position);
 		        if(comment)
-		        	reportComment(appName, summary, desc);
+		        	reportComment(summary, desc);
 		        else
 		        	reportBug(appName, summary, desc, resource);
 			        
@@ -329,7 +326,7 @@ Log.d(TAG, "" + resources.size() + " resources.");
 
 	};
 
-	private void reportComment(String appName, String summary, String desc)
+	private void reportComment(String summary, String desc)
 	{			
 		Comment comment = new Comment(summary + EOL + EOL + desc);
 		new ReportCommentTask().execute(comment);

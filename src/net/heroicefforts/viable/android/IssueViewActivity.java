@@ -34,7 +34,6 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
@@ -192,7 +191,8 @@ public class IssueViewActivity extends Activity
 		SpannableStringBuilder affectedVersions = new SpannableStringBuilder();
 		affectedVersions.append(getString(R.string.affected_versions_label));
 		String currVersion = factory.getApplicationVersion(issue.getAppName());
-		Log.d(TAG, "Current version:  " + currVersion);
+		if(Config.LOGD)
+			Log.d(TAG, "Current version:  " + currVersion);
 		for(String version : issue.getAffectedVersions())
 		{
 			if(version.equals(currVersion))

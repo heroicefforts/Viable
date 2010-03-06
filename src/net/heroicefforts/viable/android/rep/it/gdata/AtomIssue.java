@@ -27,12 +27,15 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import net.heroicefforts.viable.android.Config;
 import net.heroicefforts.viable.android.dao.Issue;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import android.os.Build;
+import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * This class extends issue to add handling of the Gdata Atom protocol.
@@ -42,6 +45,10 @@ import android.os.Build;
  */
 public class AtomIssue extends Issue
 {
+	private static final String TAG = "AtomIssue";
+
+	private static final String BOP = "<p>";
+	private static final String EOP = "</p>";
 	private static final String SALT_STACKTRACE = "<p>Stacktrace:  ";
 
 	private static final String TYPE_DEFECT = "Defect";
@@ -53,6 +60,7 @@ public class AtomIssue extends Issue
 	private static final String LABEL_PRIORITY = "Priority";
 	private static final String LABEL_SDK = "SDK";
 	private static final String LABEL_TYPE = "Type";
+
 	
 	
 	public AtomIssue(Issue issue)
@@ -69,7 +77,8 @@ public class AtomIssue extends Issue
 	protected void parse(String atomEntry)
 		throws SAXException, IOException, ParserConfigurationException
 	{
-		System.out.println("Parsing:  " + atomEntry);
+		if(Config.LOGV)
+			Log.v(TAG, "Parsing:  " + atomEntry);
 		SAXParserFactory f = SAXParserFactory.newInstance();
 		SAXParser p = f.newSAXParser();
 		p.parse(new InputSource(new StringReader(atomEntry)), new IssueContentHandler(this));
@@ -110,18 +119,17 @@ public class AtomIssue extends Issue
 
 	private void appendLabel(StringBuilder labels, String type, String value)
 	{
-		if(value != null && value.trim().length() > 0)
+		if(TextUtils.isEmpty(value))
 			labels.append("<issues:label>").append(type + "-" + value).append("</issues:label>");
 	}
 
 	private StringBuilder getBody()
 	{
 		StringBuilder body = new StringBuilder();
-		body.append("<![CDATA[<p>").append(getDescription()).append("</p>");
-		body.append("<p>").append("Affected Versions:  ").append(Arrays.asList(getAffectedVersions())).append(
-				"</p>");
+		body.append("<![CDATA[<p>").append(getDescription()).append(EOP);
+		body.append(BOP).append("Affected Versions:  ").append(Arrays.asList(getAffectedVersions())).append(EOP);
 		if (getStacktrace() != null)
-			body.append(SALT_STACKTRACE).append(getStacktrace()).append("</p>");
+			body.append(SALT_STACKTRACE).append(getStacktrace()).append(EOP);
 		body.append("]]>");
 		return body;
 	}
@@ -158,12 +166,12 @@ public class AtomIssue extends Issue
 				int idxStart = value.indexOf(SALT_STACKTRACE);
 				if (idxStart != -1)
 				{
-					int idxEnd = value.indexOf("</p>", idxStart);
+					int idxEnd = value.indexOf(EOP, idxStart);
 					issue.setStacktrace(value.substring(idxStart + SALT_STACKTRACE.length(), idxEnd));
-					issue.setDescription(value.substring(0, idxStart).replaceAll("<p>", "").replaceAll("</p>", EOL));
+					issue.setDescription(value.substring(0, idxStart).replaceAll(BOP, "").replaceAll(EOP, EOL));
 				}
 				else
-					issue.setDescription(value.toString().replaceAll("<p>", "").replaceAll("</p>", EOL));
+					issue.setDescription(value.toString().replaceAll(BOP, "").replaceAll(EOP, EOL));
 			}
 			else if("published".equals(localName))
 			{

@@ -57,12 +57,6 @@ public class CredsActivity extends PreferenceActivity
 	}
 	
 	@Override
-	public void onStart()
-	{
-		super.onStart();
-	}
-	
-	@Override
 	public void finish()
 	{
 		

@@ -22,6 +22,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import net.heroicefforts.viable.android.Config;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,7 +74,8 @@ public class Issue
 	public Issue(String json)
 		throws JSONException
 	{
-		Log.v(TAG, "Parsing issue JSON:  " + json);		
+		if(Config.LOGV)
+			Log.v(TAG, "Parsing issue JSON:  " + json);		
 		JSONObject issueObj = new JSONObject(json);
 		issueId = issueObj.getString("issueId");
 		type = issueObj.getString("type");
@@ -147,7 +150,8 @@ public class Issue
 //			Log.e(TAG, "Error parsing JSON dates.", e);
 //			throw new JSONException("Error parsing JSON dates.");
 //		}
-		Log.v(TAG, "Generated issue JSON:  " + issueObj.toString(4));
+		if(Config.LOGV)
+			Log.v(TAG, "Generated issue JSON:  " + issueObj.toString(4));
 		return issueObj;
 	}
 	

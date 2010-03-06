@@ -30,6 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.heroicefforts.viable.android.Config;
 import net.heroicefforts.viable.android.dao.Comment;
 import net.heroicefforts.viable.android.dao.CommentSet;
 import net.heroicefforts.viable.android.dao.Issue;
@@ -78,6 +79,8 @@ import android.util.Log;
  */
 public class GIssueTrackerRepository implements Repository
 {
+	private static final String APPEND_MAX_RESULTS = "&max-results=";
+	private static final String ISSUE_BASE_URL = "http://code.google.com/feeds/issues/p/";
 	private static final String PARAM_PROJECT_NAME = "viable-project-name";
 	private static final String PARAM_VERSIONS = "viable-project-versions";
 	protected static final String TAG = "GIssueTrackerRepository";
@@ -99,7 +102,8 @@ public class GIssueTrackerRepository implements Repository
 			try
 			{
 				String token = future.getResult().getString(AccountManager.KEY_AUTHTOKEN);
-				Log.v(TAG, "New account token:  " + token);
+				if(Config.LOGV)
+					Log.v(TAG, "New account token:  " + token);
 				host.setAuthSubToken(token);
 			}
 			catch (Exception e)
@@ -138,7 +142,8 @@ public class GIssueTrackerRepository implements Repository
 			{
 				//TODO add popup.
 				AccountManager acct = (AccountManager) act.getSystemService(Context.ACCOUNT_SERVICE);
-				Log.d(TAG, "Requesting account creation.");
+				if(Config.LOGD)
+					Log.d(TAG, "Requesting account creation.");
 				acct.addAccount(GCLAccountAuthenticator.ACCT_TYPE, "code", null, null, act, callback  , null);
 			}
 		}
@@ -176,7 +181,7 @@ public class GIssueTrackerRepository implements Repository
 
 			if(hash != null)
 			{
-				URL feedUrl = new URL("http://code.google.com/feeds/issues/p/" + projectName + "/issues/full");
+				URL feedUrl = new URL(ISSUE_BASE_URL + projectName + "/issues/full");
 				IssuesQuery myQuery = new IssuesQuery(feedUrl);
 				myQuery.setLabel("Hash-" + hash);
 				IssuesFeed resultFeed = host.query(myQuery);
@@ -201,7 +206,7 @@ public class GIssueTrackerRepository implements Repository
 	{
 		try
 		{
-			URL feedUrl = new URL("http://code.google.com/feeds/issues/p/" + projectName + "/issues/full/" + issueId);
+			URL feedUrl = new URL(ISSUE_BASE_URL + projectName + "/issues/full/" + issueId);
 			Issue found = host.getEntry(feedUrl);
 			if(found != null)
 				found.setAppName(appName);
@@ -221,8 +226,8 @@ public class GIssueTrackerRepository implements Repository
 		{
 			int startIndex = ((page - 1) * pageSize) + 1; // 1 based
 			int maxResults = pageSize + 1;
-			URL feedUrl = new URL("http://code.google.com/feeds/issues/p/" + projectName + "/issues/" + issueId
-					+ "/comments/full" + "?start-index=" + startIndex + "&max-results=" + maxResults);
+			URL feedUrl = new URL(ISSUE_BASE_URL + projectName + "/issues/" + issueId
+					+ "/comments/full" + "?start-index=" + startIndex + APPEND_MAX_RESULTS + maxResults);
 			IssueCommentsFeed resultFeed = host.getFeed(feedUrl);
 			List<Comment> comments = resultFeed.getEntries();
 			CommentSet set = null;
@@ -244,12 +249,12 @@ public class GIssueTrackerRepository implements Repository
 	{
 		String name = appName;
 		String url = "http://code.google.com/p/" + projectName;
-		long unfixedBugs = count("http://code.google.com/feeds/issues/p/" + projectName + "/issues/full?can=open&label=Type-Defect");
-		long fixedBugs = count("http://code.google.com/feeds/issues/p/" + projectName + "/issues/full?label=Type-Defect") - unfixedBugs;
+		long unfixedBugs = count(ISSUE_BASE_URL + projectName + "/issues/full?can=open&label=Type-Defect");
+		long fixedBugs = count(ISSUE_BASE_URL + projectName + "/issues/full?label=Type-Defect") - unfixedBugs;
 		long unfixedImprovements = 0;
 		long fixedImprovements = 0;
-		long unfixedFeatures = count("http://code.google.com/feeds/issues/p/" + projectName + "/issues/full?can=open&label=Type-Enhancement");
-		long fixedFeatures = count("http://code.google.com/feeds/issues/p/" + projectName + "/issues/full?label=Type-Enhancement") - unfixedFeatures;
+		long unfixedFeatures = count(ISSUE_BASE_URL + projectName + "/issues/full?can=open&label=Type-Enhancement");
+		long fixedFeatures = count(ISSUE_BASE_URL + projectName + "/issues/full?label=Type-Enhancement") - unfixedFeatures;
 		List<VersionDetail> versions = new ArrayList<VersionDetail>();
 
 		ProjectDetail project = new ProjectDetail();
@@ -273,11 +278,11 @@ public class GIssueTrackerRepository implements Repository
 	{
 		try
 		{
-			if(query.indexOf("?") == -1)
+			if(query.indexOf('?') == -1)
 				query += "?";
 			else
 				query += "&";
-			URL feedUrl = new URL(query + "start-index=" + 1 + "&max-results=" + 0);
+			URL feedUrl = new URL(query + "start-index=" + 1 + APPEND_MAX_RESULTS + 0);
 			IssueCommentsFeed resultFeed = host.getFeed(feedUrl);
 			return resultFeed.getTotalResults();
 		}
@@ -292,7 +297,7 @@ public class GIssueTrackerRepository implements Repository
 	{
 		try
 		{
-			URL postUrl = new URL("http://code.google.com/feeds/issues/p/" + projectName + "/issues/full");
+			URL postUrl = new URL(ISSUE_BASE_URL + projectName + "/issues/full");
 			issue.setHash(createHash(issue));			
 			host.insert(postUrl, issue);
 			issue.setAppName(appName);
@@ -310,35 +315,36 @@ public class GIssueTrackerRepository implements Repository
 		}
 	}
 
-	private int updateIssue(Issue issue) 
-		throws ServiceException
-	{
-		try
-		{
-			URL putUrl = new URL("http://code.google.com/feeds/issues/p/" + projectName + "/issues/" + issue.getIssueId());
-			issue.setHash(createHash(issue));			
-			host.update(putUrl, issue);
-			issue.setAppName(appName);
-			return HttpStatus.SC_CREATED;
-		}
-		catch (AuthenticationException e)
-		{
-			Log.i(TAG, "Authorization failed.", e);
-			manageAccount();
-			return HttpStatus.SC_UNAUTHORIZED;
-		}
-		catch (MalformedURLException e)
-		{
-			throw new ServiceException("Error posting issue.", e);
-		}
-	}
+//	private int updateIssue(Issue issue) 
+//		throws ServiceException
+//	{
+//		try
+//		{
+//			URL putUrl = new URL("http://code.google.com/feeds/issues/p/" + projectName + "/issues/" + issue.getIssueId());
+//			issue.setHash(createHash(issue));			
+//			host.update(putUrl, issue);
+//			issue.setAppName(appName);
+//			return HttpStatus.SC_CREATED;
+//		}
+//		catch (AuthenticationException e)
+//		{
+//			Log.i(TAG, "Authorization failed.", e);
+//			manageAccount();
+//			return HttpStatus.SC_UNAUTHORIZED;
+//		}
+//		catch (MalformedURLException e)
+//		{
+//			throw new ServiceException("Error posting issue.", e);
+//		}
+//	}
 
 	
 	
 	private void manageAccount()
 	{
 		AccountManager accMgr = (AccountManager) act.getSystemService(Context.ACCOUNT_SERVICE);
-		Log.d(TAG, "Requesting account creation.");
+		if(Config.LOGD)
+			Log.d(TAG, "Requesting account creation.");
 		Account[] accts = accMgr.getAccountsByType(GCLAccountAuthenticator.ACCT_TYPE);
 		if(accts.length > 0)
 			accMgr.confirmCredentials(accts[0], null, act, callback, null);
@@ -351,7 +357,7 @@ public class GIssueTrackerRepository implements Repository
 	{
 		try
 		{
-			URL postUrl = new URL("http://code.google.com/feeds/issues/p/" + projectName + "/issues/" + issue.getIssueId() + "/comments/full");
+			URL postUrl = new URL(ISSUE_BASE_URL + projectName + "/issues/" + issue.getIssueId() + "/comments/full");
 			comment = host.insert(postUrl, comment);
 			return HttpStatus.SC_CREATED;
 		}
@@ -392,7 +398,7 @@ public class GIssueTrackerRepository implements Repository
 					String hex = new BigInteger(1, hashBytes).toString(16);
 					if (hex.length() % 2 != 0)
 						hex = "0" + hex;
-					hash = new String(hex);
+					hash = hex;
 					issue.setHash(hash);
 				} 
 				catch (UnsupportedEncodingException e)
@@ -479,9 +485,9 @@ public class GIssueTrackerRepository implements Repository
 		{
 			String feedStr;
 			if(!"all".equals(version))
-				feedStr = "http://code.google.com/feeds/issues/p/" + projectName + "/issues/full?label=AffectedVersion-" + version + "&start-index=" + startAt + "&max-results=" + max;
+				feedStr = ISSUE_BASE_URL + projectName + "/issues/full?label=AffectedVersion-" + version + "&start-index=" + startAt + APPEND_MAX_RESULTS + max;
 			else
-				feedStr = "http://code.google.com/feeds/issues/p/" + projectName + "/issues/full?start-index=" + startAt + "&max-results=" + max;
+				feedStr = ISSUE_BASE_URL + projectName + "/issues/full?start-index=" + startAt + APPEND_MAX_RESULTS + max;
 			URL feedUrl = new URL(feedStr);
 			IssuesQuery myQuery = new IssuesQuery(feedUrl);
 			IssuesFeed resultFeed = host.query(myQuery);			
@@ -498,9 +504,9 @@ public class GIssueTrackerRepository implements Repository
 		throws ServiceException
 	{
 		if(!"all".equals(version))
-			return count("http://code.google.com/feeds/issues/p/" + projectName + "/issues/full?label=AffectedVersion-" + version);
+			return count(ISSUE_BASE_URL + projectName + "/issues/full?label=AffectedVersion-" + version);
 		else
-			return count("http://code.google.com/feeds/issues/p/" + projectName + "/issues/full");
+			return count(ISSUE_BASE_URL + projectName + "/issues/full");
 	}
 
 	public Set<? extends IssueResource> getDefaultStates()
