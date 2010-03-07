@@ -15,7 +15,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with Viable.  If not, see <http://www.gnu.org/licenses/>.
- */
+ */ 
 package net.heroicefforts.viable.android;
 
 import android.app.Activity;

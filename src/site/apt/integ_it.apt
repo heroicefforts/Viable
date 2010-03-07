@@ -1,0 +1,41 @@
+Google Issue Tracker
+
+	A repository plugin has been coded for the Issue Tracker (I.T.) found in Google's Project Hosting.  The details for configuring I.T. support follow.
+
+*Limitations
+
+	[[1]] Authentication:  Google's issue tracker does not allow anonymous posting of issues.  Google also does not natively support I.T. token generation from the phone owner's Google account.  As a workaround, Viable has implemented a custom Android authenticator to generate a Google Login Token.  User's are prompted to enter their credentials before accessing an Issue Tracker site.
+	
+	[[2]] Project Details:  This developer has not found a Google API for retrieving project description, releases, etc (short of screen scraping).  So, at present, these are being supplied through the client manifest file.
+
+*Android Application Configuration
+
+	[[1]]
+	
+		Add the following lines to your Android manifest file (between the application tags):
+
++-----------------------------------------------------------------------------------
+<meta-data android:name="viable-provider" android:value="Google" />
+<meta-data android:name="viable-project-name" android:value="_your_project_name_" />
+<meta-data android:name="viable-project-description" android:value="_description_" />
+<meta-data android:name="viable-project-lead" android:value="_your_name_" />
+<meta-data android:name="viable-project-versions" android:value="_your_versions_" />
++-----------------------------------------------------------------------------------
+
+		Substitute the following:
+
+		_your_project_name_ - Your Google Project name.  For example, if your Google I.T. URL looked like "http://code.google.com/p/viable-it-test/issues/list", then you would supply "viable-it-test".
+		_description_ - A description of your application.
+		_your_name__ - The project owner's name.
+		_your_versions_ - A comma separated list of the version names that you have, or will, release.  This is used to populate the filter list.
+
+	[[]]
+	
+		Add the following line of code to the onCreate method of your main Activity and/or Service, whatever is the entry point to your application:
+
+
++-----------------------------------------------------------------------------------
+ViableExceptionHandler.register(this);
++-----------------------------------------------------------------------------------
+
+		For the adventurous, an AspectJ aspect file can be found in the client jar under /dist/aj. This aspect may be woven into your AspectJ enabled Android project to automate the exception handling registration of step #2. However, setting up AspectJ is beyond the scope of this discussion.

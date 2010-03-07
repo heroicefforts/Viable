@@ -1,0 +1,50 @@
+Atlassian JIRA
+
+	A Viable repository has been implemented to support anonymous posting of issues to JIRA 4.0 or later.  Why anonymous?  Because Jess can't afford enterprise licensing.  A JIRA plugin must be installed on the server side to support communication with the Viable application.
+
+*JIRA Server Side Configuration
+
+	[[1]] Perform all your normal, common sense steps for backing up your server before futzing with it.
+	
+	[[]] Download the lastest viable-jira-plugin jar from the {{{./downloads.html}downloads}} page.
+	
+	[[]] Install the plugin per JIRA instructions i.e. stop the server, copy the jar to <jira-home>/plugins/installed-plugins, restart the server.
+	
+	[[]] Log into the JIRA administrator's console.
+	
+	[[]] Create a new custom field named <<<Hash>>>.  This field should be of type <Text Field> and in the context of the <Bug> issue type.  This field will store the checksum used to prevent duplicate issue creation.
+	
+	[[]] Create a new custom field named <<<Stacktrace>>>.  This field should be of type <Free Text Field> and in the context of the <Bug> issue type.  This field will contain the device exception stacktrace and should be visible on any JIRA screens that are useful for development.
+	
+	[[]] Create or edit a permission scheme to allow anonymous posting.  Give the <Anyone> group permission to <Browse Projects>, <Create Issues>, and <Add Comments>.
+
+*JIRA Project Configuration
+
+	[[1]] Create a new JIRA project with a name matching the label of your Android application (filling in the vitals:  description, lead, URL).
+	
+	[[]] Associate the project's permission scheme with that of the anonymous permission scheme that you configured during Server Side Configuration.
+	
+	[[]]Add a release with a name matching the "versionName" in your Android manifest file.
+
+*Android Application Configuration
+
+	[[1]]
+	
+		Add the following lines to your Android manifest file (between the application tags):
+		
++----------------------------------------------------------------------------------------------------------------------------
+<meta-data android:name="viable-provider" android:value="JIRA" />
+<meta-data android:name="viable-provider-location" android:value="http://_path_to_jira_/rest/viable/1.0/issue" />
++----------------------------------------------------------------------------------------------------------------------------
+
+    	Where _path_to_jira_ is the domain and web context of your JIRA installation.
+
+	[[]]
+	
+		Add the following line of code to the onCreate method of your main Activity and/or Service, whatever is the entry point to your application:
+
++----------------------------------------------------------------------------------------------------------------------------
+ViableExceptionHandler.register(this);
++----------------------------------------------------------------------------------------------------------------------------
+	
+		For the adventurous, an AspectJ aspect file can be found in the client jar under /dist/aj.  This aspect may be woven into your AspectJ enabled Android project to automate the exception handling registration of step #2.  However, setting up AspectJ is beyond the scope of this discussion.

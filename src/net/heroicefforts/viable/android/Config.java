@@ -29,7 +29,7 @@ public class Config
 	/**
 	 * Verbose logging is enabled.
 	 */
-	public static final boolean LOGV = true;
+	public static final boolean LOGV = false;
 	
 	/**
 	 * Debug logging is enabled.

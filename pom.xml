@@ -4,9 +4,11 @@
 	<groupId>net.heroicefforts.viable</groupId>
 	<artifactId>viable-android</artifactId>
 	<packaging>apk</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.4.0-SNAPSHOT</version>
 	<name>Viable</name>
-	<url></url>
+	<description>An Android application for reporting and tracking application issues.</description>
+	<inceptionYear>2010</inceptionYear>
+	<url>http://heroicefforts.github.com/Viable</url>
 
 	<dependencies>
 		<dependency>
@@ -78,10 +80,6 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
 				<configuration>
 					<rulesets>
@@ -91,10 +89,6 @@
 						<ruleset>/rulesets/unusedcode.xml</ruleset>
 						<ruleset>/rulesets/logging-java.xml</ruleset>
 						<ruleset>/rulesets/strings.xml</ruleset>
-<!-- 						
-						<ruleset>/rulesets/codesize.xml</ruleset>
-						<ruleset>/rulesets/coupling.xml</ruleset>
--->						
 					</rulesets>
 				</configuration>				
 				<dependencies>
@@ -119,6 +113,10 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
 			</plugin>
 			<plugin>
@@ -132,10 +130,6 @@
 						<ruleset>/rulesets/unusedcode.xml</ruleset>
 						<ruleset>/rulesets/logging-java.xml</ruleset>
 						<ruleset>/rulesets/strings.xml</ruleset>
-<!-- 						
-						<ruleset>/rulesets/codesize.xml</ruleset>
-						<ruleset>/rulesets/coupling.xml</ruleset>
--->						
 					</rulesets>
 					<linkXref>true</linkXref>
 					<sourceEncoding>utf-8</sourceEncoding>
@@ -146,6 +140,36 @@
 					</excludeRoots>
 				</configuration>
 			</plugin>
-		</plugins>
+ 		</plugins>
 	</reporting>
+
+	<licenses>
+		<license>
+			<name>GPL v3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0-standalone.html</url>
+			<distribution>repo</distribution>
+			<comments>A developer-friendly OSS license</comments>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>jdevans</id>
+			<name>Jess Evans</name>
+			<email>Id at heroic domain</email>
+			<url>http://heroicefforts.net</url>
+			<organization>Heroic Efforts, LLC</organization>
+			<organizationUrl></organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+	</developers>	
+	
+	<issueManagement>
+		<system>JIRA</system>
+		<url>http://bugs.heroicefforts.net/browse/VIABLE</url>
+	</issueManagement>	
 </project>

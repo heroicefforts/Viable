@@ -1,0 +1,23 @@
+Contributors Welcome
+
+	Viable is presently a one person effort.  As such, I fear it is suffering from the lack of multiple perspectives, my 2.5 months of mobile development expertise, and my total ineptness w.r.t. UI design (although I'm learning to wield Inkscape like a monkey with a paint gun).
+
+	I welcome ideas, comments, suggestions, design improvements, Android best practices / conventions that I should be following, other constructive criticism, and of course collaborative contributions.  Feel free to {{{http://github.com/heroicefforts}contact}} me by email.
+	
+*Roadmap
+
+	* ...your suggestion here...
+
+	* General UI Improvements
+	
+	* Add key word search.
+	
+	* Add fixed version support and filtering.
+	
+	* Optimize network transactions.
+	
+	* Convert JIRA network protocol to more closely match IT to reduce conceptual complexity.
+	
+	* Implement asynchronous loading of batched list item views.  
+	
+	* Add unit tests and CI. 
