@@ -2,12 +2,14 @@ Downloads
 
 	Viable is in an alpha state and has not yet been released to the Android market.  The latest apk and related binaries may be directly downloaded from this page.
 	
-*----------+----------------------------------------+-----------------------------+
-|| Version || Name                                  || Description                |
-*----------+----------------------------------------+-----------------------------+
-| 0.4.0    | {{{http://www.github.com}Viable APK}}  | Viable Android binary       |
-*----------+----------------------------------------+-----------------------------+
-| 0.4.0    | {{{http://www.github.com}JIRA plugin}} | Viable plugin for JIRA 4.0+ |
-*----------+----------------------------------------+-----------------------------+
-| 0.4.0    | {{{http://www.github.com}Crashy APK}}  | Sample Android integration  |
-*----------+----------------------------------------+-----------------------------+
+*----------+-----------------------------------------------------------------------+-----------------------------+
+|| Version || Name                                                                 || Description                |
+*----------+-----------------------------------------------------------------------+-----------------------------+
+| 0.4.0    | {{{releases/viable-android-0.4.0-SNAPSHOT.apk}Viable APK}}            | Viable Android binary       |
+*----------+-----------------------------------------------------------------------+-----------------------------+
+| 0.4.0    | {{{releases/viable-android-0.4.0-SNAPSHOT-client.jar}Viable Client}}  | Viable client jar binary    |
+*----------+-----------------------------------------------------------------------+-----------------------------+
+| 0.4.0    | {{{releases/viable-jira-plugin-0.4.0-SNAPSHOT.jar}JIRA plugin}}       | Viable plugin for JIRA 4.0+ |
+*----------+-----------------------------------------------------------------------+-----------------------------+
+| 0.4.0    | {{{releases/viable-crashy-0.4.0-SNAPSHOT.apk}Crashy APK}}             | Sample Android integration  |
+*----------+-----------------------------------------------------------------------+-----------------------------+

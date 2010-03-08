@@ -467,23 +467,27 @@ public class ProjectHostingService
 		
 		issue.setIssueId(obj.getJSONObject("issues$id").getString("$t"));
 		issue.setVotes(obj.getJSONObject("issues$stars").getLong("$t"));
-		JSONArray labels = obj.getJSONArray("issues$label");
-		ArrayList<String> affectedVersions = new ArrayList<String>();
-		for(int i = 0; i < labels.length(); i++)
+		
+		if(obj.has("issues$label"))
 		{
-			String label = labels.getJSONObject(i).getString("$t");
-			if(Config.LOGV)
-				Log.v(TAG, "Label:  " + label);
-			if(label.startsWith("Type-"))
-				issue.setType(label.substring("Type-".length()));
-			else if(label.startsWith("Priority-"))
-				issue.setPriority(label.substring("Priority-".length()));
-			else if(label.startsWith("Hash-"))
-				issue.setHash(label.substring("Hash-".length()));
-			else if(label.startsWith("AffectedVersion-"))
-				affectedVersions.add(label.substring("AffectedVersion-".length()));
+			JSONArray labels = obj.getJSONArray("issues$label");
+			ArrayList<String> affectedVersions = new ArrayList<String>();
+			for(int i = 0; i < labels.length(); i++)
+			{
+				String label = labels.getJSONObject(i).getString("$t");
+				if(Config.LOGV)
+					Log.v(TAG, "Label:  " + label);
+				if(label.startsWith("Type-"))
+					issue.setType(label.substring("Type-".length()));
+				else if(label.startsWith("Priority-"))
+					issue.setPriority(label.substring("Priority-".length()));
+				else if(label.startsWith("Hash-"))
+					issue.setHash(label.substring("Hash-".length()));
+				else if(label.startsWith("AffectedVersion-"))
+					affectedVersions.add(label.substring("AffectedVersion-".length()));
+			}
+			issue.setAffectedVersions(affectedVersions.toArray(new String[affectedVersions.size()]));
 		}
-		issue.setAffectedVersions(affectedVersions.toArray(new String[affectedVersions.size()]));
 		
 		issue.setState(obj.getJSONObject("issues$state").getString("$t"));
 		try

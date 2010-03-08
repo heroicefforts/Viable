@@ -39,6 +39,8 @@ Atlassian JIRA
 
     	Where _path_to_jira_ is the domain and web context of your JIRA installation.
 
+	[[]] Add the Viable client jar to your build path.
+
 	[[]]
 	
 		Add the following line of code to the onCreate method of your main Activity and/or Service, whatever is the entry point to your application:

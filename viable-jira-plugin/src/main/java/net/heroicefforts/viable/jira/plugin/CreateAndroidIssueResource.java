@@ -656,7 +656,7 @@ public class CreateAndroidIssueResource
 	{
 		if(issueType.equals("bug"))
 			return "1";
-		else if(issueType.equals("feature"))
+		else if(issueType.equals("new feature"))
 			return "2";
 		else if(issueType.equals("task"))
 			return "3";

@@ -103,7 +103,7 @@ public class JIRAResourceFlyweight
 			return Color.RED;
 		else if(type.equals(TYPE_IMPROVEMENT))
 			return Color.GREEN;
-		else if(type.equals("new feature"))
+		else if(type.equals(TYPE_FEATURE))
 			return Color.WHITE;
 		else
 			return Color.GRAY;
