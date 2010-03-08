@@ -145,4 +145,8 @@ public interface Repository
 	 */
 	public Set<? extends IssueResource> getDefaultStates();
     	
+	/**
+	 * Return the default state for uninstall tracking.
+	 */
+	public IssueResource getUninstallState();
 }

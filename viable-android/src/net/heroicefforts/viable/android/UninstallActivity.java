@@ -96,7 +96,7 @@ public class UninstallActivity extends Activity
         ((Button) findViewById(R.id.ReportBugButton)).setOnClickListener(clickListener);
         
         appNameSpinner = (Spinner) findViewById(R.id.AppNameSpinner);    	
-    	typeSpinner = (Spinner) findViewById(R.id.IssueTypeSpinner); 
+    	typeSpinner = (Spinner) findViewById(R.id.IssueTypeSpinner);    	
 		summaryText = (TextView) findViewById(R.id.BugSummaryEditText);
 		descriptionText = (TextView) findViewById(R.id.BugDescriptionEditText);
         detailsButton = (Button) findViewById(R.id.DetailsButton);
@@ -106,8 +106,9 @@ public class UninstallActivity extends Activity
 		appNames.add(entry.getAppName());
     	appNameSpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, appNames));
     	appNameSpinner.setEnabled(false);
-    	
-    	typeSpinner.setVisibility(View.GONE);    	
+
+    	((TextView) findViewById(R.id.IssueTypeTextView)).setVisibility(View.GONE);
+    	typeSpinner.setVisibility(View.GONE);
 		detailsButton.setVisibility(View.GONE);
 		detailsScroll.setVisibility(View.GONE);
     }
@@ -182,6 +183,7 @@ public class UninstallActivity extends Activity
 		        {
 		        	issue.setSummary(getString(R.string.uninstall_reasons));
 		        	issue.setDescription(summary + EOL + EOL + desc);
+		        	repository.getUninstallState().setState(issue);
 		        	reportBug(issue);
 		        }			        
 			}

@@ -529,5 +529,9 @@ public class GIssueTrackerRepository implements Repository
 		return versions ;
 	}
 
+	public IssueResource getUninstallState()
+	{
+		return ITResourceFlyweight.getUninstallState();
+	}
 
 }

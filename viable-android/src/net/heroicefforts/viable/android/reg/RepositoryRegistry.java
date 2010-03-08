@@ -176,7 +176,7 @@ public class RepositoryRegistry
             db.execSQL("CREATE TABLE " + REGISTRY_TABLE_NAME + " ("
                     + "_id INTEGER PRIMARY KEY,"
                     + "uid INTEGER,"
-                    + "key TEXT UNIQUE ON CONFLICT ROLLBACK,"
+                    + "key TEXT NOT NULL ON CONFLICT ROLLBACK,"
                     + "value TEXT NOT NULL ON CONFLICT ROLLBACK,"
                     + "created_date INTEGER"
                     + ");"); 

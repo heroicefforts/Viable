@@ -2,4 +2,5 @@
 *.class
 */bin/*
 */target/*
+/target/*
 *.log

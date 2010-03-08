@@ -12,9 +12,9 @@ Atlassian JIRA
 	
 	[[]] Log into the JIRA administrator's console.
 	
-	[[]] Create a new custom field named <<<Hash>>>.  This field should be of type <Text Field> and in the context of the <Bug> issue type.  This field will store the checksum used to prevent duplicate issue creation.
+	[[]] Create a new custom field named <<<Hash>>>.  This field should be of type <Text Field> and in the context of the <Bug> and <Improvement> issue types.  This field will store the checksum used to prevent duplicate issue creation.
 	
-	[[]] Create a new custom field named <<<Stacktrace>>>.  This field should be of type <Free Text Field> and in the context of the <Bug> issue type.  This field will contain the device exception stacktrace and should be visible on any JIRA screens that are useful for development.
+	[[]] Create a new custom field named <<<Stacktrace>>>.  This field should be of type <Free Text Field> and in the context of the <Bug> and <Improvement> issue types.  This field will contain the device exception stacktrace and should be visible on any JIRA screens that are useful for development.
 	
 	[[]] Create or edit a permission scheme to allow anonymous posting.  Give the <Anyone> group permission to <Browse Projects>, <Create Issues>, and <Add Comments>.
 

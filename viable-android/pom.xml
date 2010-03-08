@@ -5,7 +5,7 @@
 	<artifactId>viable-android</artifactId>
 	<packaging>apk</packaging>
 	<version>0.4.0-SNAPSHOT</version>
-	<name>Viable</name>
+	<name>Viable Android</name>
 	<description>An Android application for reporting and tracking application issues.</description>
 	<inceptionYear>2010</inceptionYear>
 	<url>http://heroicefforts.github.com/Viable</url>
@@ -102,7 +102,9 @@
 					<execution>
 						<goals>
 							<goal>check</goal>
+<!-- 							
 							<goal>cpd-check</goal>
+ -->							
 						</goals>
 					</execution>
 				</executions>				
@@ -142,6 +144,14 @@
 			</plugin>
  		</plugins>
 	</reporting>
+
+	<distributionManagement>
+		<site>
+			<id>local</id>
+			<name>Local Staging</name>
+			<url>file:///e:/work/dev/java/workspace/viable/target/stage/android</url>
+		</site>
+	</distributionManagement>
 
 	<licenses>
 		<license>

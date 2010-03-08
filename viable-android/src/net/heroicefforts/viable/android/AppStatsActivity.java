@@ -112,7 +112,7 @@ public class AppStatsActivity extends Activity
     private class LoadAppStatsTask extends AsyncTask<String, Void, ProjectDetail> 
     {
     	private String appName;
-
+    	private Exception exc;
     	
     	public void onPreExecute()
     	{
@@ -127,12 +127,12 @@ public class AppStatsActivity extends Activity
     		}
 			catch (CreateException e)
 			{
-				Error.handle(AppStatsActivity.this, e);
+				this.exc = e;
 				return null;
 			}
 			catch (ServiceException e)
 			{
-				Error.handle(AppStatsActivity.this, e);
+				this.exc = e;
 				return null;
 			}
     		
@@ -140,7 +140,11 @@ public class AppStatsActivity extends Activity
     	
     	protected void onPostExecute(final ProjectDetail pd)
     	{
-			showProjectDetails(pd, appName);
+    		if(exc == null)
+    			showProjectDetails(pd, appName);
+    		else
+    			Error.handle(AppStatsActivity.this, exc);
+    		
 			progressBar.setVisibility(View.GONE);			
 		}
 		

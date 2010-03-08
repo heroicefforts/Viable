@@ -101,6 +101,11 @@ public class ITResourceFlyweight
 		return DEFAULT_ALL_STATES;
 	}
 
+	public static IssueResource getUninstallState()
+	{
+		return getState(TYPE_OTHER, PRIORITY_MEDIUM, STATE_OPEN);
+	}
+	
 	static int getTypeColor(Issue issue)
 	{
 		String type = issue.getType();

@@ -163,6 +163,10 @@ public class JIRARepository implements Repository
 		return JIRAResourceFlyweight.getDefaultStates();
 	}
 
+	public IssueResource getUninstallState()
+	{
+		return JIRAResourceFlyweight.getUninstallState();
+	}
 	
     public Issue findById(String issueId) 
     	throws ServiceException

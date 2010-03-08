@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.heroicefforts.viable</groupId>
+	<artifactId>viable</artifactId>
+	<packaging>pom</packaging>
+	<version>0.4.0-SNAPSHOT</version>
+	<name>Viable</name>
+	<description>Associated projects for reporting and tracking application issues.</description>
+	<inceptionYear>2010</inceptionYear>
+	<url>http://heroicefforts.github.com/Viable</url>
+
+	<modules>
+		<module>viable-android</module>
+		<module>viable-crashy</module>
+	</modules>
+
+	<reporting>
+		<plugins>
+ 		</plugins>
+	</reporting>
+
+	<distributionManagement>
+		<site>
+			<id>local</id>
+			<name>Local Staging</name>
+			<url>file:///e:/work/dev/java/workspace/viable/target/stage</url>
+		</site>
+	</distributionManagement>
+
+	<licenses>
+		<license>
+			<name>GPL v3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0-standalone.html</url>
+			<distribution>repo</distribution>
+			<comments>A developer-friendly OSS license</comments>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>jdevans</id>
+			<name>Jess Evans</name>
+			<email>Id at heroic domain</email>
+			<url>http://heroicefforts.net</url>
+			<organization>Heroic Efforts, LLC</organization>
+			<organizationUrl></organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+	</developers>	
+	
+	<issueManagement>
+		<system>JIRA</system>
+		<url>http://bugs.heroicefforts.net/browse/VIABLE</url>
+	</issueManagement>	
+</project>

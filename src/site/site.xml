@@ -8,7 +8,19 @@
   </bannerLeft>
   <publishDate position="right"/>
   <body>
-		<menu ref="reports" collapse="false"/>
+		<menu name="Overview">
+			<item name="Introduction" href="/intro.html"/>
+			<item name="Downloads" href="/downloads.html"/>
+			<item name="Integration">
+				<item name="JIRA" href="/integ_jira.html"/>
+				<item name="Google I.T." href="/integ_it.html"/>
+			</item>
+			<item name="Contribute" href="/contribute.html"/>
+		</menu>
+		<menu name="Modules">
+			<item name="Android" href="/android/index.html"/>
+		</menu>
+		<menu ref="reports"/>
   </body>
   <skin>
   		<groupId>org.apache.maven.skins</groupId>

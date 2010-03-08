@@ -1,0 +1,72 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.heroicefforts.viable</groupId>
+	<artifactId>viable-crashy</artifactId>
+	<packaging>apk</packaging>
+	<version>0.4.0-SNAPSHOT</version>
+	<name>Viable Crashy</name>
+	<description>An Android application that crashes on demand.</description>
+	<inceptionYear>2010</inceptionYear>
+	<url>http://heroicefforts.github.com/Viable</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>android</groupId>
+			<artifactId>android</artifactId>
+			<version>2.0_r1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.heroicefforts.viable</groupId>
+			<artifactId>viable-android</artifactId>
+			<version>[0.4.0-SNAPSHOT,]</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>${basedir}/src</sourceDirectory>
+		<resources>
+			<resource>
+				<targetPath></targetPath>
+				<directory>.</directory>
+				<includes>
+					<include>LICENSE</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+				<artifactId>maven-android-plugin</artifactId>
+				<configuration>
+					<sdk>
+						<path>${env.ANDROID_HOME}</path>
+						<platform>2.0</platform>
+					</sdk>
+					<deleteConflictingFiles>true</deleteConflictingFiles>
+				</configuration>
+				<extensions>true</extensions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<distributionManagement>
+		<site>
+			<id>local</id>
+			<name>Local Staging</name>
+			<url>file:///e:/work/dev/java/workspace/viable/target/stage/crashy</url>
+		</site>
+	</distributionManagement>
+	
+</project>

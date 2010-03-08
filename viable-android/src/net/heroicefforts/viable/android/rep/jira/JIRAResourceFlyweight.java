@@ -91,6 +91,11 @@ public class JIRAResourceFlyweight
 		return DEFAULT_ALL_STATES;
 	}
 
+	public static IssueResource getUninstallState()
+	{
+		return getState(TYPE_IMPROVEMENT, PRIORITY_MAJOR, STATE_OPEN);
+	}
+	
 	static int getTypeColor(Issue issue)
 	{
 		String type = issue.getType();
@@ -195,6 +200,5 @@ public class JIRAResourceFlyweight
 		else
 			return new String[] { type };
 	}
-
 	
 }

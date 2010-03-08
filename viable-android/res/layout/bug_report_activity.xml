@@ -14,7 +14,7 @@
 </LinearLayout>
 	<LinearLayout android:id="@+id/LinearLayout03"
 		android:layout_height="wrap_content" android:layout_width="fill_parent">
-		<TextView android:id="@+id/TextView04" android:layout_height="wrap_content" android:text="@string/issue_label" android:gravity="center_vertical" android:textStyle="bold" android:layout_width="fill_parent" android:layout_weight="2" android:layout_gravity="center_vertical"></TextView>
+		<TextView android:layout_height="wrap_content" android:text="@string/issue_label" android:gravity="center_vertical" android:textStyle="bold" android:layout_width="fill_parent" android:layout_weight="2" android:layout_gravity="center_vertical" android:id="@+id/IssueTypeTextView"></TextView>
 		<Spinner android:layout_height="wrap_content" android:id="@+id/IssueTypeSpinner"
 			android:layout_width="fill_parent" android:prompt="@string/issue_type_prompt" android:layout_weight="1"></Spinner>
 	</LinearLayout>

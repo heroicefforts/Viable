@@ -20,4 +20,16 @@ Contributors Welcome
 	
 	* Implement asynchronous loading of batched list item views.  
 	
-	* Add unit tests and CI. 
+	* Add unit tests and CI.
+	
+*Source
+
+**Download
+
+	The source for this project may be cloned from <<<git@github.com:heroicefforts/Viable.git>>>.
+
+**Build
+
+	The Android modules may be built by Maven or through Eclipse.  Maven uses {{{http://code.google.com/p/maven-android-plugin}jayway's maven-android-plugin}} for apk compilation.  Details for installing the Android runtime in Eclipse can be found on the {{{http://developer.android.com/sdk/index.html}SDK page}} of the Android developer site.  All modules expect Android SDK 2.0 or later.
+	
+	Building the JIRA plugin requires {{{http://confluence.atlassian.com/display/DEVNET/Setting+up+your+Plugin+Development+Environment}installation}} of the Atlassian Plugin SDK.  The plugin may be built and tested using the atlas-cli interface. 
