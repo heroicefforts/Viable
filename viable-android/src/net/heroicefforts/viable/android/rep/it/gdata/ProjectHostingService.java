@@ -327,7 +327,10 @@ public class ProjectHostingService
 			String appName = issue.getAppName();
 			HttpPost post = new HttpPost(postUrl.toString());
 			post.addHeader("Content-Type", "application/atom+xml");
-			post.setEntity(new StringEntity(new AtomIssue(issue).toString()));
+			String entity = new AtomIssue(issue).toString();
+			if(Config.LOGV)
+				Log.v(TAG, "Posting issue:  '" + entity + "'");
+			post.setEntity(new StringEntity(entity));
 			HttpResponse response = execute(post);
 			int responseCode = response.getStatusLine().getStatusCode();
 			String body = readResponse(response);

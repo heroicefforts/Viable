@@ -149,7 +149,7 @@
 		<site>
 			<id>local</id>
 			<name>Local Staging</name>
-			<url>file:///e:/work/dev/java/workspace/viable/target/stage/android</url>
+			<url>file:///E:/work/dev/github/web/Viable/android</url>
 		</site>
 	</distributionManagement>
 

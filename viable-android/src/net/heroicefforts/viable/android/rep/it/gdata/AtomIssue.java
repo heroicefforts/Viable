@@ -119,7 +119,7 @@ public class AtomIssue extends Issue
 
 	private void appendLabel(StringBuilder labels, String type, String value)
 	{
-		if(TextUtils.isEmpty(value))
+		if(!TextUtils.isEmpty(value))
 			labels.append("<issues:label>").append(type + "-" + value).append("</issues:label>");
 	}
 
