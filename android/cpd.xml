@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+<duplication lines="24" tokens="179">
+<file line="149" path="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\auth\Authenticate.java"/>
+<file line="150" path="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\gdata\ProjectHostingService.java"/>
+<codefragment>
+<![CDATA[
+	private String readResponse(HttpResponse response) throws IOException
+	{
+		InputStream instream = response.getEntity().getContent();
+		Header contentEncoding = response.getFirstHeader("Content-Encoding");
+		if(Config.LOGV) //NOPMD
+			if(contentEncoding != null) //NOPMD
+				Log.v(TAG, "Response content encoding was '" + contentEncoding.getValue() + "'");
+		if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
+			if(Config.LOGD)
+				Log.d(TAG, "Handling GZIP response.");
+		    instream = new GZIPInputStream(instream);
+		}		
+
+		BufferedInputStream bis = new BufferedInputStream(instream);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] buf = new byte[1024];
+		int read = 0;
+		while((read = bis.read(buf)) > 0)
+			baos.write(buf, 0, read);
+		String body = baos.toString();
+		if(Config.LOGV)
+			Log.v(TAG, "Response:  " + body);
+		return body;
+	}
+]]>
+</codefragment>
+</duplication>
+<duplication lines="19" tokens="144">
+<file line="150" path="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\auth\Authenticate.java"/>
+<file line="512" path="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\jira\JIRARepository.java"/>
+<codefragment>
+<![CDATA[
+	{
+		InputStream instream = response.getEntity().getContent();
+		Header contentEncoding = response.getFirstHeader("Content-Encoding");
+		if(Config.LOGV) //NOPMD
+			if(contentEncoding != null) //NOPMD
+				Log.v(TAG, "Response content encoding was '" + contentEncoding.getValue() + "'");
+
+		if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
+			if(Config.LOGD)
+				Log.d(TAG, "Handling GZIP response.");
+		    instream = new GZIPInputStream(instream);
+		}		
+
+		BufferedInputStream bis = new BufferedInputStream(instream);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] buf = new byte[1024];
+		int read = 0;
+		while((read = bis.read(buf)) > 0)
+			baos.write(buf, 0, read);
+]]>
+</codefragment>
+</duplication>
+<duplication lines="33" tokens="137">
+<file line="64" path="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\ITResourceFlyweight.java"/>
+<file line="64" path="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\jira\JIRAResourceFlyweight.java"/>
+<codefragment>
+<![CDATA[
+	private static final String[] STATES = new String[] { STATE_OPEN, STATE_CLOSED, STATE_RESOLVED };
+	
+	
+	private static final Set<TypePriorityStateResource> DEFAULT_ALL_STATES;
+	private static final Set<TypePriorityStateResource> DEFAULT_BUG_STATES;
+	private static final Map<String, TypePriorityStateResource> ALL_STATES;
+	
+	
+	public static IssueResource getState(String type, String priority, String state)
+	{
+		IssueResource resource = ALL_STATES.get(type + priority + state);
+		if(resource == null)
+		{
+			Log.w(TAG, "No issue state defined for Type:  '" + type + "', Priority:  '" + priority + "', State:  '" + state + "'.  Returning no-op.");
+			resource = new NullIssueResource(type, priority, state);
+		}
+		
+		return resource;
+	}
+	
+	public static Set<? extends IssueResource> getDefaultDefectStates()
+	{
+		return DEFAULT_BUG_STATES;
+	}
+	
+	public static Set<? extends IssueResource> getDefaultStates()
+	{
+		return DEFAULT_ALL_STATES;
+	}
+
+	public static IssueResource getUninstallState()
+	{
+		return getState(TYPE_IMPROVEMENT, PRIORITY_MAJOR, STATE_OPEN);
+]]>
+</codefragment>
+</duplication>
+<duplication lines="19" tokens="135">
+<file line="428" path="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\jira\JIRARepository.java"/>
+<file line="546" path="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\jira\JIRARepository.java"/>
+<codefragment>
+<![CDATA[
+			if(issue.getStacktrace() != null)
+			{
+				nameValuePairs.add(new BasicNameValuePair("phone_model", Build.MODEL));
+				nameValuePairs.add(new BasicNameValuePair("phone_device", Build.DEVICE));				        
+				nameValuePairs.add(new BasicNameValuePair("phone_version", String.valueOf(Build.VERSION.SDK_INT)));
+			}
+
+			if(Config.LOGD)
+				Log.d(TAG, "post params:  " + nameValuePairs.toString());
+			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));  
+
+			// Execute HTTP Post Request  
+			HttpResponse response = execute(post);
+			int responseCode = response.getStatusLine().getStatusCode();
+			if(HttpStatus.SC_OK == responseCode || HttpStatus.SC_CREATED == responseCode)
+			{			
+				JSONObject obj = readJSON(response);
+				if(Config.LOGV)
+					Log.v(TAG, "postIssueComment response:  \n" + obj.toString(4));		
+]]>
+</codefragment>
+</duplication>
+<duplication lines="16" tokens="112">
+<file line="163" path="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\ITResourceFlyweight.java"/>
+<file line="171" path="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\jira\JIRAResourceFlyweight.java"/>
+<codefragment>
+<![CDATA[
+		put(allStates, TYPE_IMPROVEMENT, ANY, STATE_CLOSED, R.string.improvement_closed_name, R.string.improvement_closed_desc, R.drawable.imp_closed);
+		
+		DEFAULT_ALL_STATES = Collections.unmodifiableSet(defAll);
+		ALL_STATES = Collections.unmodifiableMap(allStates);
+	}
+
+
+	private static final void putDefault(HashMap<String, TypePriorityStateResource> states, HashSet<TypePriorityStateResource> def,
+			String type, String priority, String state, int nameRes, int descRes, int iconRes)
+	{
+		def.add(put(states, type, priority, state, nameRes, descRes, iconRes));
+	}
+	
+	private static final TypePriorityStateResource put(HashMap<String, TypePriorityStateResource> states, String type, String priority,
+			String state, int nameRes, int descRes, int iconRes)
+	{
+]]>
+</codefragment>
+</duplication>
+<duplication lines="34" tokens="108">
+<file line="147" path="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\content\RemoteCommentCursor.java"/>
+<file line="181" path="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\content\RemoteIssueCursor.java"/>
+<codefragment>
+<![CDATA[
+				return issueList.get(idx).getVotes();
+			default:
+				throw new CursorIndexOutOfBoundsException("No column index of:  " + column);
+		}
+	}
+	
+	@Override
+	public float getFloat(int column)
+	{
+		return (Float) getValue(column);
+	}
+
+	@Override
+	public int getInt(int column)
+	{
+		return (Integer) getValue(column);
+	}
+
+	@Override
+	public long getLong(int column)
+	{
+		Number num = (Number) getValue(column);
+		return num.longValue();
+	}
+
+	@Override
+	public short getShort(int column)
+	{
+		return (Short) getValue(column);
+	}
+
+	@Override
+	public String getString(int column)
+	{
+]]>
+</codefragment>
+</duplication>
+<duplication lines="18" tokens="103">
+<file line="179" path="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\ITResourceFlyweight.java"/>
+<file line="187" path="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\jira\JIRAResourceFlyweight.java"/>
+<codefragment>
+<![CDATA[
+		JIRAIssueResource resource = new JIRAIssueResource(type, priority, state, nameRes, descRes, iconRes);
+		for(String t : select(type, TYPES))
+			for(String p : select(priority, PRIORITIES))
+				for(String s : select(state, STATES))
+					states.put(t + p + s, resource);
+
+		return resource;
+	}
+
+	private static final String[] select(String type, String[] all)
+	{
+		if(ANY.equals(type))
+			return all;
+		else
+			return new String[] { type };
+	}
+	
+}
+]]>
+</codefragment>
+</duplication>
+</pmd-cpd>

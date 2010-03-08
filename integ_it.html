@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Viable - </title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+                                            <img src="images/logo.png" alt="Viable Logo" />
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+             Last Published: 2010-03-07
+            </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Overview</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="intro.html">Introduction</a>
+          </li>
+              
+    <li class="none">
+                    <a href="downloads.html">Downloads</a>
+          </li>
+              
+          
+              
+      
+            
+            
+              
+            <li class="expanded">
+                    <a href="">Integration</a>
+                  <ul>
+                  
+    <li class="none">
+                    <a href="integ_jira.html">JIRA</a>
+          </li>
+                  
+    <li class="none">
+              <strong>Google I.T.</strong>
+        </li>
+              </ul>
+        </li>
+              
+    <li class="none">
+                    <a href="contribute.html">Contribute</a>
+          </li>
+          </ul>
+              <h5>Modules</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="android/index.html">Android</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2>Google Issue Tracker</h2>
+<p>A repository plugin has been coded for the Issue Tracker (I.T.) found in Google's Project Hosting. The details for configuring I.T. support follow.</p>
+<div class="section"><h3>Limitations</h3>
+<ol type="1"><li>Authentication: Google's issue tracker does not allow anonymous posting of issues. Google also does not natively support I.T. token generation from the phone owner's Google account. As a workaround, Viable has implemented a custom Android authenticator to generate a Google Login Token. User's are prompted to enter their credentials before accessing an Issue Tracker site.</li>
+<li>Project Details: This developer has not found a Google API for retrieving project description, releases, etc (short of screen scraping). So, at present, these are being supplied through the client manifest file.</li>
+</ol>
+</div>
+<div class="section"><h3>Android Application Configuration</h3>
+<ol type="1"><li><p>Add the following lines to your Android manifest file (between the application tags):</p>
+<div class="source"><pre>&lt;meta-data android:name=&quot;viable-provider&quot; android:value=&quot;Google&quot; /&gt;
+&lt;meta-data android:name=&quot;viable-project-name&quot; android:value=&quot;_your_project_name_&quot; /&gt;
+&lt;meta-data android:name=&quot;viable-project-description&quot; android:value=&quot;_description_&quot; /&gt;
+&lt;meta-data android:name=&quot;viable-project-lead&quot; android:value=&quot;_your_name_&quot; /&gt;
+&lt;meta-data android:name=&quot;viable-project-versions&quot; android:value=&quot;_your_versions_&quot; /&gt;</pre>
+</div>
+<p>Substitute the following:</p>
+<p>_your_project_name_ - Your Google Project name. For example, if your Google I.T. URL looked like &quot;http://code.google.com/p/viable-it-test/issues/list&quot;, then you would supply &quot;viable-it-test&quot;. _description_ - A description of your application. _your_name__ - The project owner's name. _your_versions_ - A comma separated list of the version names that you have, or will, release. This is used to populate the filter list.</p>
+</li>
+<li><p>Add the following line of code to the onCreate method of your main Activity and/or Service, whatever is the entry point to your application:</p>
+<div class="source"><pre>ViableExceptionHandler.register(this);</pre>
+</div>
+<p>For the adventurous, an AspectJ aspect file can be found in the client jar under /dist/aj. This aspect may be woven into your AspectJ enabled Android project to automate the exception handling registration of step #2. However, setting up AspectJ is beyond the scope of this discussion.</p>
+</li>
+</ol>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2010
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

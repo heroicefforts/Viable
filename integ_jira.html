@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Viable - </title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+                                            <img src="images/logo.png" alt="Viable Logo" />
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+             Last Published: 2010-03-07
+            </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Overview</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="intro.html">Introduction</a>
+          </li>
+              
+    <li class="none">
+                    <a href="downloads.html">Downloads</a>
+          </li>
+              
+          
+              
+            
+            
+      
+              
+            <li class="expanded">
+                    <a href="">Integration</a>
+                  <ul>
+                  
+    <li class="none">
+              <strong>JIRA</strong>
+        </li>
+                  
+    <li class="none">
+                    <a href="integ_it.html">Google I.T.</a>
+          </li>
+              </ul>
+        </li>
+              
+    <li class="none">
+                    <a href="contribute.html">Contribute</a>
+          </li>
+          </ul>
+              <h5>Modules</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="android/index.html">Android</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2>Atlassian JIRA</h2>
+<p>A Viable repository has been implemented to support anonymous posting of issues to JIRA 4.0 or later. Why anonymous? Because Jess can't afford enterprise licensing. A JIRA plugin must be installed on the server side to support communication with the Viable application.</p>
+<div class="section"><h3>JIRA Server Side Configuration</h3>
+<ol type="1"><li>Perform all your normal, common sense steps for backing up your server before futzing with it.</li>
+<li>Download the lastest viable-jira-plugin jar from the <a href="./downloads.html">downloads</a> page.</li>
+<li>Install the plugin per JIRA instructions i.e. stop the server, copy the jar to <i>jira-home</i>/plugins/installed-plugins, restart the server.</li>
+<li>Log into the JIRA administrator's console.</li>
+<li>Create a new custom field named <tt>Hash</tt>. This field should be of type <i>Text Field</i> and in the context of the <i>Bug</i> and <i>Improvement</i> issue types. This field will store the checksum used to prevent duplicate issue creation.</li>
+<li>Create a new custom field named <tt>Stacktrace</tt>. This field should be of type <i>Free Text Field</i> and in the context of the <i>Bug</i> and <i>Improvement</i> issue types. This field will contain the device exception stacktrace and should be visible on any JIRA screens that are useful for development.</li>
+<li>Create or edit a permission scheme to allow anonymous posting. Give the <i>Anyone</i> group permission to <i>Browse Projects</i>, <i>Create Issues</i>, and <i>Add Comments</i>.</li>
+</ol>
+</div>
+<div class="section"><h3>JIRA Project Configuration</h3>
+<ol type="1"><li>Create a new JIRA project with a name matching the label of your Android application (filling in the vitals: description, lead, URL).</li>
+<li>Associate the project's permission scheme with that of the anonymous permission scheme that you configured during Server Side Configuration.</li>
+<li>Add a release with a name matching the &quot;versionName&quot; in your Android manifest file.</li>
+</ol>
+</div>
+<div class="section"><h3>Android Application Configuration</h3>
+<ol type="1"><li><p>Add the following lines to your Android manifest file (between the application tags):</p>
+<div class="source"><pre>&lt;meta-data android:name=&quot;viable-provider&quot; android:value=&quot;JIRA&quot; /&gt;
+&lt;meta-data android:name=&quot;viable-provider-location&quot; android:value=&quot;http://_path_to_jira_/rest/viable/1.0/issue&quot; /&gt;</pre>
+</div>
+<p>Where _path_to_jira_ is the domain and web context of your JIRA installation.</p>
+</li>
+<li><p>Add the following line of code to the onCreate method of your main Activity and/or Service, whatever is the entry point to your application:</p>
+<div class="source"><pre>ViableExceptionHandler.register(this);</pre>
+</div>
+<p>For the adventurous, an AspectJ aspect file can be found in the client jar under /dist/aj. This aspect may be woven into your AspectJ enabled Android project to automate the exception handling registration of step #2. However, setting up AspectJ is beyond the scope of this discussion.</p>
+</li>
+</ol>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2010
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

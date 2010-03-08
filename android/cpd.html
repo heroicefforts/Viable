@@ -1,0 +1,424 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Viable Android - CPD Results</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+                                            <img src="images/logo.png" alt="Viable Logo" />
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+             Last Published: 2010-03-07
+            </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+            
+            
+      
+            
+      
+            
+      
+              
+            <li class="expanded">
+                    <a href="project-reports.html">Project Reports</a>
+                  <ul>
+                  
+    <li class="none">
+              <strong>CPD Report</strong>
+        </li>
+                  
+    <li class="none">
+                    <a href="apidocs/index.html">JavaDocs</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="pmd.html">PMD Report</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="xref/index.html">Source Xref</a>
+          </li>
+              </ul>
+        </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2>CPD Results</h2>
+<p>The following document contains the results of PMD's  <a class="externalLink" href="http://pmd.sourceforge.net/cpd.html">CPD</a> 4.2.2.</p>
+</div>
+<div class="section"><h2>Duplications</h2>
+<p><table class="bodyTable"><tr class="a"><th>File</th>
+<th>Line</th>
+</tr>
+<tr class="b"><td>net\heroicefforts\viable\android\rep\it\auth\Authenticate.java</td>
+<td><a href="./xref/net/heroicefforts/viable/android/rep/it/auth/Authenticate.html#149">149</a></td>
+</tr>
+<tr class="a"><td>net\heroicefforts\viable\android\rep\it\gdata\ProjectHostingService.java</td>
+<td><a href="./xref/net/heroicefforts/viable/android/rep/it/gdata/ProjectHostingService.html#150">150</a></td>
+</tr>
+<tr class="b"><td colspan='2'><div class="source"><pre>	private String readResponse(HttpResponse response) throws IOException
+	{
+		InputStream instream = response.getEntity().getContent();
+		Header contentEncoding = response.getFirstHeader(&quot;Content-Encoding&quot;);
+		if(Config.LOGV) //NOPMD
+			if(contentEncoding != null) //NOPMD
+				Log.v(TAG, &quot;Response content encoding was '&quot; + contentEncoding.getValue() + &quot;'&quot;);
+		if (contentEncoding != null &amp;&amp; contentEncoding.getValue().equalsIgnoreCase(&quot;gzip&quot;)) {
+			if(Config.LOGD)
+				Log.d(TAG, &quot;Handling GZIP response.&quot;);
+		    instream = new GZIPInputStream(instream);
+		}		
+
+		BufferedInputStream bis = new BufferedInputStream(instream);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] buf = new byte[1024];
+		int read = 0;
+		while((read = bis.read(buf)) &gt; 0)
+			baos.write(buf, 0, read);
+		String body = baos.toString();
+		if(Config.LOGV)
+			Log.v(TAG, &quot;Response:  &quot; + body);
+		return body;
+	}</pre>
+</div>
+</td></tr>
+<table class="bodyTable"></p>
+<p><table class="bodyTable"><tr class="a"><th>File</th>
+<th>Line</th>
+</tr>
+<tr class="b"><td>net\heroicefforts\viable\android\rep\it\auth\Authenticate.java</td>
+<td><a href="./xref/net/heroicefforts/viable/android/rep/it/auth/Authenticate.html#150">150</a></td>
+</tr>
+<tr class="a"><td>net\heroicefforts\viable\android\rep\jira\JIRARepository.java</td>
+<td><a href="./xref/net/heroicefforts/viable/android/rep/jira/JIRARepository.html#512">512</a></td>
+</tr>
+<tr class="b"><td colspan='2'><div class="source"><pre>	{
+		InputStream instream = response.getEntity().getContent();
+		Header contentEncoding = response.getFirstHeader(&quot;Content-Encoding&quot;);
+		if(Config.LOGV) //NOPMD
+			if(contentEncoding != null) //NOPMD
+				Log.v(TAG, &quot;Response content encoding was '&quot; + contentEncoding.getValue() + &quot;'&quot;);
+
+		if (contentEncoding != null &amp;&amp; contentEncoding.getValue().equalsIgnoreCase(&quot;gzip&quot;)) {
+			if(Config.LOGD)
+				Log.d(TAG, &quot;Handling GZIP response.&quot;);
+		    instream = new GZIPInputStream(instream);
+		}		
+
+		BufferedInputStream bis = new BufferedInputStream(instream);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] buf = new byte[1024];
+		int read = 0;
+		while((read = bis.read(buf)) &gt; 0)
+			baos.write(buf, 0, read);</pre>
+</div>
+</td></tr>
+<table class="bodyTable"></p>
+<p><table class="bodyTable"><tr class="a"><th>File</th>
+<th>Line</th>
+</tr>
+<tr class="b"><td>net\heroicefforts\viable\android\rep\it\ITResourceFlyweight.java</td>
+<td><a href="./xref/net/heroicefforts/viable/android/rep/it/ITResourceFlyweight.html#64">64</a></td>
+</tr>
+<tr class="a"><td>net\heroicefforts\viable\android\rep\jira\JIRAResourceFlyweight.java</td>
+<td><a href="./xref/net/heroicefforts/viable/android/rep/jira/JIRAResourceFlyweight.html#64">64</a></td>
+</tr>
+<tr class="b"><td colspan='2'><div class="source"><pre>	private static final String[] STATES = new String[] { STATE_OPEN, STATE_CLOSED, STATE_RESOLVED };
+	
+	
+	private static final Set&lt;TypePriorityStateResource&gt; DEFAULT_ALL_STATES;
+	private static final Set&lt;TypePriorityStateResource&gt; DEFAULT_BUG_STATES;
+	private static final Map&lt;String, TypePriorityStateResource&gt; ALL_STATES;
+	
+	
+	public static IssueResource getState(String type, String priority, String state)
+	{
+		IssueResource resource = ALL_STATES.get(type + priority + state);
+		if(resource == null)
+		{
+			Log.w(TAG, &quot;No issue state defined for Type:  '&quot; + type + &quot;', Priority:  '&quot; + priority + &quot;', State:  '&quot; + state + &quot;'.  Returning no-op.&quot;);
+			resource = new NullIssueResource(type, priority, state);
+		}
+		
+		return resource;
+	}
+	
+	public static Set&lt;? extends IssueResource&gt; getDefaultDefectStates()
+	{
+		return DEFAULT_BUG_STATES;
+	}
+	
+	public static Set&lt;? extends IssueResource&gt; getDefaultStates()
+	{
+		return DEFAULT_ALL_STATES;
+	}
+
+	public static IssueResource getUninstallState()
+	{
+		return getState(TYPE_IMPROVEMENT, PRIORITY_MAJOR, STATE_OPEN);</pre>
+</div>
+</td></tr>
+<table class="bodyTable"></p>
+<p><table class="bodyTable"><tr class="a"><th>File</th>
+<th>Line</th>
+</tr>
+<tr class="b"><td>net\heroicefforts\viable\android\rep\jira\JIRARepository.java</td>
+<td><a href="./xref/net/heroicefforts/viable/android/rep/jira/JIRARepository.html#428">428</a></td>
+</tr>
+<tr class="a"><td>net\heroicefforts\viable\android\rep\jira\JIRARepository.java</td>
+<td><a href="./xref/net/heroicefforts/viable/android/rep/jira/JIRARepository.html#546">546</a></td>
+</tr>
+<tr class="b"><td colspan='2'><div class="source"><pre>			if(issue.getStacktrace() != null)
+			{
+				nameValuePairs.add(new BasicNameValuePair(&quot;phone_model&quot;, Build.MODEL));
+				nameValuePairs.add(new BasicNameValuePair(&quot;phone_device&quot;, Build.DEVICE));				        
+				nameValuePairs.add(new BasicNameValuePair(&quot;phone_version&quot;, String.valueOf(Build.VERSION.SDK_INT)));
+			}
+
+			if(Config.LOGD)
+				Log.d(TAG, &quot;post params:  &quot; + nameValuePairs.toString());
+			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));  
+
+			// Execute HTTP Post Request  
+			HttpResponse response = execute(post);
+			int responseCode = response.getStatusLine().getStatusCode();
+			if(HttpStatus.SC_OK == responseCode || HttpStatus.SC_CREATED == responseCode)
+			{			
+				JSONObject obj = readJSON(response);
+				if(Config.LOGV)
+					Log.v(TAG, &quot;postIssueComment response:  \n&quot; + obj.toString(4));		</pre>
+</div>
+</td></tr>
+<table class="bodyTable"></p>
+<p><table class="bodyTable"><tr class="a"><th>File</th>
+<th>Line</th>
+</tr>
+<tr class="b"><td>net\heroicefforts\viable\android\rep\it\ITResourceFlyweight.java</td>
+<td><a href="./xref/net/heroicefforts/viable/android/rep/it/ITResourceFlyweight.html#163">163</a></td>
+</tr>
+<tr class="a"><td>net\heroicefforts\viable\android\rep\jira\JIRAResourceFlyweight.java</td>
+<td><a href="./xref/net/heroicefforts/viable/android/rep/jira/JIRAResourceFlyweight.html#171">171</a></td>
+</tr>
+<tr class="b"><td colspan='2'><div class="source"><pre>		put(allStates, TYPE_IMPROVEMENT, ANY, STATE_CLOSED, R.string.improvement_closed_name, R.string.improvement_closed_desc, R.drawable.imp_closed);
+		
+		DEFAULT_ALL_STATES = Collections.unmodifiableSet(defAll);
+		ALL_STATES = Collections.unmodifiableMap(allStates);
+	}
+
+
+	private static final void putDefault(HashMap&lt;String, TypePriorityStateResource&gt; states, HashSet&lt;TypePriorityStateResource&gt; def,
+			String type, String priority, String state, int nameRes, int descRes, int iconRes)
+	{
+		def.add(put(states, type, priority, state, nameRes, descRes, iconRes));
+	}
+	
+	private static final TypePriorityStateResource put(HashMap&lt;String, TypePriorityStateResource&gt; states, String type, String priority,
+			String state, int nameRes, int descRes, int iconRes)
+	{</pre>
+</div>
+</td></tr>
+<table class="bodyTable"></p>
+<p><table class="bodyTable"><tr class="a"><th>File</th>
+<th>Line</th>
+</tr>
+<tr class="b"><td>net\heroicefforts\viable\android\content\RemoteCommentCursor.java</td>
+<td><a href="./xref/net/heroicefforts/viable/android/content/RemoteCommentCursor.html#147">147</a></td>
+</tr>
+<tr class="a"><td>net\heroicefforts\viable\android\content\RemoteIssueCursor.java</td>
+<td><a href="./xref/net/heroicefforts/viable/android/content/RemoteIssueCursor.html#181">181</a></td>
+</tr>
+<tr class="b"><td colspan='2'><div class="source"><pre>				return issueList.get(idx).getVotes();
+			default:
+				throw new CursorIndexOutOfBoundsException(&quot;No column index of:  &quot; + column);
+		}
+	}
+	
+	@Override
+	public float getFloat(int column)
+	{
+		return (Float) getValue(column);
+	}
+
+	@Override
+	public int getInt(int column)
+	{
+		return (Integer) getValue(column);
+	}
+
+	@Override
+	public long getLong(int column)
+	{
+		Number num = (Number) getValue(column);
+		return num.longValue();
+	}
+
+	@Override
+	public short getShort(int column)
+	{
+		return (Short) getValue(column);
+	}
+
+	@Override
+	public String getString(int column)
+	{</pre>
+</div>
+</td></tr>
+<table class="bodyTable"></p>
+<p><table class="bodyTable"><tr class="a"><th>File</th>
+<th>Line</th>
+</tr>
+<tr class="b"><td>net\heroicefforts\viable\android\rep\it\ITResourceFlyweight.java</td>
+<td><a href="./xref/net/heroicefforts/viable/android/rep/it/ITResourceFlyweight.html#179">179</a></td>
+</tr>
+<tr class="a"><td>net\heroicefforts\viable\android\rep\jira\JIRAResourceFlyweight.java</td>
+<td><a href="./xref/net/heroicefforts/viable/android/rep/jira/JIRAResourceFlyweight.html#187">187</a></td>
+</tr>
+<tr class="b"><td colspan='2'><div class="source"><pre>		JIRAIssueResource resource = new JIRAIssueResource(type, priority, state, nameRes, descRes, iconRes);
+		for(String t : select(type, TYPES))
+			for(String p : select(priority, PRIORITIES))
+				for(String s : select(state, STATES))
+					states.put(t + p + s, resource);
+
+		return resource;
+	}
+
+	private static final String[] select(String type, String[] all)
+	{
+		if(ANY.equals(type))
+			return all;
+		else
+			return new String[] { type };
+	}
+	
+}</pre>
+</div>
+</td></tr>
+<table class="bodyTable"></p>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2010
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

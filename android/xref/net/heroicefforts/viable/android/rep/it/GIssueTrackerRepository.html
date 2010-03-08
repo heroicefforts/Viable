@@ -1,0 +1,551 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+<title>GIssueTrackerRepository xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../apidocs/net/heroicefforts/viable/android/rep/it/GIssueTrackerRepository.html">View Javadoc</a></div><pre>
+
+<a name="1" href="#1">1</a>   <em class="jxr_comment">/*</em>
+<a name="2" href="#2">2</a>   <em class="jxr_comment"> *  Copyright 2010 Heroic Efforts, LLC</em>
+<a name="3" href="#3">3</a>   <em class="jxr_comment"> *  </em>
+<a name="4" href="#4">4</a>   <em class="jxr_comment"> *  This file is part of Viable.</em>
+<a name="5" href="#5">5</a>   <em class="jxr_comment"> *</em>
+<a name="6" href="#6">6</a>   <em class="jxr_comment"> *  Viable is free software: you can redistribute it and/or modify</em>
+<a name="7" href="#7">7</a>   <em class="jxr_comment"> *  it under the terms of the GNU General Public License as published by</em>
+<a name="8" href="#8">8</a>   <em class="jxr_comment"> *  the Free Software Foundation, either version 3 of the License, or</em>
+<a name="9" href="#9">9</a>   <em class="jxr_comment"> *  (at your option) any later version.</em>
+<a name="10" href="#10">10</a>  <em class="jxr_comment"> *</em>
+<a name="11" href="#11">11</a>  <em class="jxr_comment"> *  Viable is distributed in the hope that it will be useful,</em>
+<a name="12" href="#12">12</a>  <em class="jxr_comment"> *  but WITHOUT ANY WARRANTY; without even the implied warranty of</em>
+<a name="13" href="#13">13</a>  <em class="jxr_comment"> *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</em>
+<a name="14" href="#14">14</a>  <em class="jxr_comment"> *  GNU General Public License for more details.</em>
+<a name="15" href="#15">15</a>  <em class="jxr_comment"> *</em>
+<a name="16" href="#16">16</a>  <em class="jxr_comment"> *  You should have received a copy of the GNU General Public License</em>
+<a name="17" href="#17">17</a>  <em class="jxr_comment"> *  along with Viable.  If not, see &lt;<a href="http://www.gnu.org/licenses/&gt;." target="alexandria_uri">http://www.gnu.org/licenses/&gt;.</a></em>
+<a name="18" href="#18">18</a>  <em class="jxr_comment"> */</em>
+<a name="19" href="#19">19</a>  <strong class="jxr_keyword">package</strong> net.heroicefforts.viable.android.rep.it;
+<a name="20" href="#20">20</a>  
+<a name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> java.io.UnsupportedEncodingException;
+<a name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> java.math.BigInteger;
+<a name="23" href="#23">23</a>  <strong class="jxr_keyword">import</strong> java.net.MalformedURLException;
+<a name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> java.net.URL;
+<a name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> java.security.MessageDigest;
+<a name="26" href="#26">26</a>  <strong class="jxr_keyword">import</strong> java.security.NoSuchAlgorithmException;
+<a name="27" href="#27">27</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
+<a name="28" href="#28">28</a>  <strong class="jxr_keyword">import</strong> java.util.Collection;
+<a name="29" href="#29">29</a>  <strong class="jxr_keyword">import</strong> java.util.LinkedHashSet;
+<a name="30" href="#30">30</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a name="31" href="#31">31</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
+<a name="32" href="#32">32</a>  
+<a name="33" href="#33">33</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.Config;
+<a name="34" href="#34">34</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.dao.Comment;
+<a name="35" href="#35">35</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.dao.CommentSet;
+<a name="36" href="#36">36</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.dao.Issue;
+<a name="37" href="#37">37</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.dao.ProjectDetail;
+<a name="38" href="#38">38</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.dao.SearchParams;
+<a name="39" href="#39">39</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.dao.SearchResults;
+<a name="40" href="#40">40</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.dao.VersionDetail;
+<a name="41" href="#41">41</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.rep.CreateException;
+<a name="42" href="#42">42</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.rep.IssueResource;
+<a name="43" href="#43">43</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.rep.Repository;
+<a name="44" href="#44">44</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.rep.ServiceException;
+<a name="45" href="#45">45</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.rep.it.auth.Authenticate;
+<a name="46" href="#46">46</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.rep.it.auth.AuthenticationException;
+<a name="47" href="#47">47</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.rep.it.auth.GCLAccountAuthenticator;
+<a name="48" href="#48">48</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.rep.it.auth.NetworkException;
+<a name="49" href="#49">49</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.rep.it.gdata.IssueCommentsFeed;
+<a name="50" href="#50">50</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.rep.it.gdata.IssuesFeed;
+<a name="51" href="#51">51</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.rep.it.gdata.IssuesQuery;
+<a name="52" href="#52">52</a>  <strong class="jxr_keyword">import</strong> net.heroicefforts.viable.android.rep.it.gdata.ProjectHostingService;
+<a name="53" href="#53">53</a>  
+<a name="54" href="#54">54</a>  <strong class="jxr_keyword">import</strong> org.apache.http.HttpStatus;
+<a name="55" href="#55">55</a>  
+<a name="56" href="#56">56</a>  <strong class="jxr_keyword">import</strong> android.accounts.Account;
+<a name="57" href="#57">57</a>  <strong class="jxr_keyword">import</strong> android.accounts.AccountManager;
+<a name="58" href="#58">58</a>  <strong class="jxr_keyword">import</strong> android.accounts.AccountManagerCallback;
+<a name="59" href="#59">59</a>  <strong class="jxr_keyword">import</strong> android.accounts.AccountManagerFuture;
+<a name="60" href="#60">60</a>  <strong class="jxr_keyword">import</strong> android.accounts.AuthenticatorException;
+<a name="61" href="#61">61</a>  <strong class="jxr_keyword">import</strong> android.app.Activity;
+<a name="62" href="#62">62</a>  <strong class="jxr_keyword">import</strong> android.content.Context;
+<a name="63" href="#63">63</a>  <strong class="jxr_keyword">import</strong> android.os.Bundle;
+<a name="64" href="#64">64</a>  <strong class="jxr_keyword">import</strong> android.util.Log;
+<a name="65" href="#65">65</a>  
+<a name="66" href="#66">66</a>  <em class="jxr_javadoccomment">/**</em>
+<a name="67" href="#67">67</a>  <em class="jxr_javadoccomment"> * This is the repository implementation that bridges to the Google Issue Tracker.  Viable client applications that</em>
+<a name="68" href="#68">68</a>  <em class="jxr_javadoccomment"> * wish to register their I.T. project should add lines similar to those found below:&lt;br/&gt;</em>
+<a name="69" href="#69">69</a>  <em class="jxr_javadoccomment"> * &lt;br/&gt;&lt;pre&gt;</em>
+<a name="70" href="#70">70</a>  <em class="jxr_javadoccomment">   &amp;lt;meta-data android:name="viable-provider" android:value="Google" /&amp;gt;</em>
+<a name="71" href="#71">71</a>  <em class="jxr_javadoccomment">   &amp;lt;meta-data android:name="viable-project-name" android:value="&amp;lt;your project name, defined after the /p/ in Google's URL&amp;gt;" /&amp;gt;</em>
+<a name="72" href="#72">72</a>  <em class="jxr_javadoccomment">   &amp;lt;meta-data android:name="viable-project-description" android:value="A description of your project." /&amp;gt;</em>
+<a name="73" href="#73">73</a>  <em class="jxr_javadoccomment">   &amp;lt;meta-data android:name="viable-project-lead" android:value="&amp;lt;Your Name&amp;gt;" /&amp;gt;</em>
+<a name="74" href="#74">74</a>  <em class="jxr_javadoccomment">   &amp;lt;meta-data android:name="viable-project-versions" android:value="1.0.0, 1.1.0" /&amp;gt;</em>
+<a name="75" href="#75">75</a>  <em class="jxr_javadoccomment"> * &lt;/pre&gt;&lt;br/&gt;</em>
+<a name="76" href="#76">76</a>  <em class="jxr_javadoccomment"> * </em>
+<a name="77" href="#77">77</a>  <em class="jxr_javadoccomment"> * @author jevans</em>
+<a name="78" href="#78">78</a>  <em class="jxr_javadoccomment"> * </em>
+<a name="79" href="#79">79</a>  <em class="jxr_javadoccomment"> */</em>
+<a name="80" href="#80">80</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/it/GIssueTrackerRepository.html">GIssueTrackerRepository</a> implements <a href="../../../../../../net/heroicefforts/viable/android/rep/Repository.html">Repository</a>
+<a name="81" href="#81">81</a>  {
+<a name="82" href="#82">82</a>  	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String APPEND_MAX_RESULTS = <span class="jxr_string">"&amp;max-results="</span>;
+<a name="83" href="#83">83</a>  	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String ISSUE_BASE_URL = <span class="jxr_string">"http://code.google.com/feeds/issues/p/"</span>;
+<a name="84" href="#84">84</a>  	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String PARAM_PROJECT_NAME = <span class="jxr_string">"viable-project-name"</span>;
+<a name="85" href="#85">85</a>  	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String PARAM_VERSIONS = <span class="jxr_string">"viable-project-versions"</span>;
+<a name="86" href="#86">86</a>  	<strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String TAG = <span class="jxr_string">"GIssueTrackerRepository"</span>;
+<a name="87" href="#87">87</a>  	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String PARAM_PROJECT_DESC = <span class="jxr_string">"viable-project-description"</span>;
+<a name="88" href="#88">88</a>  	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String PARAM_PROJECT_ADMIN = <span class="jxr_string">"viable-project-lead"</span>;
+<a name="89" href="#89">89</a>  
+<a name="90" href="#90">90</a>  	<strong class="jxr_keyword">private</strong> Activity act;
+<a name="91" href="#91">91</a>  	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/it/gdata/ProjectHostingService.html">ProjectHostingService</a> host;
+<a name="92" href="#92">92</a>  	<strong class="jxr_keyword">private</strong> String projectName;
+<a name="93" href="#93">93</a>  	<strong class="jxr_keyword">private</strong> String appName;
+<a name="94" href="#94">94</a>  	<strong class="jxr_keyword">private</strong> String description;
+<a name="95" href="#95">95</a>  	<strong class="jxr_keyword">private</strong> String lead;
+<a name="96" href="#96">96</a>  
+<a name="97" href="#97">97</a>  	<strong class="jxr_keyword">private</strong> List&lt;VersionDetail&gt; versions = <strong class="jxr_keyword">new</strong> ArrayList&lt;VersionDetail&gt;();
+<a name="98" href="#98">98</a>  	<strong class="jxr_keyword">private</strong> AccountManagerCallback&lt;Bundle&gt; callback = <strong class="jxr_keyword">new</strong> AccountManagerCallback&lt;Bundle&gt;() {
+<a name="99" href="#99">99</a>  
+<a name="100" href="#100">100</a> 		<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run(AccountManagerFuture&lt;Bundle&gt; future)
+<a name="101" href="#101">101</a> 		{
+<a name="102" href="#102">102</a> 			<strong class="jxr_keyword">try</strong>
+<a name="103" href="#103">103</a> 			{
+<a name="104" href="#104">104</a> 				String token = future.getResult().getString(AccountManager.KEY_AUTHTOKEN);
+<a name="105" href="#105">105</a> 				<strong class="jxr_keyword">if</strong>(Config.LOGV)
+<a name="106" href="#106">106</a> 					Log.v(TAG, <span class="jxr_string">"New account token:  "</span> + token);
+<a name="107" href="#107">107</a> 				host.setAuthSubToken(token);
+<a name="108" href="#108">108</a> 			}
+<a name="109" href="#109">109</a> 			<strong class="jxr_keyword">catch</strong> (Exception e)
+<a name="110" href="#110">110</a> 			{
+<a name="111" href="#111">111</a> 				Log.e(TAG, <span class="jxr_string">"Error adding account."</span>, e);
+<a name="112" href="#112">112</a> 			}
+<a name="113" href="#113">113</a> 		}
+<a name="114" href="#114">114</a> 	
+<a name="115" href="#115">115</a> 	};
+<a name="116" href="#116">116</a> 	
+<a name="117" href="#117">117</a> 	<strong class="jxr_keyword">public</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/it/GIssueTrackerRepository.html">GIssueTrackerRepository</a>(String appName, Activity act, Bundle metaData)
+<a name="118" href="#118">118</a> 		<strong class="jxr_keyword">throws</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/CreateException.html">CreateException</a>
+<a name="119" href="#119">119</a> 	{
+<a name="120" href="#120">120</a> 		<strong class="jxr_keyword">this</strong>.appName = appName;
+<a name="121" href="#121">121</a> 		<strong class="jxr_keyword">this</strong>.act = act;
+<a name="122" href="#122">122</a> 		<strong class="jxr_keyword">this</strong>.projectName = metaData.getString(PARAM_PROJECT_NAME);
+<a name="123" href="#123">123</a> 		<strong class="jxr_keyword">if</strong>(projectName == <strong class="jxr_keyword">null</strong>)
+<a name="124" href="#124">124</a> 			<strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/CreateException.html">CreateException</a>(<span class="jxr_string">"No '"</span> + <span class="jxr_string">"viable-project-name"</span> + <span class="jxr_string">"' meta-data field defined for application.  Google Isusue Tracker Repository cannot be constructed."</span>);
+<a name="125" href="#125">125</a> 		<strong class="jxr_keyword">this</strong>.description = metaData.getString(PARAM_PROJECT_DESC);
+<a name="126" href="#126">126</a> 		<strong class="jxr_keyword">this</strong>.lead = metaData.getString(PARAM_PROJECT_ADMIN);
+<a name="127" href="#127">127</a> 		String versionStr = metaData.getString(PARAM_VERSIONS);
+<a name="128" href="#128">128</a> 		<strong class="jxr_keyword">if</strong>(versionStr != <strong class="jxr_keyword">null</strong>)
+<a name="129" href="#129">129</a> 		{
+<a name="130" href="#130">130</a> 			String[] versions = versionStr.split(<span class="jxr_string">"[ ]*,[ ]*"</span>);
+<a name="131" href="#131">131</a> 			<strong class="jxr_keyword">for</strong>(String version : versions)
+<a name="132" href="#132">132</a> 				<strong class="jxr_keyword">this</strong>.versions.add(<strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/dao/VersionDetail.html">VersionDetail</a>(version));
+<a name="133" href="#133">133</a> 		}
+<a name="134" href="#134">134</a> 		
+<a name="135" href="#135">135</a> 		<strong class="jxr_keyword">try</strong>
+<a name="136" href="#136">136</a> 		{				
+<a name="137" href="#137">137</a> 			host = <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/it/gdata/ProjectHostingService.html">ProjectHostingService</a>();
+<a name="138" href="#138">138</a> 			String token = Authenticate.authenticate(act, GCLAccountAuthenticator.TOKEN_TYPE_ISSUE_TRACKER);
+<a name="139" href="#139">139</a> 			<strong class="jxr_keyword">if</strong>(token != <strong class="jxr_keyword">null</strong>)
+<a name="140" href="#140">140</a> 				host.setAuthSubToken(token);
+<a name="141" href="#141">141</a> 			<strong class="jxr_keyword">else</strong>
+<a name="142" href="#142">142</a> 			{
+<a name="143" href="#143">143</a> 				<em class="jxr_comment">//TODO add popup.</em>
+<a name="144" href="#144">144</a> 				AccountManager acct = (AccountManager) act.getSystemService(Context.ACCOUNT_SERVICE);
+<a name="145" href="#145">145</a> 				<strong class="jxr_keyword">if</strong>(Config.LOGD)
+<a name="146" href="#146">146</a> 					Log.d(TAG, <span class="jxr_string">"Requesting account creation."</span>);
+<a name="147" href="#147">147</a> 				acct.addAccount(GCLAccountAuthenticator.ACCT_TYPE, <span class="jxr_string">"code"</span>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, act, callback  , <strong class="jxr_keyword">null</strong>);
+<a name="148" href="#148">148</a> 			}
+<a name="149" href="#149">149</a> 		}
+<a name="150" href="#150">150</a> 		<strong class="jxr_keyword">catch</strong> (AuthenticatorException e)
+<a name="151" href="#151">151</a> 		{
+<a name="152" href="#152">152</a> 			<strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/CreateException.html">CreateException</a>(<span class="jxr_string">"Exception authenticating Google account for Issue Tracker repository access."</span>);
+<a name="153" href="#153">153</a> 		}
+<a name="154" href="#154">154</a> 		<strong class="jxr_keyword">catch</strong> (Exception e)
+<a name="155" href="#155">155</a> 		{
+<a name="156" href="#156">156</a> 			<strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/CreateException.html">CreateException</a>(<span class="jxr_string">"Exception creating Google Issue Tracker repository."</span>, e);
+<a name="157" href="#157">157</a> 		}
+<a name="158" href="#158">158</a> 	}
+<a name="159" href="#159">159</a> 
+<a name="160" href="#160">160</a> 	GIssueTrackerRepository(String appName, String username, String password)
+<a name="161" href="#161">161</a> 	 	<strong class="jxr_keyword">throws</strong> AuthenticationException, <a href="../../../../../../net/heroicefforts/viable/android/rep/it/auth/NetworkException.html">NetworkException</a>
+<a name="162" href="#162">162</a> 	{
+<a name="163" href="#163">163</a> 		<strong class="jxr_keyword">this</strong>.projectName = appName;
+<a name="164" href="#164">164</a> 		host = <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/it/gdata/ProjectHostingService.html">ProjectHostingService</a>();
+<a name="165" href="#165">165</a> 		host.setUserCredentials(username, password);
+<a name="166" href="#166">166</a> 	}
+<a name="167" href="#167">167</a> 
+<a name="168" href="#168">168</a> 	<strong class="jxr_keyword">public</strong> <a href="../../../../../../net/heroicefforts/viable/android/dao/Issue.html">Issue</a> exists(<a href="../../../../../../net/heroicefforts/viable/android/dao/Issue.html">Issue</a> issue)
+<a name="169" href="#169">169</a> 		<strong class="jxr_keyword">throws</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>
+<a name="170" href="#170">170</a> 	{
+<a name="171" href="#171">171</a> 		String hash = createHash(issue);
+<a name="172" href="#172">172</a> 		<strong class="jxr_keyword">return</strong> findByHash(hash);
+<a name="173" href="#173">173</a> 	}
+<a name="174" href="#174">174</a> 
+<a name="175" href="#175">175</a> 	<strong class="jxr_keyword">private</strong> <a href="../../../../../../net/heroicefforts/viable/android/dao/Issue.html">Issue</a> findByHash(String hash) 
+<a name="176" href="#176">176</a> 		<strong class="jxr_keyword">throws</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>
+<a name="177" href="#177">177</a> 	{
+<a name="178" href="#178">178</a> 		<strong class="jxr_keyword">try</strong>
+<a name="179" href="#179">179</a> 		{
+<a name="180" href="#180">180</a> 			Issue retVal = <strong class="jxr_keyword">null</strong>;
+<a name="181" href="#181">181</a> 
+<a name="182" href="#182">182</a> 			<strong class="jxr_keyword">if</strong>(hash != <strong class="jxr_keyword">null</strong>)
+<a name="183" href="#183">183</a> 			{
+<a name="184" href="#184">184</a> 				URL feedUrl = <strong class="jxr_keyword">new</strong> URL(ISSUE_BASE_URL + projectName + <span class="jxr_string">"/issues/full"</span>);
+<a name="185" href="#185">185</a> 				IssuesQuery myQuery = <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/it/gdata/IssuesQuery.html">IssuesQuery</a>(feedUrl);
+<a name="186" href="#186">186</a> 				myQuery.setLabel(<span class="jxr_string">"Hash-"</span> + hash);
+<a name="187" href="#187">187</a> 				IssuesFeed resultFeed = host.query(myQuery);
+<a name="188" href="#188">188</a> 	
+<a name="189" href="#189">189</a> 				<strong class="jxr_keyword">if</strong> (resultFeed.getEntries().size() &gt; 0)
+<a name="190" href="#190">190</a> 				{
+<a name="191" href="#191">191</a> 					retVal = resultFeed.getEntries().get(0);
+<a name="192" href="#192">192</a> 					retVal.setAppName(appName);
+<a name="193" href="#193">193</a> 				}
+<a name="194" href="#194">194</a> 			}
+<a name="195" href="#195">195</a> 			
+<a name="196" href="#196">196</a> 			<strong class="jxr_keyword">return</strong> retVal;
+<a name="197" href="#197">197</a> 		}
+<a name="198" href="#198">198</a> 		<strong class="jxr_keyword">catch</strong> (MalformedURLException e)
+<a name="199" href="#199">199</a> 		{
+<a name="200" href="#200">200</a> 			<strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>(<span class="jxr_string">"Error retrieving issue by hash '"</span> + hash + <span class="jxr_string">"'."</span>, e);
+<a name="201" href="#201">201</a> 		}
+<a name="202" href="#202">202</a> 	}
+<a name="203" href="#203">203</a> 
+<a name="204" href="#204">204</a> 	<strong class="jxr_keyword">public</strong> <a href="../../../../../../net/heroicefforts/viable/android/dao/Issue.html">Issue</a> findById(String issueId)
+<a name="205" href="#205">205</a> 		<strong class="jxr_keyword">throws</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>
+<a name="206" href="#206">206</a> 	{
+<a name="207" href="#207">207</a> 		<strong class="jxr_keyword">try</strong>
+<a name="208" href="#208">208</a> 		{
+<a name="209" href="#209">209</a> 			URL feedUrl = <strong class="jxr_keyword">new</strong> URL(ISSUE_BASE_URL + projectName + <span class="jxr_string">"/issues/full/"</span> + issueId);
+<a name="210" href="#210">210</a> 			Issue found = host.getEntry(feedUrl);
+<a name="211" href="#211">211</a> 			<strong class="jxr_keyword">if</strong>(found != <strong class="jxr_keyword">null</strong>)
+<a name="212" href="#212">212</a> 				found.setAppName(appName);
+<a name="213" href="#213">213</a> 			
+<a name="214" href="#214">214</a> 			<strong class="jxr_keyword">return</strong> found;
+<a name="215" href="#215">215</a> 		}
+<a name="216" href="#216">216</a> 		<strong class="jxr_keyword">catch</strong> (MalformedURLException e)
+<a name="217" href="#217">217</a> 		{
+<a name="218" href="#218">218</a> 			<strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>(<span class="jxr_string">"Error searching for issue '"</span> + issueId + <span class="jxr_string">"'."</span>, e);
+<a name="219" href="#219">219</a> 		}
+<a name="220" href="#220">220</a> 	}
+<a name="221" href="#221">221</a> 
+<a name="222" href="#222">222</a> 	<strong class="jxr_keyword">public</strong> <a href="../../../../../../net/heroicefforts/viable/android/dao/CommentSet.html">CommentSet</a> findCommentsForIssue(String issueId, <strong class="jxr_keyword">int</strong> page, <strong class="jxr_keyword">int</strong> pageSize)
+<a name="223" href="#223">223</a> 		<strong class="jxr_keyword">throws</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>
+<a name="224" href="#224">224</a> 	{
+<a name="225" href="#225">225</a> 		<strong class="jxr_keyword">try</strong>
+<a name="226" href="#226">226</a> 		{
+<a name="227" href="#227">227</a> 			<strong class="jxr_keyword">int</strong> startIndex = ((page - 1) * pageSize) + 1; <em class="jxr_comment">// 1 based</em>
+<a name="228" href="#228">228</a> 			<strong class="jxr_keyword">int</strong> maxResults = pageSize + 1;
+<a name="229" href="#229">229</a> 			URL feedUrl = <strong class="jxr_keyword">new</strong> URL(ISSUE_BASE_URL + projectName + <span class="jxr_string">"/issues/"</span> + issueId
+<a name="230" href="#230">230</a> 					+ <span class="jxr_string">"/comments/full"</span> + <span class="jxr_string">"?start-index="</span> + startIndex + APPEND_MAX_RESULTS + maxResults);
+<a name="231" href="#231">231</a> 			IssueCommentsFeed resultFeed = host.getFeed(feedUrl);
+<a name="232" href="#232">232</a> 			List&lt;Comment&gt; comments = resultFeed.getEntries();
+<a name="233" href="#233">233</a> 			CommentSet set = <strong class="jxr_keyword">null</strong>;
+<a name="234" href="#234">234</a> 			<strong class="jxr_keyword">if</strong> (comments.size() &gt; pageSize)
+<a name="235" href="#235">235</a> 				set = <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/dao/CommentSet.html">CommentSet</a>(comments.subList(0, pageSize), <strong class="jxr_keyword">true</strong>);
+<a name="236" href="#236">236</a> 			<strong class="jxr_keyword">else</strong>
+<a name="237" href="#237">237</a> 				set = <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/dao/CommentSet.html">CommentSet</a>(comments, false);
+<a name="238" href="#238">238</a> 
+<a name="239" href="#239">239</a> 			<strong class="jxr_keyword">return</strong> set;
+<a name="240" href="#240">240</a> 		}
+<a name="241" href="#241">241</a> 		<strong class="jxr_keyword">catch</strong> (MalformedURLException e)
+<a name="242" href="#242">242</a> 		{
+<a name="243" href="#243">243</a> 			<strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>(<span class="jxr_string">"Error retrieving comments for issue '"</span> + issueId + <span class="jxr_string">"'."</span>, e);
+<a name="244" href="#244">244</a> 		}
+<a name="245" href="#245">245</a> 	}
+<a name="246" href="#246">246</a> 
+<a name="247" href="#247">247</a> 	<strong class="jxr_keyword">public</strong> <a href="../../../../../../net/heroicefforts/viable/android/dao/ProjectDetail.html">ProjectDetail</a> getApplicationStats()
+<a name="248" href="#248">248</a> 		<strong class="jxr_keyword">throws</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>
+<a name="249" href="#249">249</a> 	{
+<a name="250" href="#250">250</a> 		String name = appName;
+<a name="251" href="#251">251</a> 		String url = <span class="jxr_string">"http://code.google.com/p/"</span> + projectName;
+<a name="252" href="#252">252</a> 		<strong class="jxr_keyword">long</strong> unfixedBugs = count(ISSUE_BASE_URL + projectName + <span class="jxr_string">"/issues/full?can=open&amp;label=Type-Defect"</span>);
+<a name="253" href="#253">253</a> 		<strong class="jxr_keyword">long</strong> fixedBugs = count(ISSUE_BASE_URL + projectName + <span class="jxr_string">"/issues/full?label=Type-Defect"</span>) - unfixedBugs;
+<a name="254" href="#254">254</a> 		<strong class="jxr_keyword">long</strong> unfixedImprovements = 0;
+<a name="255" href="#255">255</a> 		<strong class="jxr_keyword">long</strong> fixedImprovements = 0;
+<a name="256" href="#256">256</a> 		<strong class="jxr_keyword">long</strong> unfixedFeatures = count(ISSUE_BASE_URL + projectName + <span class="jxr_string">"/issues/full?can=open&amp;label=Type-Enhancement"</span>);
+<a name="257" href="#257">257</a> 		<strong class="jxr_keyword">long</strong> fixedFeatures = count(ISSUE_BASE_URL + projectName + <span class="jxr_string">"/issues/full?label=Type-Enhancement"</span>) - unfixedFeatures;
+<a name="258" href="#258">258</a> 		List&lt;VersionDetail&gt; versions = <strong class="jxr_keyword">new</strong> ArrayList&lt;VersionDetail&gt;();
+<a name="259" href="#259">259</a> 
+<a name="260" href="#260">260</a> 		ProjectDetail project = <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/dao/ProjectDetail.html">ProjectDetail</a>();
+<a name="261" href="#261">261</a> 		project.setName(name);
+<a name="262" href="#262">262</a> 		project.setDescription(description);
+<a name="263" href="#263">263</a> 		project.setLead(lead);
+<a name="264" href="#264">264</a> 		project.setUrl(url);
+<a name="265" href="#265">265</a> 		project.setUnfixedBugs(unfixedBugs);
+<a name="266" href="#266">266</a> 		project.setFixedBugs(fixedBugs);
+<a name="267" href="#267">267</a> 		project.setUnfixedImprovements(unfixedImprovements);
+<a name="268" href="#268">268</a> 		project.setFixedImprovements(fixedImprovements);
+<a name="269" href="#269">269</a> 		project.setUnfixedFeatures(unfixedFeatures);
+<a name="270" href="#270">270</a> 		project.setFixedFeatures(fixedFeatures);
+<a name="271" href="#271">271</a> 		project.setVersions(versions);
+<a name="272" href="#272">272</a> 
+<a name="273" href="#273">273</a> 		<strong class="jxr_keyword">return</strong> project;
+<a name="274" href="#274">274</a> 	}
+<a name="275" href="#275">275</a> 
+<a name="276" href="#276">276</a> 	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">long</strong> count(String query)
+<a name="277" href="#277">277</a> 		<strong class="jxr_keyword">throws</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>
+<a name="278" href="#278">278</a> 	{
+<a name="279" href="#279">279</a> 		<strong class="jxr_keyword">try</strong>
+<a name="280" href="#280">280</a> 		{
+<a name="281" href="#281">281</a> 			<strong class="jxr_keyword">if</strong>(query.indexOf('?') == -1)
+<a name="282" href="#282">282</a> 				query += <span class="jxr_string">"?"</span>;
+<a name="283" href="#283">283</a> 			<strong class="jxr_keyword">else</strong>
+<a name="284" href="#284">284</a> 				query += <span class="jxr_string">"&amp;"</span>;
+<a name="285" href="#285">285</a> 			URL feedUrl = <strong class="jxr_keyword">new</strong> URL(query + <span class="jxr_string">"start-index="</span> + 1 + APPEND_MAX_RESULTS + 0);
+<a name="286" href="#286">286</a> 			IssueCommentsFeed resultFeed = host.getFeed(feedUrl);
+<a name="287" href="#287">287</a> 			<strong class="jxr_keyword">return</strong> resultFeed.getTotalResults();
+<a name="288" href="#288">288</a> 		}
+<a name="289" href="#289">289</a> 		<strong class="jxr_keyword">catch</strong> (MalformedURLException e)
+<a name="290" href="#290">290</a> 		{
+<a name="291" href="#291">291</a> 			<strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>(<span class="jxr_string">"Error counting query '"</span> + query + <span class="jxr_string">"'."</span>, e);
+<a name="292" href="#292">292</a> 		}
+<a name="293" href="#293">293</a> 	}
+<a name="294" href="#294">294</a> 
+<a name="295" href="#295">295</a> 	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> postIssue(<a href="../../../../../../net/heroicefforts/viable/android/dao/Issue.html">Issue</a> issue) 
+<a name="296" href="#296">296</a> 		<strong class="jxr_keyword">throws</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>
+<a name="297" href="#297">297</a> 	{
+<a name="298" href="#298">298</a> 		<strong class="jxr_keyword">try</strong>
+<a name="299" href="#299">299</a> 		{
+<a name="300" href="#300">300</a> 			URL postUrl = <strong class="jxr_keyword">new</strong> URL(ISSUE_BASE_URL + projectName + <span class="jxr_string">"/issues/full"</span>);
+<a name="301" href="#301">301</a> 			issue.setHash(createHash(issue));			
+<a name="302" href="#302">302</a> 			host.insert(postUrl, issue);
+<a name="303" href="#303">303</a> 			issue.setAppName(appName);
+<a name="304" href="#304">304</a> 			<strong class="jxr_keyword">return</strong> HttpStatus.SC_CREATED;
+<a name="305" href="#305">305</a> 		}
+<a name="306" href="#306">306</a> 		<strong class="jxr_keyword">catch</strong> (AuthenticationException e)
+<a name="307" href="#307">307</a> 		{
+<a name="308" href="#308">308</a> 			Log.i(TAG, <span class="jxr_string">"Authorization failed."</span>, e);
+<a name="309" href="#309">309</a> 			manageAccount();
+<a name="310" href="#310">310</a> 			<strong class="jxr_keyword">return</strong> HttpStatus.SC_UNAUTHORIZED;
+<a name="311" href="#311">311</a> 		}
+<a name="312" href="#312">312</a> 		<strong class="jxr_keyword">catch</strong> (MalformedURLException e)
+<a name="313" href="#313">313</a> 		{
+<a name="314" href="#314">314</a> 			<strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>(<span class="jxr_string">"Error posting issue."</span>, e);
+<a name="315" href="#315">315</a> 		}
+<a name="316" href="#316">316</a> 	}
+<a name="317" href="#317">317</a> 
+<a name="318" href="#318">318</a> <em class="jxr_comment">//	private int updateIssue(Issue issue) </em>
+<a name="319" href="#319">319</a> <em class="jxr_comment">//		throws ServiceException</em>
+<a name="320" href="#320">320</a> <em class="jxr_comment">//	{</em>
+<a name="321" href="#321">321</a> <em class="jxr_comment">//		try</em>
+<a name="322" href="#322">322</a> <em class="jxr_comment">//		{</em>
+<a name="323" href="#323">323</a> <em class="jxr_comment">//			URL putUrl = new URL("http://code.google.com/feeds/issues/p/" + projectName + "/issues/" + issue.getIssueId());</em>
+<a name="324" href="#324">324</a> <em class="jxr_comment">//			issue.setHash(createHash(issue));			</em>
+<a name="325" href="#325">325</a> <em class="jxr_comment">//			host.update(putUrl, issue);</em>
+<a name="326" href="#326">326</a> <em class="jxr_comment">//			issue.setAppName(appName);</em>
+<a name="327" href="#327">327</a> <em class="jxr_comment">//			return HttpStatus.SC_CREATED;</em>
+<a name="328" href="#328">328</a> <em class="jxr_comment">//		}</em>
+<a name="329" href="#329">329</a> <em class="jxr_comment">//		catch (AuthenticationException e)</em>
+<a name="330" href="#330">330</a> <em class="jxr_comment">//		{</em>
+<a name="331" href="#331">331</a> <em class="jxr_comment">//			Log.i(TAG, "Authorization failed.", e);</em>
+<a name="332" href="#332">332</a> <em class="jxr_comment">//			manageAccount();</em>
+<a name="333" href="#333">333</a> <em class="jxr_comment">//			return HttpStatus.SC_UNAUTHORIZED;</em>
+<a name="334" href="#334">334</a> <em class="jxr_comment">//		}</em>
+<a name="335" href="#335">335</a> <em class="jxr_comment">//		catch (MalformedURLException e)</em>
+<a name="336" href="#336">336</a> <em class="jxr_comment">//		{</em>
+<a name="337" href="#337">337</a> <em class="jxr_comment">//			throw new ServiceException("Error posting issue.", e);</em>
+<a name="338" href="#338">338</a> <em class="jxr_comment">//		}</em>
+<a name="339" href="#339">339</a> <em class="jxr_comment">//	}</em>
+<a name="340" href="#340">340</a> 
+<a name="341" href="#341">341</a> 	
+<a name="342" href="#342">342</a> 	
+<a name="343" href="#343">343</a> 	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> manageAccount()
+<a name="344" href="#344">344</a> 	{
+<a name="345" href="#345">345</a> 		AccountManager accMgr = (AccountManager) act.getSystemService(Context.ACCOUNT_SERVICE);
+<a name="346" href="#346">346</a> 		<strong class="jxr_keyword">if</strong>(Config.LOGD)
+<a name="347" href="#347">347</a> 			Log.d(TAG, <span class="jxr_string">"Requesting account creation."</span>);
+<a name="348" href="#348">348</a> 		Account[] accts = accMgr.getAccountsByType(GCLAccountAuthenticator.ACCT_TYPE);
+<a name="349" href="#349">349</a> 		<strong class="jxr_keyword">if</strong>(accts.length &gt; 0)
+<a name="350" href="#350">350</a> 			accMgr.confirmCredentials(accts[0], <strong class="jxr_keyword">null</strong>, act, callback, <strong class="jxr_keyword">null</strong>);
+<a name="351" href="#351">351</a> 		<strong class="jxr_keyword">else</strong>
+<a name="352" href="#352">352</a> 			accMgr.addAccount(GCLAccountAuthenticator.ACCT_TYPE, GCLAccountAuthenticator.TOKEN_TYPE_ISSUE_TRACKER, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, act, callback, <strong class="jxr_keyword">null</strong>);
+<a name="353" href="#353">353</a> 	}
+<a name="354" href="#354">354</a> 
+<a name="355" href="#355">355</a> 	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> postIssueComment(<a href="../../../../../../net/heroicefforts/viable/android/dao/Issue.html">Issue</a> issue, <a href="../../../../../../net/heroicefforts/viable/android/dao/Comment.html">Comment</a> comment)
+<a name="356" href="#356">356</a> 		<strong class="jxr_keyword">throws</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>
+<a name="357" href="#357">357</a> 	{
+<a name="358" href="#358">358</a> 		<strong class="jxr_keyword">try</strong>
+<a name="359" href="#359">359</a> 		{
+<a name="360" href="#360">360</a> 			URL postUrl = <strong class="jxr_keyword">new</strong> URL(ISSUE_BASE_URL + projectName + <span class="jxr_string">"/issues/"</span> + issue.getIssueId() + <span class="jxr_string">"/comments/full"</span>);
+<a name="361" href="#361">361</a> 			comment = host.insert(postUrl, comment);
+<a name="362" href="#362">362</a> 			<strong class="jxr_keyword">return</strong> HttpStatus.SC_CREATED;
+<a name="363" href="#363">363</a> 		}
+<a name="364" href="#364">364</a> 		<strong class="jxr_keyword">catch</strong> (AuthenticationException e)
+<a name="365" href="#365">365</a> 		{
+<a name="366" href="#366">366</a> 			Log.i(TAG, <span class="jxr_string">"Authorization failed."</span>, e);
+<a name="367" href="#367">367</a> 			manageAccount();
+<a name="368" href="#368">368</a> 			<strong class="jxr_keyword">return</strong> HttpStatus.SC_UNAUTHORIZED;
+<a name="369" href="#369">369</a> 		}
+<a name="370" href="#370">370</a> 		<strong class="jxr_keyword">catch</strong> (MalformedURLException e)
+<a name="371" href="#371">371</a> 		{
+<a name="372" href="#372">372</a> 			<strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>(<span class="jxr_string">"Error posting comment."</span>, e);
+<a name="373" href="#373">373</a> 		}
+<a name="374" href="#374">374</a> 	}
+<a name="375" href="#375">375</a> 	
+<a name="376" href="#376">376</a> <em class="jxr_comment">//	private void appendEnvValue(StringBuilder envBuf)</em>
+<a name="377" href="#377">377</a> <em class="jxr_comment">//	{</em>
+<a name="378" href="#378">378</a> <em class="jxr_comment">//		envBuf.append("Phone - Device:  ").append(Build.DEVICE).append(", Model:  ")</em>
+<a name="379" href="#379">379</a> <em class="jxr_comment">//		      .append(Build.MODEL).append(", SDK:  ").append(Build.VERSION.SDK_INT);</em>
+<a name="380" href="#380">380</a> <em class="jxr_comment">//	}</em>
+<a name="381" href="#381">381</a> 		
+<a name="382" href="#382">382</a> 	<strong class="jxr_keyword">private</strong> String createHash(<a href="../../../../../../net/heroicefforts/viable/android/dao/Issue.html">Issue</a> issue)
+<a name="383" href="#383">383</a> 	{
+<a name="384" href="#384">384</a> 		String hash = <strong class="jxr_keyword">null</strong>;
+<a name="385" href="#385">385</a> 
+<a name="386" href="#386">386</a> 		<strong class="jxr_keyword">if</strong> (issue.getStacktrace() != <strong class="jxr_keyword">null</strong>)
+<a name="387" href="#387">387</a> 		{
+<a name="388" href="#388">388</a> 			String projectKey = projectName;
+<a name="389" href="#389">389</a> 			<strong class="jxr_keyword">try</strong>
+<a name="390" href="#390">390</a> 			{
+<a name="391" href="#391">391</a> 				MessageDigest md = MessageDigest.getInstance(<span class="jxr_string">"SHA"</span>);
+<a name="392" href="#392">392</a> 
+<a name="393" href="#393">393</a> 				<strong class="jxr_keyword">try</strong>
+<a name="394" href="#394">394</a> 				{
+<a name="395" href="#395">395</a> 					md.update(projectKey.getBytes(<span class="jxr_string">"UTF8"</span>));
+<a name="396" href="#396">396</a> 					md.update(issue.getStacktrace().getBytes(<span class="jxr_string">"UTF8"</span>));
+<a name="397" href="#397">397</a> 					byte[] hashBytes = md.digest();
+<a name="398" href="#398">398</a> 					String hex = <strong class="jxr_keyword">new</strong> BigInteger(1, hashBytes).toString(16);
+<a name="399" href="#399">399</a> 					<strong class="jxr_keyword">if</strong> (hex.length() % 2 != 0)
+<a name="400" href="#400">400</a> 						hex = <span class="jxr_string">"0"</span> + hex;
+<a name="401" href="#401">401</a> 					hash = hex;
+<a name="402" href="#402">402</a> 					issue.setHash(hash);
+<a name="403" href="#403">403</a> 				} 
+<a name="404" href="#404">404</a> 				<strong class="jxr_keyword">catch</strong> (UnsupportedEncodingException e)
+<a name="405" href="#405">405</a> 				{
+<a name="406" href="#406">406</a> 					Log.e(TAG, <span class="jxr_string">"Error generating bug hash using UTF8 encoding.  Hash disabled."</span>, e);
+<a name="407" href="#407">407</a> 				}
+<a name="408" href="#408">408</a> 			}
+<a name="409" href="#409">409</a> 			<strong class="jxr_keyword">catch</strong> (NoSuchAlgorithmException e)
+<a name="410" href="#410">410</a> 			{
+<a name="411" href="#411">411</a> 				Log.e(TAG, <span class="jxr_string">"Error generating bug hash.  Failed to find SHA digest.  Hash disabled."</span>, e);
+<a name="412" href="#412">412</a> 			}
+<a name="413" href="#413">413</a> 		}
+<a name="414" href="#414">414</a> 
+<a name="415" href="#415">415</a> 		<strong class="jxr_keyword">return</strong> hash;
+<a name="416" href="#416">416</a> 	}
+<a name="417" href="#417">417</a> 
+<a name="418" href="#418">418</a> 	<strong class="jxr_keyword">public</strong> <a href="../../../../../../net/heroicefforts/viable/android/dao/SearchResults.html">SearchResults</a> search(<a href="../../../../../../net/heroicefforts/viable/android/dao/SearchParams.html">SearchParams</a> params) 
+<a name="419" href="#419">419</a> 		<strong class="jxr_keyword">throws</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>
+<a name="420" href="#420">420</a> 	{
+<a name="421" href="#421">421</a> 		<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> startIdx = (params.getPage() - 1) * params.getPageSize();
+<a name="422" href="#422">422</a> 		<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> pageSize = params.getPageSize();
+<a name="423" href="#423">423</a> 		
+<a name="424" href="#424">424</a> 		LinkedHashSet&lt;Issue&gt; issues = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;Issue&gt;();		
+<a name="425" href="#425">425</a> 		<strong class="jxr_keyword">for</strong>(<strong class="jxr_keyword">int</strong> i = startIdx; i &lt; params.getIds().size() &amp;&amp; i &lt; startIdx + pageSize + i; i++)
+<a name="426" href="#426">426</a> 			issues.add(findById(params.getIds().get(i)));
+<a name="427" href="#427">427</a> 		
+<a name="428" href="#428">428</a> 		<strong class="jxr_keyword">if</strong>(issues.size() &lt;= pageSize)
+<a name="429" href="#429">429</a> 		{
+<a name="430" href="#430">430</a> 			Issue issue = findByHash(params.getHash());
+<a name="431" href="#431">431</a> 			<strong class="jxr_keyword">if</strong>(issue != <strong class="jxr_keyword">null</strong>)
+<a name="432" href="#432">432</a> 				issues.add(issue);
+<a name="433" href="#433">433</a> 		}	
+<a name="434" href="#434">434</a> 		
+<a name="435" href="#435">435</a> 		<strong class="jxr_keyword">if</strong>(issues.size() &lt;= pageSize)
+<a name="436" href="#436">436</a> 		{
+<a name="437" href="#437">437</a> 			<strong class="jxr_keyword">long</strong> skip = startIdx;
+<a name="438" href="#438">438</a> 			<strong class="jxr_keyword">long</strong> skipped = params.getIds().size() + (params.getHash() != <strong class="jxr_keyword">null</strong> ? 1 : 0);
+<a name="439" href="#439">439</a> 			<strong class="jxr_keyword">for</strong>(<strong class="jxr_keyword">int</strong> i = 0; i &lt; params.getAffectedVersions().size() &amp;&amp; issues.size() &lt;= pageSize; i++)
+<a name="440" href="#440">440</a> 			{
+<a name="441" href="#441">441</a> 				<strong class="jxr_keyword">long</strong> count = countIssuesByVersion(params.getAffectedVersions().get(i));
+<a name="442" href="#442">442</a> 				<strong class="jxr_keyword">if</strong>(skipped + count &gt; skip)
+<a name="443" href="#443">443</a> 				{
+<a name="444" href="#444">444</a> 					<strong class="jxr_keyword">int</strong> needed = pageSize - issues.size() + 1;
+<a name="445" href="#445">445</a> 					<strong class="jxr_keyword">long</strong> startAt = skip - skipped;
+<a name="446" href="#446">446</a> 					<strong class="jxr_keyword">if</strong>(startAt &lt; 0)
+<a name="447" href="#447">447</a> 						startAt = 0;
+<a name="448" href="#448">448</a> 					issues.addAll(findIssuesByVersion(params.getAffectedVersions().get(i), startAt, needed));
+<a name="449" href="#449">449</a> 					skipped = skip;
+<a name="450" href="#450">450</a> 				}
+<a name="451" href="#451">451</a> 				<strong class="jxr_keyword">else</strong>
+<a name="452" href="#452">452</a> 				{
+<a name="453" href="#453">453</a> 					skipped += count;
+<a name="454" href="#454">454</a> 				}
+<a name="455" href="#455">455</a> 			}
+<a name="456" href="#456">456</a> 		}
+<a name="457" href="#457">457</a> 		
+<a name="458" href="#458">458</a> 		setAppName(issues);
+<a name="459" href="#459">459</a> 		
+<a name="460" href="#460">460</a> 		<strong class="jxr_keyword">if</strong>(issues.size() &gt; pageSize)
+<a name="461" href="#461">461</a> 			<strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/dao/SearchResults.html">SearchResults</a>(<strong class="jxr_keyword">new</strong> ArrayList&lt;Issue&gt;(issues).subList(0, pageSize), <strong class="jxr_keyword">true</strong>);
+<a name="462" href="#462">462</a> 		<strong class="jxr_keyword">else</strong>
+<a name="463" href="#463">463</a> 			<strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/dao/SearchResults.html">SearchResults</a>(<strong class="jxr_keyword">new</strong> ArrayList&lt;Issue&gt;(issues), false);
+<a name="464" href="#464">464</a> 	}
+<a name="465" href="#465">465</a> 
+<a name="466" href="#466">466</a> 	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> vote(<a href="../../../../../../net/heroicefforts/viable/android/dao/Issue.html">Issue</a> issue) <strong class="jxr_keyword">throws</strong> ServiceException
+<a name="467" href="#467">467</a> 	{
+<a name="468" href="#468">468</a> <em class="jxr_comment">//		issue.setVotes(issue.getVotes() + 1);</em>
+<a name="469" href="#469">469</a> <em class="jxr_comment">//		return HttpStatus.SC_CREATED == updateIssue(issue);</em>
+<a name="470" href="#470">470</a> 		<strong class="jxr_keyword">return</strong> false;
+<a name="471" href="#471">471</a> 	}
+<a name="472" href="#472">472</a> 	
+<a name="473" href="#473">473</a> 	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> setAppName(LinkedHashSet&lt;Issue&gt; issues)
+<a name="474" href="#474">474</a> 	{
+<a name="475" href="#475">475</a> 		<strong class="jxr_keyword">for</strong>(<a href="../../../../../../net/heroicefforts/viable/android/dao/Issue.html">Issue</a> issue : issues)
+<a name="476" href="#476">476</a> 			issue.setAppName(appName);
+<a name="477" href="#477">477</a> 	}
+<a name="478" href="#478">478</a> 
+<a name="479" href="#479">479</a> 	<strong class="jxr_keyword">private</strong> Collection&lt;? <strong class="jxr_keyword">extends</strong> Issue&gt; findIssuesByVersion(String version, <strong class="jxr_keyword">long</strong> startAt, <strong class="jxr_keyword">int</strong> max) 
+<a name="480" href="#480">480</a> 		<strong class="jxr_keyword">throws</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>
+<a name="481" href="#481">481</a> 	{
+<a name="482" href="#482">482</a> 		startAt += 1; <em class="jxr_comment">//1 based</em>
+<a name="483" href="#483">483</a> 			
+<a name="484" href="#484">484</a> 		<strong class="jxr_keyword">try</strong>
+<a name="485" href="#485">485</a> 		{
+<a name="486" href="#486">486</a> 			String feedStr;
+<a name="487" href="#487">487</a> 			<strong class="jxr_keyword">if</strong>(!<span class="jxr_string">"all"</span>.equals(version))
+<a name="488" href="#488">488</a> 				feedStr = ISSUE_BASE_URL + projectName + <span class="jxr_string">"/issues/full?label=AffectedVersion-"</span> + version + <span class="jxr_string">"&amp;start-index="</span> + startAt + APPEND_MAX_RESULTS + max;
+<a name="489" href="#489">489</a> 			<strong class="jxr_keyword">else</strong>
+<a name="490" href="#490">490</a> 				feedStr = ISSUE_BASE_URL + projectName + <span class="jxr_string">"/issues/full?start-index="</span> + startAt + APPEND_MAX_RESULTS + max;
+<a name="491" href="#491">491</a> 			URL feedUrl = <strong class="jxr_keyword">new</strong> URL(feedStr);
+<a name="492" href="#492">492</a> 			IssuesQuery myQuery = <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/it/gdata/IssuesQuery.html">IssuesQuery</a>(feedUrl);
+<a name="493" href="#493">493</a> 			IssuesFeed resultFeed = host.query(myQuery);			
+<a name="494" href="#494">494</a> 			<strong class="jxr_keyword">return</strong> resultFeed.getEntries();
+<a name="495" href="#495">495</a> 		}
+<a name="496" href="#496">496</a> 		<strong class="jxr_keyword">catch</strong> (MalformedURLException e)
+<a name="497" href="#497">497</a> 		{
+<a name="498" href="#498">498</a> 			<strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>(<span class="jxr_string">"Error retrieving issues for version '"</span> + version + <span class="jxr_string">"'."</span>, e);
+<a name="499" href="#499">499</a> 		}
+<a name="500" href="#500">500</a> 
+<a name="501" href="#501">501</a> 	}
+<a name="502" href="#502">502</a> 
+<a name="503" href="#503">503</a> 	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">long</strong> countIssuesByVersion(String version)
+<a name="504" href="#504">504</a> 		<strong class="jxr_keyword">throws</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/ServiceException.html">ServiceException</a>
+<a name="505" href="#505">505</a> 	{
+<a name="506" href="#506">506</a> 		<strong class="jxr_keyword">if</strong>(!<span class="jxr_string">"all"</span>.equals(version))
+<a name="507" href="#507">507</a> 			<strong class="jxr_keyword">return</strong> count(ISSUE_BASE_URL + projectName + <span class="jxr_string">"/issues/full?label=AffectedVersion-"</span> + version);
+<a name="508" href="#508">508</a> 		<strong class="jxr_keyword">else</strong>
+<a name="509" href="#509">509</a> 			<strong class="jxr_keyword">return</strong> count(ISSUE_BASE_URL + projectName + <span class="jxr_string">"/issues/full"</span>);
+<a name="510" href="#510">510</a> 	}
+<a name="511" href="#511">511</a> 
+<a name="512" href="#512">512</a> 	<strong class="jxr_keyword">public</strong> Set&lt;? <strong class="jxr_keyword">extends</strong> IssueResource&gt; getDefaultStates()
+<a name="513" href="#513">513</a> 	{
+<a name="514" href="#514">514</a> 		<strong class="jxr_keyword">return</strong> ITResourceFlyweight.getDefaultStates();
+<a name="515" href="#515">515</a> 	}
+<a name="516" href="#516">516</a> 
+<a name="517" href="#517">517</a> 	<strong class="jxr_keyword">public</strong> Set&lt;? <strong class="jxr_keyword">extends</strong> IssueResource&gt; getDefaultDefectStates()
+<a name="518" href="#518">518</a> 	{
+<a name="519" href="#519">519</a> 		<strong class="jxr_keyword">return</strong> ITResourceFlyweight.getDefaultDefectStates();
+<a name="520" href="#520">520</a> 	}
+<a name="521" href="#521">521</a> 
+<a name="522" href="#522">522</a> 	<strong class="jxr_keyword">public</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/IssueResource.html">IssueResource</a> getState(String type, String priority, String state)
+<a name="523" href="#523">523</a> 	{
+<a name="524" href="#524">524</a> 		<strong class="jxr_keyword">return</strong> ITResourceFlyweight.getState(type, priority, state);
+<a name="525" href="#525">525</a> 	}
+<a name="526" href="#526">526</a> 
+<a name="527" href="#527">527</a> 	<strong class="jxr_keyword">public</strong> List&lt;VersionDetail&gt; getApplicationVersions()
+<a name="528" href="#528">528</a> 	{
+<a name="529" href="#529">529</a> 		<strong class="jxr_keyword">return</strong> versions ;
+<a name="530" href="#530">530</a> 	}
+<a name="531" href="#531">531</a> 
+<a name="532" href="#532">532</a> 	<strong class="jxr_keyword">public</strong> <a href="../../../../../../net/heroicefforts/viable/android/rep/IssueResource.html">IssueResource</a> getUninstallState()
+<a name="533" href="#533">533</a> 	{
+<a name="534" href="#534">534</a> 		<strong class="jxr_keyword">return</strong> ITResourceFlyweight.getUninstallState();
+<a name="535" href="#535">535</a> 	}
+<a name="536" href="#536">536</a> 
+<a name="537" href="#537">537</a> }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

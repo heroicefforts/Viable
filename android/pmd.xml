@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd version="4.2.5" timestamp="2010-03-07T23:58:06.975">
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\content\IssueContentProvider.java" suppressiontype="annotation" msg="The String literal &quot; TEXT NOT NULL ON CONFLICT ROLLBACK,&quot; appears 5 times in this file; the first occurrence is on line 81" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\content\IssueContentProvider.java" suppressiontype="annotation" msg="The String literal &quot; TEXT,&quot; appears 4 times in this file; the first occurrence is on line 83" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\auth\Authenticate.java" suppressiontype="nopmd" msg="These nested if statements could be combined" usermsg="
+"/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\gdata\ProjectHostingService.java" suppressiontype="nopmd" msg="These nested if statements could be combined" usermsg="
+"/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="Avoid unused private methods such as 'printAppStats(Repository,String)'." usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="Avoid unused private methods such as 'toString(Throwable)'." usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="Avoid unused private methods such as 'printIssueComments(Repository,String)'." usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="Avoid unused private methods such as 'printFindById(Repository,String)'." usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="Avoid unused private methods such as 'checkExistence(Repository,Issue)'." usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="Avoid unused private methods such as 'postIssue(Repository)'." usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="Avoid unused method parameters such as 'projectName'." usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="System.out.print is used" usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\it\Main.java" suppressiontype="annotation" msg="Avoid printStackTrace(); use a logger call instead." usermsg=""/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\jira\JIRARepository.java" suppressiontype="nopmd" msg="These nested if statements could be combined" usermsg="
+"/>
+<suppressedviolation filename="E:\work\dev\java\workspace\viable\viable-android\src\net\heroicefforts\viable\android\rep\jira\JIRARepository.java" suppressiontype="nopmd" msg="Avoid unused constructor parameters such as 'act'." usermsg="
+"/>
+</pmd>

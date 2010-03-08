@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Viable - </title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+                                            <img src="images/logo.png" alt="Viable Logo" />
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+             Last Published: 2010-03-07
+            </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Overview</h5>
+            <ul>
+              
+    <li class="none">
+              <strong>Introduction</strong>
+        </li>
+              
+    <li class="none">
+                    <a href="downloads.html">Downloads</a>
+          </li>
+              
+          
+              
+      
+            
+      
+              
+        <li class="expanded">
+                    <a href="">Integration</a>
+                  <ul>
+                  
+    <li class="none">
+                    <a href="integ_jira.html">JIRA</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="integ_it.html">Google I.T.</a>
+          </li>
+              </ul>
+        </li>
+              
+    <li class="none">
+                    <a href="contribute.html">Contribute</a>
+          </li>
+          </ul>
+              <h5>Modules</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="android/index.html">Android</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="source"><pre>ALPHA
+
+Viable is currently open to the community for RFC, but not yet released for market consumption.  
+Once sufficient feedback has been collected, a stable release will be pushed to the marketplace.  Until that time, 
+the binaries are directly downloadable for evaluation purposes. </pre>
+</div>
+<div class="section"><h2>Purpose</h2>
+<p>Viable is an Android application that facilitates bug reporting by phone owners and allows them to track the state of application issues. Viable is not an issue tracking system itself (there are already too many of those - ahem), but serves as a lightweight, mobile bridge to popular issue trackers. </p>
+</div>
+<div class="section"><h2>Motivation</h2>
+<p>As I was preparing to release my first Android application, I realized that I had no way for users to report bugs. The marketplace comments section was where most complaints were directed, but it was sorely insufficient for eliciting useful, actionable information. This developer decided to fork over the $10 for a JIRA license. However, requiring the user to complete a web form on the phone was not a particularly friendly experience. Additionally, one could not be certain that the user would correctly, supply the requisite environment information.</p>
+<p>A search of the forums revealed one or two partial commercial solutions and a few phone-home libraries that surreptitiously sent errors to a network file or servlet. This developer could find no packages that integrated with mature issue tracking solutions. Furthermore, as the application in question did not require network access, it seemed that a 3rd party integration application was the correct solution. Thus, Viable was conceived.</p>
+<p>Ideally, an issue handling mechanism with robust integration would be distributed natively with the Android platform. As this is not the case, the next best solution would seem to be a free, open source application. A successful solution should:</p>
+<ul><li>Be created for the phone owner to facilitate: reporting issues, tracking issues, and gauging the viability of an application project.</li>
+<li>Be unobtrusive to the phone owner.</li>
+<li>Encourage de facto adoption by phone owners and developers (thus the free part).</li>
+<li>Provide a simple mechanism for developer integration.</li>
+<li>Support a variety of 3rd party integrations useful to the developers (thus the open source part).</li>
+</ul>
+<p>Viable has been created as a prototype of this vision. It is this developers hope that it may prove a spark that leads to a robust solution to address this gap in the Android platform. </p>
+</div>
+<div class="section"><h2>How it works</h2>
+<p>Third-party integration with Viable is designed to be simple. Viable supports passive and active mechanisms for supporting 3rd party Android applications.</p>
+<p>A few manifest entries in the 3rd party application will enable users to navigate the application project on the developer's issue tracking system. In this passive fashion, phone owners may use Viable to view or post defects and enhancements.</p>
+<p>By including a small client jar and one line of code in their main Activity or Service class, 3rd party application developers may enable active integration with Viable. When enabled, Viable will intercept unhandled exceptions in the 3rd party application. Viable will prompt the user to report the exception. The user may enter a summary, description, assign priority, and then submit the information to the developer's issue tracker. </p>
+<p>When a user submits a defect due to an application crash, Viable will automatically include non-PII vitals such as stacktrace, phone model, and SDK with the defect report. In this fashion, the user is not bothered with manually entering the information and the developer can be certain that these vital statistics are correct. A checksum mechanism is used to prevent users from flooding the issue tracker with duplicate defects. When Viable determines that an issue has already been reported, it prompts the user to enter a comment. If the user chooses to submit a comment, then this comment is attached to the pre-existing issue. Otherwise, Viable will simply exit allowing the user to curse the crashed application and continue on with their phone usage.</p>
+</div>
+<div class="section"><h2>Supported Issue Trackers</h2>
+<p>Viable is designed to bridge to multiple issue tracking platforms. Contributors are encouraged to enhance this application by contributing their own integration plugins. At present, integration has been implemented with the following platforms:</p>
+<ul><li><a href="./integ_jira.html">Atlassian JIRA</a></li>
+<li><a href="./integ_it.html">Google Issue Tracker</a></li>
+</ul>
+</div>
+<div class="section"><h2>Contact</h2>
+<ul><li>You may contact me using the email in my <a href="http://github.com/heroicefforts" class="externalLink">profile</a>.</li>
+<li>Issues may be reported to Viable's <a href="http://bugs.heroicefforts.net/browse/VIABLE" class="externalLink">bug tracker</a>.</li>
+</ul>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2010
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>

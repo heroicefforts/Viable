@@ -1,0 +1,26 @@
+-classpath
+'E:/work/dev/java/workspace/viable/viable-android/target/classes;C:/Users/jevans/.m2/repository/android/android/2.0_r1/android-2.0_r1.jar'
+-encoding
+'Cp1252'
+-protected
+-sourcepath
+'E:/work/dev/java/workspace/viable/viable-android/src;E:/work/dev/java/workspace/viable/viable-android/target/generated-sources/r'
+-author
+-bottom
+'Copyright &#169; 2010. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'E:/work/dev/java/workspace/viable/viable-android/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'Viable Android 0.4.0-SNAPSHOT API'
+-link
+'http://java.sun.com/j2se/1.5.0/docs/api'
+-linkoffline
+'http://heroicefforts.github.com/Viable/apidocs' 'E:/work/dev/java/workspace/viable/viable-crashy/target/site/apidocs'
+-use
+-version
+-windowtitle
+'Viable Android 0.4.0-SNAPSHOT API'
