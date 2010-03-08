@@ -1,4 +1,5 @@
 #ignore binaries
 *.class
-bin/*
-target/*
+*/bin/*
+*/target/*
+*.log

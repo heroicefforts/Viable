@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/CrashActivityButton" android:text="@string/crash_activity"></Button>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/CrashServiceButton" android:text="@string/crash_service"></Button>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/CrashWorkerButton" android:text="@string/crash_worker_thread"></Button>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/CrashAsyncButton" android:text="@string/crash_async_task"></Button>
+</LinearLayout>

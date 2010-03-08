@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, CrashyActivity!</string>
+    <string name="app_name">Crashy</string>
+<string name="crash_service">Crash Service</string>
+<string name="crash_activity">Crash Activity</string>
+<string name="crash_worker_thread">Crash Worker Thread</string>
+<string name="crash_async_task">Crash AsyncTask</string>
+</resources>

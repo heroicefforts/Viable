@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="net.heroicefforts.viable.crashy"
+      android:versionCode="1"
+      android:versionName="1.0.0">
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
+        <activity android:name=".CrashyActivity"
+                  android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".CrashingActivity"
+                  android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+<!-- 
+		<meta-data android:name="viable-provider" android:value="JIRA"></meta-data>
+		<meta-data android:name="viable-provider-location" android:value="http://192.168.1.101:2990/jira/rest/tutorial-rest/1.0/issue"></meta-data>
+-->		
+		<meta-data android:name="viable-provider" android:value="Google" />
+		<meta-data android:name="viable-project-name" android:value="viable-it-test" />
+		<meta-data android:name="viable-project-description" android:value="A test application for triggering various exception cases." />
+		<meta-data android:name="viable-project-lead" android:value="Jess Evans" />
+		<meta-data android:name="viable-project-versions" android:value="1.0.0" />
+    <service android:name="CrashingService"></service>
+</application>
+    <uses-sdk android:minSdkVersion="5" />
+
+</manifest> 
