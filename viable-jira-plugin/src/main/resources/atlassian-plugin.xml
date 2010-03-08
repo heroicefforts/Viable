@@ -1,0 +1,22 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}"
+	name="${project.artifactId}" plugins-version="2">
+	<plugin-info>
+		<description>${project.description}</description>
+		<version>${project.version}</version>
+		<vendor name="${project.organization.name}" url="${project.organization.url}" />
+	</plugin-info>
+
+	<!--
+		Automatically finds all JAX-RS resource classes in the plugin and
+		publishes them.
+	-->
+	<rest key="rest-service-viable-resources" path="/viable" version="1.0">
+		<description>Plugin for the Viable Android issue reporting application.</description>
+	</rest>
+
+	<!--
+		Imports the SAL UserManager class from JIRA so it can be used by
+		ProjectsResource.
+	-->
+	<component-import key="userManager"	interface="com.atlassian.sal.api.user.UserManager" />
+</atlassian-plugin>
